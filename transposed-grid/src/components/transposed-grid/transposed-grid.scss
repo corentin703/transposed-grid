@@ -1,0 +1,171 @@
+@use "@material/checkbox"; // Required only for data table with row selection.
+@use "@material/data-table/data-table";
+//@use "@material/icon-button/styles"; // Required only for data table with column sorting.
+
+@use "@material/button/styles";
+//@import "@material/icon-button"; // Required only for data table with column sorting.
+
+@use "@material/theme";
+@use "@material/theme/custom-properties";
+
+@include checkbox.core-styles;
+@include data-table.core-styles;
+@include data-table.theme-baseline;
+
+//:host {
+//  --transposed-table-color: var(--transposed-table-color, #{theme.$on-surface});
+//  --transposed-table-bg: var(--transposed-table-bg, #{theme.$surface});
+//
+//  --transposed-table-group-color: var(--transposed-table-group-color, #{theme.$on-secondary});
+//  --transposed-table-group-bg: var(--transposed-table-group-bg, #{theme.$secondary});
+//
+//  --transposed-table-striped-color: var(--transposed-table-striped-color, #{theme.$on-surface});
+//  --transposed-table-striped-bg: var(--transposed-table-striped-bg, #{theme.$green-100});
+//
+//  --transposed-table-hoover-color: var(--transposed-table-hoover-color, #{theme.$on-surface});
+//  --transposed-table-hoover-bg: var(--transposed-table-hoover-bg, #{theme.$grey-200});
+//
+//  --transposed-table-cell-updated-color: var(--transposed-table-cell-updated-color, #{theme.$on-surface});
+//  --transposed-table-cell-updated-bg: var(--transposed-table-cell-updated-bg, #{theme.$green-200});
+//}
+
+.mdc-data-table {
+  display: block;
+}
+
+:host {
+  display: block;
+}
+
+.cell-hidden {
+  display: none;
+}
+
+// Head column & scroll
+th {
+  position: sticky;
+  left: 0;
+  top: auto;
+
+  background-color: white;
+  white-space: nowrap;
+}
+
+.table__container {
+  overflow-x: scroll;
+  overflow-y: visible;
+}
+
+.cell {
+  height: 100%;
+  width: 100%;
+
+  color: var(--transposed-table-color);
+  background-color: var(--transposed-table-bg);
+}
+
+.cell-editing {
+  padding: 0;
+}
+
+.cell-active {
+  color: var(--transposed-table-hoover-color);
+  background-color: var(--transposed-table-hoover-bg);
+}
+
+.cell-selected {
+  color: var(--transposed-table-selected-color);
+  background-color: var(--transposed-table-selected-bg);
+}
+
+.cell-striped {
+  color: var(--transposed-table-striped-color);
+  background-color: var(--transposed-table-striped-bg);
+}
+
+.cell-updated {
+  color: var(--transposed-table-cell-updated-color);
+  background-color: var(--transposed-table-cell-updated-bg);
+}
+
+.group {
+  color: var(--transposed-table-group-color);
+  background-color: var(--transposed-table-group-bg);
+}
+
+.group__header {
+  background-color: var(--transposed-table-group-bg);
+  color: var(--transposed-table-group-color);
+
+  overflow: initial;
+
+  z-index: 2 !important;
+
+  svg {
+    filter: invert(100%);
+  }
+
+  .group__header_container {
+    display: flex;
+    gap: 1rem;
+    white-space: nowrap;
+
+    align-items: center;
+    max-width: 100px;
+
+    .group__header_label, .group__header_toolbar {
+      padding: 6px;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+  }
+}
+
+.cell__header {
+  width: 100%;
+  z-index: 10;
+
+  .cell__header_label {
+    padding: 4px;
+    font-weight: bold;
+  }
+
+  .cell__header_content {
+    min-width: 150px;
+
+    display: flex;
+
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
+// Z-index
+.cell__toolbar_header {
+  z-index: 10;
+}
+
+// Scrollbar
+::-webkit-scrollbar-track {
+  //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  //background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+  background-color: #FFFFFF;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background-color: rgba(85, 85, 85, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  border-radius: 6px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: rgba(85, 85, 85, 0.8);
+}

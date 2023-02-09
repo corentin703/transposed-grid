@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>Stencil Component Starter</title>
+
+    <link rel="stylesheet" href="/build/transposed-grid.css" />
+    <script type="module" src="/build/transposed-grid.esm.js"></script>
+    <script nomodule src="/build/transposed-grid.js"></script>
+  </head>
+  <body>
+    <style>
+      .tbl {
+        overflow-y: scroll;
+        /*max-height: 20vh;*/
+      }
+    </style>
+
+<!--    <my-component first="Stencil" last="'Don't call me a framework' JS"></my-component>-->
+<!--    <div style="max-height: 60vh; overflow-y: scroll">-->
+<!--      <transposed-grid-->
+<!--        id="transposed-grid"-->
+<!--        striped-->
+<!--        bordered-->
+<!--        table-class="tbl"-->
+<!--        primary-key="id"-->
+<!--      >-->
+<!--      </transposed-grid>-->
+<!--    </div>-->
+
+    <transposed-grid
+      id="transposed-grid"
+      class="h-[40vh] max-h-[40vh]"
+      striped
+      bordered
+      primary-key="id"
+    >
+
+    </transposed-grid>
+
+    <style>
+      .h-\[40vh\] {
+        height: 40vh;
+      }
+
+      .max-h-\[40vh\] {
+        max-height: 40vh;
+      }
+    </style>
+
+    <script>
+      const editing = {
+        allowUpdating: true,
+        startEditAction: 'click',
+        // optionRowName: 'editing',
+      };
+
+      const selection = {
+        mode: 'multiple'
+      };
+
+      const onItemClick = (data) => console.log('onItemClick', data);
+      const onItemDblClick = (data) => console.log('onItemDblClick', data);
+      const onItemValidation = (data) => console.log('onItemValidating', data);
+      const onSave = async (event) => {
+        // event.cancelSubmit = true
+        console.log('onSaving', event);
+      };
+      const onCanceled = (event) => console.log('onCanceled', event);
+      const onSelectionChanged = (event) => console.log('onSelectionChanged', data);
+
+      const rows = [
+        {
+          dataField: 'id',
+          visible: true,
+        },
+        {
+          caption: 'Name',
+          dataField: 'name',
+          allowSorting: true,
+        },
+        {
+          caption: 'Company',
+          dataField: 'company',
+          allowSorting: true,
+        },
+        {
+          caption: 'Birth Date bla bla bla bla bla',
+          dataField: 'birthdate',
+          allowSorting: true,
+        },
+        {
+          group: 'address',
+          caption: 'City',
+          dataField: 'city',
+          allowSorting: true,
+        },
+        {
+          group: 'address',
+          caption: 'Country',
+          dataField: 'country',
+          allowSorting: true,
+        },
+        {
+          group: 'internet',
+          caption: 'Email',
+          dataField: 'email',
+          allowSorting: true,
+        },
+        {
+          caption: 'Avatar',
+          dataField: 'commonAvatar',
+          cellTemplate: (props) => {
+            props.element.innerHTML = '';
+
+            if (!props.value) {
+              props.element.innerHTML = 'Aucune image';
+              return;
+            }
+
+            props.element.innerHTML = `<img src="${props.value}" alt="photo" style="width: 5rem; height: 5rem;" />`;
+          }
+          // cellTemplate: (props, defaultTemplate) => {
+          //   // props.setSettings({
+          //   //   className: 'bg-red',
+          //   //   style: {
+          //   //     backgroundColor: 'darkred'
+          //   //   }
+          //   // })
+          //
+          //   if (!props.value) {
+          //     return <></>
+          //   }
+          //
+          //   return (
+          //     <img src={props.value} className={'w-[5rem]'} alt={'avatar'} />
+          //   )
+          // }
+        },
+        {
+          group: 'address',
+          caption: 'Photo',
+          dataField: 'commonPhoto',
+          cellTemplate: (props) => {
+            props.element.innerHTML = '';
+
+            if (!props.value) {
+              props.element.innerHTML = 'Aucune image';
+              return;
+            }
+
+            props.element.innerHTML = `<img src="${props.value}" alt="photo" style="width: 5rem; height: 5rem;" />`;
+          }
+        },
+        {
+          group: 'animal',
+          dataField: 'dog',
+          caption: 'Dog',
+          allowSorting: true,
+        },
+        {
+          group: 'animal',
+          dataField: 'cat',
+          caption: 'Cat',
+          allowSorting: true,
+        },
+        {
+          group: 'animal',
+          dataField: 'bird',
+          caption: 'Bird',
+          allowSorting: true,
+        },
+        {
+          group: 'animal',
+          dataField: 'bear',
+          caption: 'Bear',
+          allowSorting: true,
+        },
+        {
+          group: 'animal',
+          caption: 'Country',
+          dataField: 'country',
+          allowSorting: true,
+        },
+      ];
+
+      const groups = [
+        {
+          name: 'address',
+          caption: 'Address',
+          collapsed: false,
+          // onGroupCollapsed: (evt) => {
+          //   evt.collapsed = false
+          // }
+        },
+        {
+          name: 'internet',
+          caption: 'Internet of Things & bla bla bla bla bla and bla bla bla',
+          collapsed: false,
+        },
+        {
+          name: 'animal',
+          caption: 'Animal',
+          collapsed: false,
+        }
+      ];
+
+      const transposedGrid = document.getElementById('transposed-grid')
+      transposedGrid.groups = groups;
+      transposedGrid.rows = rows;
+
+      transposedGrid.editing = editing;
+      transposedGrid.selection = selection;
+
+      // transposedGrid.addEventListener('itemClick', (e) => onItemClick(e));
+      // transposedGrid.addEventListener('itemDoubleClick', (e) => onItemDblClick(e));
+      // transposedGrid.addEventListener('itemHoovering', (e) => {
+      //   console.log('itemHoovering', e)
+      // })
+      //
+      // transposedGrid.addEventListener('save', (e) => {
+      //   console.log('save', e)
+      //   transposedGrid.items = e.detail.data
+      // })
+      //
+      // transposedGrid.addEventListener('cancel', (e) => {
+      //   console.log('cancel', e)
+      // })
+      //
+      // transposedGrid.addEventListener('editionValidation', (e) => {
+      //   console.log('editionValidation', e)
+      //   // e.preventDefault();
+      // })
+      //
+      transposedGrid.addEventListener('itemSelectionChange', (e) => {
+        console.log('itemSelectionChange', e)
+      })
+      //
+      // transposedGrid.addEventListener('groupCollapsed', (e) => {
+      //   console.log('groupCollapsed', e)
+      // })
+
+      // transposedGrid.toolbarTemplate = (options) => {
+      //   const el = document.createElement('div')
+      //   el.innerHTML = 'OK'
+      //
+      //   options.element.innerHTML = ''
+      //   options.element.replaceChildren(el)
+      // }
+
+      // setTimeout(() => {
+      //   transposedGrid.toolbarTemplate = (options) => {
+      //     const el = document.createElement('div')
+      //     el.innerText = 'OK 2'
+      //
+      //     options.element.append(el)
+      //   }
+      // }, 2500)
+
+      fetch('http://localhost:30000/fakeData')
+        .then(response => response.json())
+        .then(data => transposedGrid.items = data);
+
+      console.log(transposedGrid)
+    </script>
+  </body>
+</html>

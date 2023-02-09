@@ -1,0 +1,54 @@
+@use "@material/theme";
+@use "@material/theme/custom-properties";
+
+:root {
+  --transposed-table-color: #{theme.$on-surface};
+  --transposed-table-bg: #{theme.$surface};
+
+  --transposed-table-group-color: #{theme.$on-secondary};
+  --transposed-table-group-bg: #{theme.$secondary};
+
+  --transposed-table-selected-color: #{theme.$on-surface};
+  --transposed-table-selected-bg: #{theme.$grey-300};
+
+  --transposed-table-striped-color: #{theme.$on-surface};
+  --transposed-table-striped-bg: #{theme.$grey-100};
+
+  --transposed-table-hoover-color: #{theme.$on-surface};
+  --transposed-table-hoover-bg: #{theme.$grey-200};
+
+  --transposed-table-cell-updated-color: #{theme.$on-surface};
+  --transposed-table-cell-updated-bg: #{theme.$green-200};
+}
+
+//:root {
+//  --transposed-table-cell-padding-y:              0.25rem;
+//  --transposed-table-cell-padding-x:              0.25rem;
+//
+//  --transposed-table-cell-updated-color:          black;
+//  --transposed-table-cell-updated-bg:             lightgreen;
+//
+//  --transposed-table-color:                       black;
+//  --transposed-table-bg:                          white;
+//
+//  --transposed-table-header-color:                black;
+//  --transposed-table-header-bg:                   white;
+//
+//  --transposed-table-group-color:                 black;
+//  --transposed-table-group-bg:                    rgb(235, 235, 235);
+//
+//  --transposed-table-th-font-weight:              null;
+//
+//  --transposed-table-striped-color:               var(--transposed-table-color);
+//  --transposed-table-striped-bg:                  rgb(245, 245, 245); /* var(--transposed-table-bg); rgba($black, var(--transposed-table-striped-bg-factor)); */
+//
+//  --transposed-table-active-color:                var(--transposed-table-color);
+//  --transposed-table-active-bg:                   rgb(220, 220, 220); /* rgba($black, var(--transposed-table-active-bg-factor)); */
+//
+//  --transposed-table-hover-color:                 var(--transposed-table-color);
+//  --transposed-table-hover-bg:                    rgb(230, 230, 230); /* rgba($black, var(--transposed-table-hover-bg-factor)); */
+//
+//  --transposed-table-border-width:                1px;
+//  --transposed-table-border-color:                rgb(199, 199, 199);
+//  --transposed-table-caption-color:               black;
+//}
