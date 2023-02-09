@@ -1,0 +1,11 @@
+@use "@material/button/styles";
+
+:host {
+  display: block;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 6px;
+}
