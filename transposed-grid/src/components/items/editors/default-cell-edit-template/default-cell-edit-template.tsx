@@ -60,14 +60,6 @@ export class DefaultCellEditTemplate implements InternalEditCellTemplate, EditCe
             />
             <span class={'mdc-line-ripple'}></span>
           </label>
-          {/*<input*/}
-          {/*  ref={el => this.inputElement = el as HTMLInputElement}*/}
-          {/*  value={this.value}*/}
-          {/*  onChange={event => {*/}
-          {/*    console.log(event)*/}
-          {/*    this._onInputChanged(event)*/}
-          {/*  }}*/}
-          {/*/>*/}
         </div>
       </Host>
     );
