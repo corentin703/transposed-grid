@@ -1,7 +1,7 @@
 {
   "name": "transposed-grid-react",
   "sideEffects": false,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Stencil JS based transposed grid / vertical grid",
   "repository": {
     "type": "git",

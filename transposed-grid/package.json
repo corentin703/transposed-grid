@@ -1,6 +1,6 @@
 {
   "name": "transposed-grid",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Stencil JS based transposed grid / vertical grid",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
