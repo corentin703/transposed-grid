@@ -30,10 +30,6 @@ export class ItemCell {
   @Watch('isEditing')
   @Watch('row')
   public watchTemplateStatus() {
-    // if (this.row.dataField === 'commonPhoto') {
-    //   console.log(this.row)
-    // }
-
     const renderDefaultTemplate = this.isEditing
       ? this.row.editionCellTemplate === undefined
       : this.row.cellTemplate === undefined
@@ -97,13 +93,6 @@ export class ItemCell {
     }
 
     const onTemplateContainerRefLoaded = (element: HTMLElement) => {
-      // if (this.lastRenderedContainerElement?.isEqualNode(element)) {
-      //   return;
-      // }
-      //
-      // console.log(this.lastRenderedContainerElement?.isEqualNode(element), this.lastRenderedContainerElement = element, this.lastRenderedContainerElement, element)
-      // this.lastRenderedContainerElement = element;
-
       const renderDefaultTemplate = () => {
         this.renderDefaultTemplate = true;
       }

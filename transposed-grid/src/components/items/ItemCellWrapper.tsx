@@ -23,7 +23,8 @@ export type ItemCellWrapperProps = {
   onClick: () => void;
   onDoubleClick: () => void;
   onEnterKeyDown: () => void;
-  onCtrlTabKeyDown: () => void;
+  onEscapeKeyDown: () => void;
+  onTabKeyDown: () => void;
   onMouseEnter: () => void;
   onValueChange: (updatedValue: any) => void;
 }
@@ -66,9 +67,15 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
 
   const handleKeyDown = (event: KeyboardEvent) => {
     switch (event.key) {
+      case 'Escape':
+        event.preventDefault();
+        event.stopPropagation();
+        props.onEscapeKeyDown();
+        break;
       case 'Tab':
         event.preventDefault();
-        props.onCtrlTabKeyDown();
+        event.stopPropagation();
+        props.onTabKeyDown();
         break;
       case 'Enter':
         props.onEnterKeyDown();

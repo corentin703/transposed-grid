@@ -33,8 +33,7 @@ import { GroupPlaceholder } from '../GroupPlaceholder';
 import { CustomTemplate } from '../../models/customTemplate';
 
 type EditingState = {
-  rowIdx: number;
-  idx: number;
+  itemIdx: number;
   row: Row;
 }
 
@@ -158,7 +157,7 @@ export class TransposedGrid {
   private _nonGroupRow?: Row[];
 
   private _dataSnapshot?: Data[];
-  private _itemsMetadata: Record<string, ItemMetadata> = { };
+  private _itemsMetadata: Map<string, ItemMetadata> = new Map();
 
 
   public connectedCallback() {
@@ -331,7 +330,7 @@ export class TransposedGrid {
   @Watch('groupsState')
   @Watch('rowsState')
   public setGroupRow() {
-    const groupedRows: Record<string, GroupedRows> = {}
+    const groupedRows: Map<string, GroupedRows> = new Map()
     const nonGroupRow: Row[] = []
 
     if (!this.rowsState) {
@@ -342,8 +341,8 @@ export class TransposedGrid {
     }
 
     this.rowsState.forEach(row => {
-      const group = row?.group && groupedRows[row.group]
-        ? groupedRows[row.group].group
+      const group = row?.group && groupedRows.has(row.group)
+        ? groupedRows.get(row.group)!.group
         : this.groupsState?.find(group => group.name === row?.group)
 
       const newRow = {
@@ -356,49 +355,19 @@ export class TransposedGrid {
         return
       }
 
-      groupedRows[group.name] ??= {
-        rows: [],
-        group: group,
+      if (!groupedRows.has(group.name)) {
+        groupedRows.set(group.name, {
+          rows: [],
+          group: group,
+        })
       }
 
-      groupedRows[group.name].rows.push(newRow)
+      groupedRows.get(group.name)!.rows.push(newRow)
     })
 
-    this._groupedRows = Object.values(groupedRows);
+    this._groupedRows = [...groupedRows.values()];
     this._nonGroupRow = nonGroupRow;
   }
-
-  // @Watch('selectionOptionsState')
-  // @Watch('dataState')
-  // public updateSelection() {
-  //   const selectedData = this.dataState.filter(item => {
-  //     const metadata = this._getItemMetadata(item);
-  //     return metadata?.selected ?? false
-  //   });
-  //
-  //   const areAllSelected = selectedData.length === this.dataState.length;
-  //
-  //   let selectionStatus: SelectionStatus = SelectionStatus.Some;
-  //   if (areAllSelected) {
-  //     selectionStatus = SelectionStatus.All;
-  //   } else if (selectedData.length === 0) {
-  //     selectionStatus = SelectionStatus.None;
-  //   }
-  //
-  //   const selectionState = {
-  //     selectedItems: selectedData,
-  //     mode: this.selectionOptionsState.mode!,
-  //     areAllSelected: areAllSelected,
-  //     status: selectionStatus,
-  //   };
-  //
-  //   const selectionEventResult = this.itemSelectionChange.emit(selectionState);
-  //   if (selectionEventResult.defaultPrevented) {
-  //     return;
-  //   }
-  //
-  //   this.selectionState = selectionState;
-  // }
 
   @Watch('toolbar')
   @Watch('isEditingState')
@@ -441,13 +410,14 @@ export class TransposedGrid {
   @Listen('keydown')
   public onKeyDown(event: KeyboardEvent) {
     switch (event.key) {
+      case 'Escape':
+        this._handleEscapeKeyDown();
+        break;
       case 'Enter':
         this._handleEnterKeyDown();
         break;
       case 'Tab':
-        if (event.ctrlKey) {
-          this._handleCtrlTabKeyDown();
-        }
+        this._handleTabKeyDown();
         break;
     }
   }
@@ -464,9 +434,13 @@ export class TransposedGrid {
       tableClassNames.push(this.tableClass)
     }
 
-    const renderDataFieldRow = (row: Row, rowIdx: number, group?: Group) => {
+    const renderDataFieldRow = (row: Row, group?: Group) => {
       return this.dataState.map((item, itemIdx) => {
-        const isEditing = this.editingItemState !== undefined && this.editingItemState.idx === itemIdx && this.editingItemState.row === row
+        const isEditing = 
+          this.editingItemState !== undefined &&
+          this.editingItemState.itemIdx === itemIdx && 
+          this.editingItemState.row.dataField === row.dataField && 
+          this.editingItemState.row.group === row.group
 
         const originalItem = this._dataSnapshot
           ? this._dataSnapshot[itemIdx]
@@ -495,12 +469,13 @@ export class TransposedGrid {
             originalValue={originalItem ? originalItem[row.dataField] : undefined}
             onValueChange={updatedValue => this._handleValueChange(row, itemIdx, item, updatedValue)}
 
-            onClick={() => this._handleCellClick(item, itemIdx, row, rowIdx)}
-            onDoubleClick={() => this._handleCellDblClick(item, itemIdx, row, rowIdx)}
+            onClick={() => this._handleCellClick(item, itemIdx, row)}
+            onDoubleClick={() => this._handleCellDblClick(item, itemIdx, row)}
             onMouseEnter={() => this._handleItemMouseEnter(item, itemIdx)}
 
-            onCtrlTabKeyDown={() => this._handleCtrlTabKeyDown()}
+            onTabKeyDown={() => this._handleTabKeyDown()}
             onEnterKeyDown={() => this._handleEnterKeyDown()}
+            onEscapeKeyDown={() => this._handleEscapeKeyDown()}
           />
         )
       })
@@ -522,7 +497,7 @@ export class TransposedGrid {
             >
               <thead class={'mdc-data-table--sticky-header'}>
                 {
-                  this._nonGroupRow?.filter(_row => _row.visible).map((row, rowIdx) => {
+                  this._nonGroupRow?.filter(_row => _row.visible).map(row => {
                     return (
                       <tr>
                         <ItemHeader
@@ -530,7 +505,7 @@ export class TransposedGrid {
                           row={row}
                           onSort={() => this._sort(row)}
                         />
-                        {renderDataFieldRow(row, rowIdx)}
+                        {renderDataFieldRow(row)}
                       </tr>
                     )
                   })
@@ -553,7 +528,7 @@ export class TransposedGrid {
                           />)
                         }
                       </tr>,
-                      ...groupedRow.rows.filter(_row => _row.visible).map((row, rowIdx) => {
+                      ...groupedRow.rows.filter(_row => _row.visible).map(row => {
 
                         return (
                           <tr>
@@ -562,7 +537,7 @@ export class TransposedGrid {
                               group={groupedRow.group}
                               onSort={() => this._sort(row)}
                             />
-                            {renderDataFieldRow(row, rowIdx, groupedRow.group)}
+                            {renderDataFieldRow(row, groupedRow.group)}
                           </tr>
                         )
                       }),
@@ -608,8 +583,13 @@ export class TransposedGrid {
   }
 
   private _getItemMetadata(item: Data): ItemMetadata {
-    this._itemsMetadata[item[this._primaryKey]] ??= {};
-    return this._itemsMetadata[item[this._primaryKey]]
+    const itemId = item[this._primaryKey];
+
+    if (!this._itemsMetadata.has(itemId)) {
+      this._itemsMetadata.set(itemId, {});
+    }
+
+    return this._itemsMetadata.get(itemId)!;
   }
 
   private _sort(rowToSort: Row) {
@@ -712,7 +692,7 @@ export class TransposedGrid {
     return rights.allowUpdating ?? false;
   }
 
-  private _toggleEdit(item: Data, itemIdx: number, row: Row, rowIdx: number): boolean {
+  private _toggleEdit(item: Data, itemIdx: number, row: Row): boolean {
     if (!row) {
       return false;
     }
@@ -722,9 +702,8 @@ export class TransposedGrid {
     }
 
     this.editingItemState = {
-      idx: itemIdx,
+      itemIdx: itemIdx,
       row: row,
-      rowIdx: rowIdx,
     };
 
     return true;
@@ -843,18 +822,47 @@ export class TransposedGrid {
     this.editingItemState = undefined;
   }
 
-  private _handleCtrlTabKeyDown() {
+  private _handleEscapeKeyDown() {
+    this.editingItemState = undefined;
+  }
+
+  private _handleTabKeyDown() {
     if (!this.editingItemState || !this.rowsState) {
       return;
     }
 
-    const nextRowIdx = (this.editingItemState.rowIdx + 1) % this.rowsState.length;
-    const nextRow = this.rowsState[nextRowIdx]
+    const findRowPredicate = (row: Row, targetRow: Row) => row.dataField === targetRow.dataField && row.group === targetRow.group;
 
-    this.editingItemState = {
-      ...this.editingItemState,
-      row: nextRow,
-    }
+    const currentRow = this.editingItemState?.row;
+    let isResolved = false;
+
+    const orderedRows = [
+      ...this._nonGroupRow ?? [],
+      ...this._groupedRows?.map(groupedRow => groupedRow.rows)?.flat() ?? [],
+    ];
+
+    let itemIndex = this.editingItemState.itemIdx;
+    let orderedRowIdx = orderedRows.findIndex(row => findRowPredicate(row, currentRow)) + 1;
+
+    do {
+      const nextRow = orderedRows[orderedRowIdx];
+      const item = this.dataState[itemIndex];
+
+      if (!item) {
+        this.editingItemState = undefined;
+        break;
+      }
+
+      if (!nextRow) {
+        itemIndex++;
+        orderedRowIdx = 0;
+        continue;
+      }
+
+      isResolved = this._toggleEdit(item, itemIndex, nextRow);
+      orderedRowIdx++;
+    } while (!isResolved)
+
   }
 
   //  Selection
@@ -986,11 +994,11 @@ export class TransposedGrid {
     this.activeItemIdxState = undefined;
   }
 
-  private _handleCellClick(item: Data, itemIdx: number, row: Row, rowIdx: number) {
+  private _handleCellClick(item: Data, itemIdx: number, row: Row) {
     let editionToggled = false;
 
     if (this.editingOptionsState.startEditAction === StartEditAction.Click) {
-      editionToggled = this._toggleEdit(item, itemIdx, row, rowIdx);
+      editionToggled = this._toggleEdit(item, itemIdx, row);
     }
 
     this._handleItemClick(item, itemIdx, {
@@ -998,11 +1006,11 @@ export class TransposedGrid {
     });
   }
 
-  private _handleCellDblClick(item: Data, itemIdx: number, row: Row, rowIdx: number) {
+  private _handleCellDblClick(item: Data, itemIdx: number, row: Row) {
     let editionToggled = false;
 
     if (this.editingOptionsState.startEditAction === StartEditAction.DoubleClick) {
-      editionToggled = this._toggleEdit(item, itemIdx, row, rowIdx);
+      editionToggled = this._toggleEdit(item, itemIdx, row);
     }
 
     this._handleItemDblClick(item, itemIdx, {

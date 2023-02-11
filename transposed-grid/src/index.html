@@ -111,6 +111,9 @@
         {
           caption: 'Avatar',
           dataField: 'commonAvatar',
+          editing: {
+            allowUpdating: false,
+          },
           cellTemplate: (props) => {
             props.element.innerHTML = '';
 
