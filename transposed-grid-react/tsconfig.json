@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+      "allowJs": false,
+      "allowUnreachableCode": false,
+      "allowSyntheticDefaultImports": true,
+      "declaration": true,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "jsx": "react",
+      "lib": [
+        "dom",
+        "ESNext"
+      ],
+      "module": "ESNext",
+      "moduleResolution": "node",
+      "noImplicitAny": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "outDir": "dist",
+      "removeComments": false,
+      "sourceMap": true,
+      "strict": true,
+      "target": "ESNext"
+    },
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+    ],
+    "exclude": [
+      "**/__tests__/**"
+    ],
+    "compileOnSave": false,
+    "buildOnSave": false
+  }

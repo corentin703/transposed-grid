@@ -24,11 +24,11 @@ export interface EditCellTemplateMethods {
   selectAll: () => Promise<void>;
 }
 
-export interface EditCellTemplate extends CellTemplate {
+export interface InternalEditCellTemplate extends CellTemplate {
   valueChange: EventEmitter<any>;
 }
 
-export interface CustomEditCellTemplate extends CellTemplate {
+export interface EditCellTemplate extends CellTemplate {
   onValueChange: (updatedValue: any) => void;
 }
 

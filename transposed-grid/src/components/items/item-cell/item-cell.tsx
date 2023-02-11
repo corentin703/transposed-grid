@@ -1,5 +1,5 @@
 import { Component, Host, h, Prop, Event, EventEmitter, State, Watch } from '@stencil/core';
-import { CellTemplate, CustomEditCellTemplate, EditCellTemplateMethods } from '../../../models/customTemplate';
+import { CellTemplate, EditCellTemplate, EditCellTemplateMethods } from '../../../models/customTemplate';
 import { Data } from '../../../models/data';
 import { Group } from '../../../models/group';
 import { Row } from '../../../models/row';
@@ -56,7 +56,7 @@ export class ItemCell {
       value: this.value,
     };
 
-    const editCellProps: CustomEditCellTemplate = {
+    const editCellProps: EditCellTemplate = {
       ...cellProps,
       onValueChange: (event) => {
         this.valueChange.emit(event.detail);
