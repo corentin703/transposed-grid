@@ -1,6 +1,6 @@
 import { EditingOptions } from './edition';
 import { SortOrder } from './sorting';
-import { CellTemplate, CustomEditCellTemplate } from './customTemplate';
+import { CellTemplate, EditCellTemplate } from './customTemplate';
 import { CustomTemplate } from './customTemplate';
 
 export type Row = {
@@ -16,5 +16,5 @@ export type Row = {
   orderedBy?: SortOrder;
 
   cellTemplate?: (props: CustomTemplate<CellTemplate>) => void;
-  editionCellTemplate?: (props: CustomTemplate<CustomEditCellTemplate>) => void;
+  editionCellTemplate?: (props: CustomTemplate<EditCellTemplate>) => void;
 }

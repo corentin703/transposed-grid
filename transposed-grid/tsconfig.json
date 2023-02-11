@@ -5,18 +5,23 @@
     "allowUnreachableCode": false,
     "declaration": false,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
+    "jsxFactory": "h",
     "lib": [
       "dom",
-      "es2017"
+      "ESNext"
     ],
+    "module": "ESNext",
     "moduleResolution": "node",
-    "module": "esnext",
-    "target": "es2017",
+    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "removeComments": false,
+    "sourceMap": true,
     "strict": true,
-    "jsx": "react",
-    "jsxFactory": "h"
+    "target": "ESNext"
   },
   "include": [
     "src"

@@ -1,5 +1,5 @@
 import { Component, Host, h, EventEmitter, Prop, Event, Method } from '@stencil/core';
-import { EditCellTemplate, EditCellTemplateMethods } from '../../../../models/customTemplate';
+import { InternalEditCellTemplate, EditCellTemplateMethods } from '../../../../models/customTemplate';
 import { Data } from '../../../../models/data';
 import { Group } from '../../../../models/group';
 import { Row } from '../../../../models/row';
@@ -9,7 +9,7 @@ import { Row } from '../../../../models/row';
   styleUrl: 'default-cell-edit-template.scss',
   shadow: true,
 })
-export class DefaultCellEditTemplate implements EditCellTemplate, EditCellTemplateMethods {
+export class DefaultCellEditTemplate implements InternalEditCellTemplate, EditCellTemplateMethods {
   @Prop() public data!: Data;
   @Prop() public primaryKey!: string;
   @Prop() public group?: Group | undefined;
