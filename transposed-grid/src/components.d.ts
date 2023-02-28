@@ -58,7 +58,6 @@ export namespace Components {
     interface TransposedGrid {
         "allowHeaderFiltering"?: boolean;
         "allowSorting"?: boolean;
-        "bordered"?: boolean;
         "editing"?: EditingOptions;
         "focusedRowPrimaryKeyValue"?: string;
         "groups"?: Group[];
@@ -66,7 +65,7 @@ export namespace Components {
         "primaryKey"?: string;
         "rows"?: Row[];
         "selection"?: SelectionOptions;
-        "striped"?: boolean;
+        "striped": boolean;
         "tableClass"?: string;
         "toolbar"?: ToolbarOptions;
         "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => void;
@@ -160,7 +159,6 @@ declare namespace LocalJSX {
     interface TransposedGrid {
         "allowHeaderFiltering"?: boolean;
         "allowSorting"?: boolean;
-        "bordered"?: boolean;
         "editing"?: EditingOptions;
         "focusedRowPrimaryKeyValue"?: string;
         "groups"?: Group[];

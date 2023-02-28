@@ -9,7 +9,8 @@
   "types": "dist/types/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
-  "unpkg": "dist/transposed-grid/transposed-grid.esm.js",
+  "unpkg": "dyarnist/transposed-grid/transposed-grid.esm.js",
+  "homepage": "https://corentin703.github.io/transposed-grid",
   "repository": {
     "type": "git",
     "url": "https://github.com/corentin703/transposed-grid.git"
@@ -24,7 +25,10 @@
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate",
-    "lint": "eslint src/**/*{.ts,.tsx}"
+    "lint": "eslint src/**/*{.ts,.tsx}",
+    "storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider start-storybook -p 6006",
+    "build-storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider build-storybook",
+    "deploy-storybook": "gh-pages -d storybook-static"
   },
   "dependencies": {
     "@material/button": "^14.0.0",
@@ -35,12 +39,21 @@
     "@stencil/core": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.21.0",
     "@stencil-community/eslint-plugin": "^0.5.0",
     "@stencil/react-output-target": "^0.4.0",
     "@stencil/sass": "^2.0.3",
+    "@storybook/addon-actions": "^6.5.16",
+    "@storybook/addon-essentials": "^6.5.16",
+    "@storybook/addon-links": "^6.5.16",
+    "@storybook/html": "^6.5.16",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.11",
+    "babel-loader": "^8.3.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.32.0",
+    "eslint-plugin-storybook": "^0.6.11",
+    "gh-pages": "^5.0.0",
     "jest": "^27.5.1",
     "jest-cli": "^27.5.1",
     "puppeteer": "^19.5.2"
