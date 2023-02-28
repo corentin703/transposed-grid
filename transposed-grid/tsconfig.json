@@ -11,7 +11,7 @@
     "jsxFactory": "h",
     "lib": [
       "dom",
-      "ESNext"
+      "ES2021"
     ],
     "module": "ESNext",
     "moduleResolution": "node",
@@ -19,14 +19,16 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "removeComments": false,
+    "resolveJsonModule": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ESNext"
+    "target": "ES2021"
   },
   "include": [
     "src"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/stories"
   ]
 }

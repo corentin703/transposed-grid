@@ -94,8 +94,7 @@ export class TransposedGrid {
   @Prop() public allowSorting?: boolean;
   @Prop() public allowHeaderFiltering?: boolean;
 
-  @Prop() public striped?: boolean;
-  @Prop() public bordered?: boolean;
+  @Prop() public striped: boolean = true;
 
   @Prop() public focusedRowPrimaryKeyValue?: string;
 
@@ -381,24 +380,26 @@ export class TransposedGrid {
       ...(this.toolbar?.right ?? []),
     ];
 
-    const saveButtonIdx = rightPart.findIndex(btn => btn.caption === this.editingOptionsState.texts?.save);
-    if (saveButtonIdx !== -1) {
-      rightPart[saveButtonIdx].onClick = this._saveEdit.bind(this);
-    } else {
-      rightPart.push({
-        caption: this.editingOptionsState.texts?.save,
-        onClick: this._saveEdit.bind(this),
-      });
-    }
+    if (this.editingOptionsState.allowUpdating) {
+      const saveButtonIdx = rightPart.findIndex(btn => btn.caption === this.editingOptionsState.texts?.save);
+      if (saveButtonIdx !== -1) {
+        rightPart[saveButtonIdx].onClick = this._saveEdit.bind(this);
+      } else {
+        rightPart.push({
+          caption: this.editingOptionsState.texts?.save,
+          onClick: this._saveEdit.bind(this),
+        });
+      }
 
-    const cancelButtonIdx = rightPart.findIndex(btn => btn.caption === this.editingOptionsState.texts?.cancel);
-    if (cancelButtonIdx !== -1) {
-      rightPart[cancelButtonIdx].onClick = this._cancelEdit.bind(this);
-    } else {
-      rightPart.push({
-        caption: this.editingOptionsState.texts?.cancel,
-        onClick: this._cancelEdit.bind(this),
-      });
+      const cancelButtonIdx = rightPart.findIndex(btn => btn.caption === this.editingOptionsState.texts?.cancel);
+      if (cancelButtonIdx !== -1) {
+        rightPart[cancelButtonIdx].onClick = this._cancelEdit.bind(this);
+      } else {
+        rightPart.push({
+          caption: this.editingOptionsState.texts?.cancel,
+          onClick: this._cancelEdit.bind(this),
+        });
+      }
     }
 
     this.toolbarOptionsState = {
@@ -427,7 +428,6 @@ export class TransposedGrid {
       'mdc-data-table__table',
       'mdc-data-table--sticky-header',
       `${this.striped ? 'transposed_table-striped' : ''}`,
-      `${this.bordered ? 'transposed_table-bordered' : ''}`,
     ];
 
     if (this.tableClass) {
@@ -436,10 +436,10 @@ export class TransposedGrid {
 
     const renderDataFieldRow = (row: Row, group?: Group) => {
       return this.dataState.map((item, itemIdx) => {
-        const isEditing = 
+        const isEditing =
           this.editingItemState !== undefined &&
-          this.editingItemState.itemIdx === itemIdx && 
-          this.editingItemState.row.dataField === row.dataField && 
+          this.editingItemState.itemIdx === itemIdx &&
+          this.editingItemState.row.dataField === row.dataField &&
           this.editingItemState.row.group === row.group
 
         const originalItem = this._dataSnapshot
@@ -449,6 +449,7 @@ export class TransposedGrid {
 
         const metadata = this._getItemMetadata(item);
         const isItemActive = this.activeItemIdxState === itemIdx;
+        const isStriped = this.striped && itemIdx % 2 !== 0
 
         return (
           <ItemCellWrapper
@@ -462,7 +463,7 @@ export class TransposedGrid {
             isActive={isItemActive}
             isEditing={isEditing}
             isSelected={metadata.selected ?? false}
-            isStriped={itemIdx % 2 !== 0}
+            isStriped={isStriped}
 
             primaryKey={this._primaryKey}
             value={item[row.dataField]}
@@ -555,6 +556,7 @@ export class TransposedGrid {
                   {
                     this.dataState.map((item, itemIdx) => {
                       const metadata = this._getItemMetadata(item);
+                      const isStriped = this.striped && itemIdx % 2 !== 0
 
                       return (
                         <ItemToolbarCell
@@ -563,7 +565,7 @@ export class TransposedGrid {
 
                           isActive={this.activeItemIdxState === itemIdx}
                           isSelected={metadata.selected ?? false}
-                          isStriped={itemIdx % 2 !== 0}
+                          isStriped={isStriped}
 
                           onMouseEnter={() => this._handleItemMouseEnter(item, itemIdx)}
                           onSelectionChange={isSelected => this._select(itemIdx, isSelected)}
