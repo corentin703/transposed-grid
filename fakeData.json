@@ -12,8 +12,8 @@
     "dog": "White Swiss Shepherd Dog",
     "bird": "Harlequin Duck",
     "bear": "Asian black bear",
-    "avatar": "/image3.png",
-    "photo": "/image1.png"
+    "avatar": "./image3.png",
+    "photo": "./image1.png"
   },
   {
     "id": 2,
@@ -28,8 +28,8 @@
     "dog": "Kooikerhondje",
     "bird": "Pine Warbler",
     "bear": "Sun bear",
-    "avatar": "/image1.png",
-    "photo": "/image3.png"
+    "avatar": "./image1.png",
+    "photo": "./image3.png"
   },
   {
     "id": 3,
@@ -44,8 +44,8 @@
     "dog": "Finnish Hound",
     "bird": "Whooping Crane",
     "bear": "Spectacled bear",
-    "avatar": "/image5.png",
-    "photo": "/image1.png"
+    "avatar": "./image5.png",
+    "photo": "./image1.png"
   },
   {
     "id": 4,
@@ -60,8 +60,8 @@
     "dog": "English Cocker Spaniel",
     "bird": "White-collared Seedeater",
     "bear": "Spectacled bear",
-    "avatar": "/image1.png",
-    "photo": "/image4.png"
+    "avatar": "./image1.png",
+    "photo": "./image4.png"
   },
   {
     "id": 5,
@@ -76,8 +76,8 @@
     "dog": "Afghan Hound",
     "bird": "Gadwall",
     "bear": "Sloth bear",
-    "avatar": "/image4.png",
-    "photo": "/image4.png"
+    "avatar": "./image4.png",
+    "photo": "./image4.png"
   },
   {
     "id": 6,
@@ -92,8 +92,8 @@
     "dog": "Bull Arab",
     "bird": "Eurasian Wigeon",
     "bear": "Asian black bear",
-    "avatar": "/image5.png",
-    "photo": "/image4.png"
+    "avatar": "./image5.png",
+    "photo": "./image4.png"
   },
   {
     "id": 7,
@@ -108,8 +108,8 @@
     "dog": "Peruvian Inca Orchid",
     "bird": "Buff-breasted Flycatcher",
     "bear": "Brown bear",
-    "avatar": "/image1.png",
-    "photo": "/image3.png"
+    "avatar": "./image1.png",
+    "photo": "./image3.png"
   },
   {
     "id": 8,
@@ -124,8 +124,8 @@
     "dog": "Akita",
     "bird": "Common Cuckoo",
     "bear": "Polar bear",
-    "avatar": "/image3.png",
-    "photo": "/image2.png"
+    "avatar": "./image3.png",
+    "photo": "./image2.png"
   },
   {
     "id": 9,
@@ -140,8 +140,8 @@
     "dog": "Hygen Hound",
     "bird": "Western Screech-Owl",
     "bear": "Brown bear",
-    "avatar": "/image3.png",
-    "photo": "/image1.png"
+    "avatar": "./image3.png",
+    "photo": "./image1.png"
   },
   {
     "id": 10,
@@ -156,8 +156,8 @@
     "dog": "Pastore della Lessinia e del Lagorai",
     "bird": "Willow Ptarmigan",
     "bear": "American black bear",
-    "avatar": "/image2.png",
-    "photo": "/image1.png"
+    "avatar": "./image2.png",
+    "photo": "./image1.png"
   },
   {
     "id": 11,
@@ -172,8 +172,8 @@
     "dog": "Shih Tzu",
     "bird": "Tufted Flycatcher",
     "bear": "American black bear",
-    "avatar": "/image5.png",
-    "photo": "/image2.png"
+    "avatar": "./image5.png",
+    "photo": "./image2.png"
   },
   {
     "id": 12,
@@ -188,8 +188,8 @@
     "dog": "Brussels Griffon",
     "bird": "Cuban Martin",
     "bear": "Asian black bear",
-    "avatar": "/image1.png",
-    "photo": "/image1.png"
+    "avatar": "./image1.png",
+    "photo": "./image1.png"
   },
   {
     "id": 13,
@@ -204,8 +204,8 @@
     "dog": "Estonian Hound",
     "bird": "Pyrrhuloxia",
     "bear": "American black bear",
-    "avatar": "/image4.png",
-    "photo": "/image5.png"
+    "avatar": "./image4.png",
+    "photo": "./image5.png"
   },
   {
     "id": 14,
@@ -220,8 +220,8 @@
     "dog": "Grand Anglo-Français Blanc et Noir",
     "bird": "Brown Shrike",
     "bear": "Asian black bear",
-    "avatar": "/image3.png",
-    "photo": "/image1.png"
+    "avatar": "./image3.png",
+    "photo": "./image1.png"
   },
   {
     "id": 15,
@@ -236,8 +236,8 @@
     "dog": "Small Münsterländer",
     "bird": "Common Eider",
     "bear": "Asian black bear",
-    "avatar": "/image1.png",
-    "photo": "/image4.png"
+    "avatar": "./image1.png",
+    "photo": "./image4.png"
   },
   {
     "id": 16,
@@ -252,8 +252,8 @@
     "dog": "Yakutian Laika",
     "bird": "Oriental Scops-Owl",
     "bear": "Polar bear",
-    "avatar": "/image5.png",
-    "photo": "/image1.png"
+    "avatar": "./image5.png",
+    "photo": "./image1.png"
   },
   {
     "id": 17,
@@ -268,8 +268,8 @@
     "dog": "Bernese Mountain Dog",
     "bird": "Carolina Wren",
     "bear": "Sun bear",
-    "avatar": "/image2.png",
-    "photo": "/image3.png"
+    "avatar": "./image2.png",
+    "photo": "./image3.png"
   },
   {
     "id": 18,
@@ -284,8 +284,8 @@
     "dog": "Bichon Frisé",
     "bird": "Common Merganser",
     "bear": "Polar bear",
-    "avatar": "/image1.png",
-    "photo": "/image1.png"
+    "avatar": "./image1.png",
+    "photo": "./image1.png"
   },
   {
     "id": 19,
@@ -300,8 +300,8 @@
     "dog": "Wirehaired Vizsla",
     "bird": "Craveri's Murrelet",
     "bear": "Sloth bear",
-    "avatar": "/image4.png",
-    "photo": "/image2.png"
+    "avatar": "./image4.png",
+    "photo": "./image2.png"
   },
   {
     "id": 20,
@@ -316,8 +316,8 @@
     "dog": "American Hairless Terrier",
     "bird": "Green Kingfisher",
     "bear": "Polar bear",
-    "avatar": "/image3.png",
-    "photo": "/image4.png"
+    "avatar": "./image3.png",
+    "photo": "./image4.png"
   },
   {
     "id": 21,
@@ -332,8 +332,8 @@
     "dog": "Czechoslovakian Wolfdog",
     "bird": "Little Curlew",
     "bear": "Polar bear",
-    "avatar": "/image1.png",
-    "photo": "/image1.png"
+    "avatar": "./image1.png",
+    "photo": "./image1.png"
   },
   {
     "id": 22,
@@ -348,8 +348,8 @@
     "dog": "Australian Kelpie",
     "bird": "Orange-crowned Warbler",
     "bear": "Sun bear",
-    "avatar": "/image2.png",
-    "photo": "/image2.png"
+    "avatar": "./image2.png",
+    "photo": "./image2.png"
   },
   {
     "id": 23,
@@ -364,8 +364,8 @@
     "dog": "Gordon Setter",
     "bird": "White-crowned Pigeon",
     "bear": "American black bear",
-    "avatar": "/image5.png",
-    "photo": "/image3.png"
+    "avatar": "./image5.png",
+    "photo": "./image3.png"
   },
   {
     "id": 24,
@@ -380,8 +380,8 @@
     "dog": "Braque du Bourbonnais",
     "bird": "California Gull",
     "bear": "Sun bear",
-    "avatar": "/image3.png",
-    "photo": "/image1.png"
+    "avatar": "./image3.png",
+    "photo": "./image1.png"
   },
   {
     "id": 25,
@@ -396,8 +396,8 @@
     "dog": "Transylvanian Hound",
     "bird": "Gray Jay",
     "bear": "Giant panda",
-    "avatar": "/image4.png",
-    "photo": "/image3.png"
+    "avatar": "./image4.png",
+    "photo": "./image3.png"
   },
   {
     "id": 26,
@@ -412,8 +412,8 @@
     "dog": "Pyrenean Mountain Dog",
     "bird": "Masked Tityra",
     "bear": "Asian black bear",
-    "avatar": "/image1.png",
-    "photo": "/image2.png"
+    "avatar": "./image1.png",
+    "photo": "./image2.png"
   },
   {
     "id": 27,
@@ -428,8 +428,8 @@
     "dog": "Pembroke Welsh Corgi",
     "bird": "Snail Kite",
     "bear": "Polar bear",
-    "avatar": "/image3.png",
-    "photo": "/image2.png"
+    "avatar": "./image3.png",
+    "photo": "./image2.png"
   },
   {
     "id": 28,
@@ -444,8 +444,8 @@
     "dog": "Maltese",
     "bird": "Eurasian Jackdaw",
     "bear": "Spectacled bear",
-    "avatar": "/image1.png",
-    "photo": "/image1.png"
+    "avatar": "./image1.png",
+    "photo": "./image1.png"
   },
   {
     "id": 29,
@@ -460,8 +460,8 @@
     "dog": "Miniature Bull Terrier",
     "bird": "American Redstart",
     "bear": "Asian black bear",
-    "avatar": "/image1.png",
-    "photo": "/image4.png"
+    "avatar": "./image1.png",
+    "photo": "./image4.png"
   },
   {
     "id": 30,
@@ -476,8 +476,8 @@
     "dog": "Porcelaine",
     "bird": "Buff-bellied Hummingbird",
     "bear": "Brown bear",
-    "avatar": "/image5.png",
-    "photo": "/image5.png"
+    "avatar": "./image5.png",
+    "photo": "./image5.png"
   },
   {
     "id": 31,
@@ -492,8 +492,8 @@
     "dog": "Afghan Hound",
     "bird": "Bank Swallow",
     "bear": "Sun bear",
-    "avatar": "/image4.png",
-    "photo": "/image3.png"
+    "avatar": "./image4.png",
+    "photo": "./image3.png"
   },
   {
     "id": 32,
@@ -508,8 +508,8 @@
     "dog": "Irish Red and White Setter",
     "bird": "Pink-footed Shearwater",
     "bear": "Asian black bear",
-    "avatar": "/image4.png",
-    "photo": "/image1.png"
+    "avatar": "./image4.png",
+    "photo": "./image1.png"
   },
   {
     "id": 33,
@@ -524,8 +524,8 @@
     "dog": "Pungsan Dog",
     "bird": "Ruffed Grouse",
     "bear": "Brown bear",
-    "avatar": "/image2.png",
-    "photo": "/image2.png"
+    "avatar": "./image2.png",
+    "photo": "./image2.png"
   },
   {
     "id": 34,
@@ -540,8 +540,8 @@
     "dog": "Picardy Spaniel",
     "bird": "Purple Gallinule",
     "bear": "Sloth bear",
-    "avatar": "/image3.png",
-    "photo": "/image2.png"
+    "avatar": "./image3.png",
+    "photo": "./image2.png"
   },
   {
     "id": 35,
@@ -556,8 +556,8 @@
     "dog": "Pomeranian",
     "bird": "Fork-tailed Flycatcher",
     "bear": "Asian black bear",
-    "avatar": "/image3.png",
-    "photo": "/image4.png"
+    "avatar": "./image3.png",
+    "photo": "./image4.png"
   },
   {
     "id": 36,
@@ -572,8 +572,8 @@
     "dog": "Banjara Hound",
     "bird": "Lucifer Hummingbird",
     "bear": "Brown bear",
-    "avatar": "/image3.png",
-    "photo": "/image3.png"
+    "avatar": "./image3.png",
+    "photo": "./image3.png"
   },
   {
     "id": 37,
@@ -588,8 +588,8 @@
     "dog": "Portuguese Pointer",
     "bird": "Whimbrel",
     "bear": "American black bear",
-    "avatar": "/image5.png",
-    "photo": "/image2.png"
+    "avatar": "./image5.png",
+    "photo": "./image2.png"
   },
   {
     "id": 38,
@@ -604,8 +604,8 @@
     "dog": "Shikoku",
     "bird": "Hook-billed Kite",
     "bear": "Sun bear",
-    "avatar": "/image4.png",
-    "photo": "/image5.png"
+    "avatar": "./image4.png",
+    "photo": "./image5.png"
   },
   {
     "id": 39,
@@ -620,8 +620,8 @@
     "dog": "Saluki",
     "bird": "Magnolia Warbler",
     "bear": "Asian black bear",
-    "avatar": "/image1.png",
-    "photo": "/image1.png"
+    "avatar": "./image1.png",
+    "photo": "./image1.png"
   },
   {
     "id": 40,
@@ -636,8 +636,8 @@
     "dog": "Large Münsterländer",
     "bird": "Nelson's Sharp-tailed Sparrow",
     "bear": "American black bear",
-    "avatar": "/image1.png",
-    "photo": "/image2.png"
+    "avatar": "./image1.png",
+    "photo": "./image2.png"
   },
   {
     "id": 41,
@@ -652,8 +652,8 @@
     "dog": "Karst Shepherd",
     "bird": "Gray-headed Chickadee",
     "bear": "Sun bear",
-    "avatar": "/image3.png",
-    "photo": "/image4.png"
+    "avatar": "./image3.png",
+    "photo": "./image4.png"
   },
   {
     "id": 42,
@@ -668,8 +668,8 @@
     "dog": "Bakharwal dog",
     "bird": "Greenish Elaenia",
     "bear": "Brown bear",
-    "avatar": "/image5.png",
-    "photo": "/image2.png"
+    "avatar": "./image5.png",
+    "photo": "./image2.png"
   },
   {
     "id": 43,
@@ -684,8 +684,8 @@
     "dog": "Kuchi",
     "bird": "Purple Gallinule",
     "bear": "American black bear",
-    "avatar": "/image1.png",
-    "photo": "/image3.png"
+    "avatar": "./image1.png",
+    "photo": "./image3.png"
   },
   {
     "id": 44,
@@ -700,8 +700,8 @@
     "dog": "Perro Majorero",
     "bird": "Lincoln's Sparrow",
     "bear": "Giant panda",
-    "avatar": "/image4.png",
-    "photo": "/image1.png"
+    "avatar": "./image4.png",
+    "photo": "./image1.png"
   },
   {
     "id": 45,
@@ -716,8 +716,8 @@
     "dog": "Black Russian Terrier",
     "bird": "Gila Woodpecker",
     "bear": "Asian black bear",
-    "avatar": "/image3.png",
-    "photo": "/image3.png"
+    "avatar": "./image3.png",
+    "photo": "./image3.png"
   },
   {
     "id": 46,
@@ -732,8 +732,8 @@
     "dog": "Chinook",
     "bird": "Phainopepla",
     "bear": "Spectacled bear",
-    "avatar": "/image1.png",
-    "photo": "/image2.png"
+    "avatar": "./image1.png",
+    "photo": "./image2.png"
   },
   {
     "id": 47,
@@ -748,8 +748,8 @@
     "dog": "Indian Spitz",
     "bird": "California Gnatcatcher",
     "bear": "Sloth bear",
-    "avatar": "/image5.png",
-    "photo": "/image5.png"
+    "avatar": "./image5.png",
+    "photo": "./image5.png"
   },
   {
     "id": 48,
@@ -764,8 +764,8 @@
     "dog": "Pyrenean Mountain Dog",
     "bird": "Bahama Mockingbird",
     "bear": "Spectacled bear",
-    "avatar": "/image3.png",
-    "photo": "/image4.png"
+    "avatar": "./image3.png",
+    "photo": "./image4.png"
   },
   {
     "id": 49,
@@ -780,8 +780,8 @@
     "dog": "Barbet",
     "bird": "Parasitic Jaeger",
     "bear": "Brown bear",
-    "avatar": "/image1.png",
-    "photo": "/image3.png"
+    "avatar": "./image1.png",
+    "photo": "./image3.png"
   },
   {
     "id": 50,
@@ -796,7 +796,7 @@
     "dog": "Swedish Elkhound",
     "bird": "Canyon Wren",
     "bear": "Giant panda",
-    "avatar": "/image4.png",
-    "photo": "/image1.png"
+    "avatar": "./image4.png",
+    "photo": "./image1.png"
   }
 ]
