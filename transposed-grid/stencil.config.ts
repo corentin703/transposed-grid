@@ -5,14 +5,15 @@ import { reactOutputTarget } from '@stencil/react-output-target';
 export const config: Config = {
   namespace: 'transposed-grid',
   outputTargets: [
-    reactOutputTarget({
-      componentCorePackage: 'transposed-grid',
-      proxiesFile: '../transposed-grid-react/src/components/stencil-generated/index.ts',
-      includeDefineCustomElements: true,
-    }),
+    // reactOutputTarget({
+    //   componentCorePackage: 'transposed-grid',
+    //   proxiesFile: '../transposed-grid-react/src/components/stencil-generated/index.ts',
+    //   includeDefineCustomElements: true,
+    // }),
     {
       type: 'dist',
       esmLoaderPath: '../loader',
+      buildDir: 'dist',
     },
     {
       type: 'dist-custom-elements',
@@ -22,6 +23,7 @@ export const config: Config = {
     },
     {
       type: 'www',
+      buildDir: 'www',
       serviceWorker: null, // disable service workers
     },
   ],

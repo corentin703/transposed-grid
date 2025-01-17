@@ -84,7 +84,18 @@ export interface TransposedGridCustomEvent<T> extends CustomEvent<T> {
     target: HTMLTransposedGridElement;
 }
 declare global {
+    interface HTMLDefaultCellEditTemplateElementEventMap {
+        "valueChange": any;
+    }
     interface HTMLDefaultCellEditTemplateElement extends Components.DefaultCellEditTemplate, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDefaultCellEditTemplateElementEventMap>(type: K, listener: (this: HTMLDefaultCellEditTemplateElement, ev: DefaultCellEditTemplateCustomEvent<HTMLDefaultCellEditTemplateElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDefaultCellEditTemplateElementEventMap>(type: K, listener: (this: HTMLDefaultCellEditTemplateElement, ev: DefaultCellEditTemplateCustomEvent<HTMLDefaultCellEditTemplateElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLDefaultCellEditTemplateElement: {
         prototype: HTMLDefaultCellEditTemplateElement;
@@ -102,13 +113,42 @@ declare global {
         prototype: HTMLGridToolbarElement;
         new (): HTMLGridToolbarElement;
     };
+    interface HTMLItemCellElementEventMap {
+        "valueChange": any;
+    }
     interface HTMLItemCellElement extends Components.ItemCell, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLItemCellElementEventMap>(type: K, listener: (this: HTMLItemCellElement, ev: ItemCellCustomEvent<HTMLItemCellElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLItemCellElementEventMap>(type: K, listener: (this: HTMLItemCellElement, ev: ItemCellCustomEvent<HTMLItemCellElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLItemCellElement: {
         prototype: HTMLItemCellElement;
         new (): HTMLItemCellElement;
     };
+    interface HTMLTransposedGridElementEventMap {
+        "itemClick": ClickEvent;
+        "itemDoubleClick": ClickEvent;
+        "itemHoovering": ClickEvent;
+        "editionValidation": EditionResultEvent;
+        "save": EditionResultEvent;
+        "cancel": EditionResultEvent;
+        "itemSelectionChange": SelectionEvent;
+        "groupCollapsed": GroupCollapsedEvent;
+    }
     interface HTMLTransposedGridElement extends Components.TransposedGrid, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLTransposedGridElementEventMap>(type: K, listener: (this: HTMLTransposedGridElement, ev: TransposedGridCustomEvent<HTMLTransposedGridElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLTransposedGridElementEventMap>(type: K, listener: (this: HTMLTransposedGridElement, ev: TransposedGridCustomEvent<HTMLTransposedGridElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLTransposedGridElement: {
         prototype: HTMLTransposedGridElement;
