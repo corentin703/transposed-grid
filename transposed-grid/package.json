@@ -32,7 +32,9 @@
     "@material/data-table": "^14.0.0",
     "@material/icon-button": "^14.0.0",
     "@material/textfield": "^14.0.0",
-    "@stencil/core": "^4.24.0"
+    "@stencil/core": "^4.24.0",
+    "overlayscrollbars": "^2.10.1",
+    "stencil-virtual-scroll": "^0.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

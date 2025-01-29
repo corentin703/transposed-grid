@@ -12,7 +12,7 @@ export enum EditEventType {
   Deleting = 'deleting',
 }
 
-export type RowEditingOptions = {
+export type RecordLevelOptions = {
   // allowAdding?: boolean;
   // allowDeleting?: boolean;
   allowUpdating?: boolean;
@@ -24,7 +24,7 @@ export enum StartEditAction {
 }
 
 export type EditingOptions =
-  & RowEditingOptions
+  & RecordLevelOptions
   & {
       confirmDelete?: boolean;
       startEditAction?: StartEditAction;
