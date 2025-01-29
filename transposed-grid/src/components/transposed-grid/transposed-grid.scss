@@ -8,7 +8,7 @@
 @use "@material/theme";
 @use "@material/theme/custom-properties";
 
-@use "overlayscrollbars/styles/overlayscrollbars.css";
+// @use "overlayscrollbars/styles/overlayscrollbars";
 
 @include checkbox.core-styles;
 @include data-table.core-styles;
@@ -60,8 +60,20 @@ th {
 }
 
 .table__container {
-  overflow-x: scroll;
-  overflow-y: visible;
+  overflow-x: overlay;
+  overflow-y: scroll;
+}
+
+.table_groups_container {
+  float: left;
+  overflow-x: hidden;
+  overflow-y: overlay;
+
+  th {
+    position: fixed;
+    left: 0;
+    top: auto;
+  }
 }
 
 .cell {

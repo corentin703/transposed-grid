@@ -32,14 +32,14 @@ import { ItemToolbarCell } from '../items/ItemToolbarCell';
 import { GroupPlaceholder } from '../GroupPlaceholder';
 import { CustomTemplate } from '../../models/customTemplate';
 
-import { 
-  OverlayScrollbars, 
-  ScrollbarsHidingPlugin, 
-  SizeObserverPlugin, 
-  ClickScrollPlugin 
-} from 'overlayscrollbars';
+// import { 
+//   OverlayScrollbars, 
+//   ScrollbarsHidingPlugin, 
+//   SizeObserverPlugin, 
+//   ClickScrollPlugin 
+// } from 'overlayscrollbars';
 
-OverlayScrollbars.plugin(ClickScrollPlugin);
+// OverlayScrollbars.plugin(ClickScrollPlugin);
 
 type EditingState = {
   itemIdx: number;
@@ -489,23 +489,23 @@ export class TransposedGrid {
       return;
     }
 
-    const scrollbar = OverlayScrollbars({ 
-      target: this._groupTableContainer,
-      elements: {
-        viewport: this._groupTableContainer,
-      },
-      // target: this._groupTableRef,
-      scrollbars: {
-        slot: this._tableContainerRef,
-      },
+    // const scrollbar = OverlayScrollbars({ 
+    //   target: this._groupTableContainer,
+    //   elements: {
+    //     viewport: this._groupTableContainer,
+    //   },
+    //   // target: this._groupTableRef,
+    //   scrollbars: {
+    //     slot: this._tableContainerRef,
+    //   },
 
-    }, {
-      showNativeOverlaidScrollbars: false,
-      // overflow: {
-      //   x: 'scroll',
-      //   y: 'scroll',
-      // },
-    });
+    // }, {
+    //   showNativeOverlaidScrollbars: false,
+    //   // overflow: {
+    //   //   x: 'scroll',
+    //   //   y: 'scroll',
+    //   // },
+    // });
 
     setTimeout(() => this._updateCellWidths());
   }
@@ -583,7 +583,12 @@ export class TransposedGrid {
             />
           </div>
           <div>
-            <div  ref={ref => this._tableContainerRef = ref!} class={`mdc-data-table table__container ${ tableClassNames.join(' ')}`} onMouseLeave={() => this._handleTableMouseLeave()}>
+            <div 
+              ref={ref => this._tableContainerRef = ref!} 
+              class={`mdc-data-table table__container ${ tableClassNames.join(' ')}`} 
+              onMouseLeave={() => this._handleTableMouseLeave()}
+              onScroll={() => this._groupTableRef.scrollLeft = this._tableContainerRef.scrollLeft}
+            >
               <table>
                 <tbody class={'mdc-data-table--sticky-header'}>
                   {
@@ -603,8 +608,8 @@ export class TransposedGrid {
                   }
                 </tbody>
               </table>
-              <div ref={ref => this._groupTableContainer = ref!} data-overlayscrollbars-initialize style={{ maxHeight: this.groupSectionHeight }}>
-                <table ref={ref => this._groupTableRef = ref!}>
+              <div class={'table_groups_container'} ref={ref => this._groupTableContainer = ref!} style={{ maxHeight: this.groupSectionHeight }}>
+                <table ref={ref => this._groupTableRef = ref!} style={{ maxHeight: this.groupSectionHeight }}>
                   <tbody>
                     {
                       this._groupedRows?.map(groupedRow => {
