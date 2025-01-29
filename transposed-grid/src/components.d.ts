@@ -60,6 +60,7 @@ export namespace Components {
         "allowSorting"?: boolean;
         "editing"?: EditingOptions;
         "focusedRowPrimaryKeyValue"?: string;
+        "groupSectionHeight"?: string;
         "groups"?: Group[];
         "items": Data[];
         "primaryKey"?: string;
@@ -204,6 +205,7 @@ declare namespace LocalJSX {
         "allowSorting"?: boolean;
         "editing"?: EditingOptions;
         "focusedRowPrimaryKeyValue"?: string;
+        "groupSectionHeight"?: string;
         "groups"?: Group[];
         "items"?: Data[];
         "onCancel"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;

@@ -8,7 +8,7 @@ import {
   EditingOptions,
   EditionResult,
   EditionResultEvent,
-  RowEditingOptions,
+  RecordLevelOptions,
   StartEditAction,
 } from '../../models/edition';
 import {
@@ -32,6 +32,15 @@ import { ItemToolbarCell } from '../items/ItemToolbarCell';
 import { GroupPlaceholder } from '../GroupPlaceholder';
 import { CustomTemplate } from '../../models/customTemplate';
 
+import { 
+  OverlayScrollbars, 
+  ScrollbarsHidingPlugin, 
+  SizeObserverPlugin, 
+  ClickScrollPlugin 
+} from 'overlayscrollbars';
+
+OverlayScrollbars.plugin(ClickScrollPlugin);
+
 type EditingState = {
   itemIdx: number;
   row: Row;
@@ -50,7 +59,7 @@ type ItemMetadata = {
   selected?: boolean;
 }
 
-const mergeEditOptions = (editingOptions: EditingOptions, rowEditingOptions?: RowEditingOptions, item?: any) => {
+const mergeEditOptions = (editingOptions: EditingOptions, rowEditingOptions?: RecordLevelOptions, item?: any) => {
   if (!rowEditingOptions) {
     return editingOptions
   }
@@ -87,6 +96,8 @@ export class TransposedGrid {
   @Prop() public primaryKey?: string;
   @Prop() public editing?: EditingOptions;
   @Prop() public selection?: SelectionOptions;
+  
+  @Prop() public groupSectionHeight?: string;
 
   @Prop() public toolbar?: ToolbarOptions;
   @Prop() toolbarTemplate?: (props: CustomTemplate<ToolbarOptions>) => void;
@@ -167,6 +178,9 @@ export class TransposedGrid {
 
   private _rootElementRef!: HTMLDivElement;
   private _isFirstRender: boolean = true;
+  private _groupTableContainer!: HTMLDivElement;
+  private _groupTableRef!: HTMLTableElement;
+  private _tableContainerRef!: HTMLDivElement;
 
   public connectedCallback() {
     this.groupsState = this.groups;
@@ -180,20 +194,6 @@ export class TransposedGrid {
     this.watchSelectionOptions(this.selection);
     this.setDataFields(this.rows);
     this.updateToolbar();
-
-    // const rowSlots: Element[] = [];
-    // for (let childrenIdx = 0; childrenIdx < this.element.children.length; childrenIdx++) {
-    //   const slot = this.element.children.item(childrenIdx);
-    //   const slotName = slot?.getAttribute('slot');
-    //
-    //   if (!slot || !slotName) {
-    //     continue;
-    //   }
-    //
-    //   if (slotName.startsWith('row')) {
-    //     rowSlots.push(slot);
-    //   }
-    // }
   }
 
   @Watch('items')
@@ -407,21 +407,21 @@ export class TransposedGrid {
     if (this.editingOptionsState.allowUpdating) {
       const saveButtonIdx = rightPart.findIndex(btn => btn.caption === this.editingOptionsState.texts?.save);
       if (saveButtonIdx !== -1) {
-        rightPart[saveButtonIdx].onClick = this._saveEdit.bind(this);
+        rightPart[saveButtonIdx].onClick = this.saveEdit.bind(this);
       } else {
         rightPart.push({
           caption: this.editingOptionsState.texts?.save,
-          onClick: this._saveEdit.bind(this),
+          onClick: this.saveEdit.bind(this),
         });
       }
 
       const cancelButtonIdx = rightPart.findIndex(btn => btn.caption === this.editingOptionsState.texts?.cancel);
       if (cancelButtonIdx !== -1) {
-        rightPart[cancelButtonIdx].onClick = this._cancelEdit.bind(this);
+        rightPart[cancelButtonIdx].onClick = this.cancelEdit.bind(this);
       } else {
         rightPart.push({
           caption: this.editingOptionsState.texts?.cancel,
-          onClick: this._cancelEdit.bind(this),
+          onClick: this.cancelEdit.bind(this),
         });
       }
     }
@@ -447,10 +447,65 @@ export class TransposedGrid {
     }
   }
   
+  public saveEdit() {
+    const eventDetails = {
+      ...this._getAlteredData(),
+      data: this.dataState,
+      original: this._dataSnapshot ?? [],
+      cancelEdit: false,
+    };
+
+    const validationEventResult = this.editionValidation.emit(eventDetails);
+    if (validationEventResult.defaultPrevented || validationEventResult.detail.cancelEdit) {
+      this._resetEdit(true);
+      return;
+    }
+
+    this.save.emit(eventDetails);
+    this._resetEdit(false);
+  }
+
+  public cancelEdit() {
+    const eventDetails = {
+      ...this._getAlteredData(),
+      data: this.dataState,
+      original: this._dataSnapshot ?? [],
+      cancelEdit: true,
+    };
+
+    const cancelEditEventResult = this.cancel.emit(eventDetails);
+
+    if (cancelEditEventResult.defaultPrevented || !cancelEditEventResult.detail.cancelEdit) {
+      return;
+    }
+
+    this._resetEdit(true);
+  }
+
   public componentDidRender() {
+
+
     if (!this._isFirstRender) {
       return;
     }
+
+    const scrollbar = OverlayScrollbars({ 
+      target: this._groupTableContainer,
+      elements: {
+        viewport: this._groupTableContainer,
+      },
+      // target: this._groupTableRef,
+      scrollbars: {
+        slot: this._tableContainerRef,
+      },
+
+    }, {
+      showNativeOverlaidScrollbars: false,
+      // overflow: {
+      //   x: 'scroll',
+      //   y: 'scroll',
+      // },
+    });
 
     setTimeout(() => this._updateCellWidths());
   }
@@ -527,101 +582,103 @@ export class TransposedGrid {
               toolbarTemplate={this.toolbarTemplate}
             />
           </div>
-          <div class={`mdc-data-table table__container ${ tableClassNames.join(' ')}`} onMouseLeave={() => this._handleTableMouseLeave()}>
-            <table>
-              <tbody class={'mdc-data-table--sticky-header'}>
-                {
-                  this._nonGroupRow?.filter(_row => _row.visible).map(row => {
-                    return (
-                      <tr>
-                        <ItemHeader
-                          isSticky={true}
-                          row={row}
-                          onClick={() => this._handleHeaderClick(row)}
-                          onContextMenu={event => this._handleHeaderContextMenu(event, row)}
-                        />
-                        {renderDataFieldRow(row)}
-                      </tr>
-                    )
-                  })
-                }
-              </tbody>
-            </table>
-            <div>
+          <div>
+            <div  ref={ref => this._tableContainerRef = ref!} class={`mdc-data-table table__container ${ tableClassNames.join(' ')}`} onMouseLeave={() => this._handleTableMouseLeave()}>
               <table>
-                <tbody>
+                <tbody class={'mdc-data-table--sticky-header'}>
                   {
-                    this._groupedRows?.map(groupedRow => {
-                      return [
-                        <tr class={`group`}>
-                          <GroupHeader
-                            group={groupedRow.group}
-                            onToggle={() => this._toggleGroup(groupedRow.group)}
+                    this._nonGroupRow?.filter(_row => _row.visible).map(row => {
+                      return (
+                        <tr>
+                          <ItemHeader
+                            isSticky={true}
+                            row={row}
+                            onClick={() => this._handleHeaderClick(row)}
+                            onContextMenu={event => this._handleHeaderContextMenu(event, row)}
                           />
-                          {
-                            this.dataState.map(_ => <GroupPlaceholder
-                              group={groupedRow.group}
-                              onToggle={() => this._toggleGroup(groupedRow.group)}
-                              colSpan={this.dataState.length}
-                            />)
-                          }
-                        </tr>,
-                        ...groupedRow.rows.filter(_row => _row.visible).map(row => {
-
-                          return (
-                            <tr>
-                              <ItemHeader
-                                row={row}
-                                group={groupedRow.group}
-                                onClick={() => this._handleHeaderClick(row)}
-                                onContextMenu={event => this._handleHeaderContextMenu(event, row)}
-                              />
-                              {renderDataFieldRow(row, groupedRow.group)}
-                            </tr>
-                          )
-                        }),
-                      ]
+                          {renderDataFieldRow(row)}
+                        </tr>
+                      )
                     })
                   }
                 </tbody>
               </table>
+              <div ref={ref => this._groupTableContainer = ref!} data-overlayscrollbars-initialize style={{ maxHeight: this.groupSectionHeight }}>
+                <table ref={ref => this._groupTableRef = ref!}>
+                  <tbody>
+                    {
+                      this._groupedRows?.map(groupedRow => {
+                        return [
+                          <tr class={`group`}>
+                            <GroupHeader
+                              group={groupedRow.group}
+                              onToggle={() => this._toggleGroup(groupedRow.group)}
+                            />
+                            {
+                              this.dataState.map(_ => <GroupPlaceholder
+                                group={groupedRow.group}
+                                onToggle={() => this._toggleGroup(groupedRow.group)}
+                                colSpan={this.dataState.length}
+                              />)
+                            }
+                          </tr>,
+                          ...groupedRow.rows.filter(_row => _row.visible).map(row => {
+
+                            return (
+                              <tr>
+                                <ItemHeader
+                                  row={row}
+                                  group={groupedRow.group}
+                                  onClick={() => this._handleHeaderClick(row)}
+                                  onContextMenu={event => this._handleHeaderContextMenu(event, row)}
+                                />
+                                {renderDataFieldRow(row, groupedRow.group)}
+                              </tr>
+                            )
+                          }),
+                        ]
+                      })
+                    }
+                  </tbody>
+                </table>
+              </div>
+              <table>
+                <tbody>
+                  <tr>
+                    <ItemToolbarHeader
+                      selectionMode={this.selectionOptionsState.mode!}
+                      selectionStatus={this.selectionState.status}
+                      onSelectionChange={areSelected => this._selectAll(areSelected)}
+                      onContextMenu={event => this._handleHeaderContextMenu(event)}
+                    />
+                    {
+                      this.dataState.map((item, itemIdx) => {
+                        const metadata = this._getItemMetadata(item);
+                        const isStriped = this.striped && itemIdx % 2 !== 0
+
+                        return (
+                          <ItemToolbarCell
+                            selectionMode={this.selectionOptionsState.mode!}
+                            item={item}
+                            primaryKey={this._primaryKey}
+
+                            isActive={this.activeItemIdxState === itemIdx}
+                            isSelected={metadata.selected ?? false}
+                            isStriped={isStriped}
+
+                            onMouseEnter={() => this._handleItemMouseEnter(item, itemIdx)}
+                            onSelectionChange={isSelected => this._select(itemIdx, isSelected)}
+                            canDelete={this._can(item, EditActionType.Delete)}
+                            onDelete={() => alert('delete !')}
+                            onContextMenu={event => this._handleCellContextMenu(event, item, itemIdx)}
+                          />
+                        );
+                      })
+                    }
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <table>
-              <tbody>
-                <tr>
-                  <ItemToolbarHeader
-                    selectionMode={this.selectionOptionsState.mode!}
-                    selectionStatus={this.selectionState.status}
-                    onSelectionChange={areSelected => this._selectAll(areSelected)}
-                    onContextMenu={event => this._handleHeaderContextMenu(event)}
-                  />
-                  {
-                    this.dataState.map((item, itemIdx) => {
-                      const metadata = this._getItemMetadata(item);
-                      const isStriped = this.striped && itemIdx % 2 !== 0
-
-                      return (
-                        <ItemToolbarCell
-                          selectionMode={this.selectionOptionsState.mode!}
-                          item={item}
-                          primaryKey={this._primaryKey}
-
-                          isActive={this.activeItemIdxState === itemIdx}
-                          isSelected={metadata.selected ?? false}
-                          isStriped={isStriped}
-
-                          onMouseEnter={() => this._handleItemMouseEnter(item, itemIdx)}
-                          onSelectionChange={isSelected => this._select(itemIdx, isSelected)}
-                          canDelete={this._can(item, EditActionType.Delete)}
-                          onDelete={() => alert('delete !')}
-                          onContextMenu={event => this._handleCellContextMenu(event, item, itemIdx)}
-                        />
-                      );
-                    })
-                  }
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
       </Host>
@@ -863,42 +920,6 @@ export class TransposedGrid {
     } else {
       this.dataState = this.items;
     }
-  }
-
-  private _saveEdit() {
-
-    const eventDetails = {
-      ...this._getAlteredData(),
-      data: this.dataState,
-      original: this._dataSnapshot ?? [],
-      cancelEdit: false,
-    };
-
-    const validationEventResult = this.editionValidation.emit(eventDetails);
-    if (validationEventResult.defaultPrevented || validationEventResult.detail.cancelEdit) {
-      this._resetEdit(true);
-      return;
-    }
-
-    this.save.emit(eventDetails);
-    this._resetEdit(false);
-  }
-
-  private _cancelEdit() {
-    const eventDetails = {
-      ...this._getAlteredData(),
-      data: this.dataState,
-      original: this._dataSnapshot ?? [],
-      cancelEdit: true,
-    };
-
-    const cancelEditEventResult = this.cancel.emit(eventDetails);
-
-    if (cancelEditEventResult.defaultPrevented || !cancelEditEventResult.detail.cancelEdit) {
-      return;
-    }
-
-    this._resetEdit(true);
   }
 
   private _handleEnterKeyDown() {

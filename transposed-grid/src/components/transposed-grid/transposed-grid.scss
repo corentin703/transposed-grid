@@ -8,6 +8,8 @@
 @use "@material/theme";
 @use "@material/theme/custom-properties";
 
+@use "overlayscrollbars/styles/overlayscrollbars.css";
+
 @include checkbox.core-styles;
 @include data-table.core-styles;
 @include data-table.theme-baseline;
