@@ -35,10 +35,16 @@
 
 :host {
   display: block;
+  margin: 0;
+  padding: 0;
 }
 
 .cell-hidden {
   display: none;
+}
+
+table {
+  border-spacing: 0;
 }
 
 // Head column & scroll
@@ -91,7 +97,7 @@ th {
 .group {
   color: var(--transposed-table-group-color);
   background-color: var(--transposed-table-group-bg);
-  border: solid var(--transposed-table-group-bg);
+  padding: 0;
 }
 
 .group__header {
@@ -125,6 +131,8 @@ th {
 .cell__header {
   width: 100%;
   z-index: 10;
+  background-color: var(--transposed-table-header-bg);
+  border-right: 1px solid var(--transposed-table-header-border);
 
   .cell__header_label {
     padding: 4px;

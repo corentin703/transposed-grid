@@ -44,6 +44,7 @@
 :root {
     --transposed-table-color: #000;
     --transposed-table-bg: #fff;
+    --transposed-table-header-bg: #e0e0e0;
     --transposed-table-group-color: #fff;
     --transposed-table-group-bg: #018786;
     --transposed-table-selected-color: #000;

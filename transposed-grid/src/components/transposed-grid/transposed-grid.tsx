@@ -150,6 +150,8 @@ export class TransposedGrid {
   };
 
   @State() public toolbarOptionsState: ToolbarOptions = { };
+  
+  @State() public cssState: string = '';
 
   private _primaryKey!: string;
   private _groupedRows?: GroupedRows[];
@@ -158,6 +160,8 @@ export class TransposedGrid {
   private _dataSnapshot?: Data[];
   private _itemsMetadata: Map<string, ItemMetadata> = new Map();
 
+  private _rootElementRef!: HTMLDivElement;
+  private _isFirstRender: boolean = true;
 
   public connectedCallback() {
     this.groupsState = this.groups;
@@ -438,6 +442,46 @@ export class TransposedGrid {
     }
   }
 
+  
+  public componentDidRender() {
+    if (!this._isFirstRender) {
+      return;
+    }
+
+    const headerElements = Array.from(this._rootElementRef.getElementsByClassName('cell__header')) as HTMLDivElement[];
+    const maxHeaderWidth = Math.max(...headerElements.map(el => el.clientWidth));
+
+    let updatedCssState = this.cssState
+
+    updatedCssState = `${updatedCssState}
+      .cell__header {
+        min-width: ${maxHeaderWidth}px;
+      }
+
+      .cell__toolbar_header {
+        min-width: ${maxHeaderWidth + 1}px;
+      }
+    `;
+
+    this.dataState.forEach(record => {
+      const elements = Array.from(this._rootElementRef.getElementsByClassName(`cell_record_${record[this._primaryKey]}`)) as HTMLDivElement[];
+      const maxWidth = Math.max(...elements.map(el => el.clientWidth));
+
+      updatedCssState = `${updatedCssState}
+        .cell_record_${record[this._primaryKey]} {
+          min-width: ${maxWidth}px;
+        }
+
+        .cell__toolbar_${record[this._primaryKey]}{
+          min-width: ${maxWidth}px;
+        }
+      `;
+    });
+
+    this._isFirstRender = false;
+    this.cssState = updatedCssState;
+  }
+
   public render() {
     const tableClassNames = [
       'mdc-data-table__table',
@@ -468,7 +512,7 @@ export class TransposedGrid {
 
         return (
           <ItemCellWrapper
-            data={item}
+            item={item}
             rowIndex={itemIdx}
             row={row}
             group={group}
@@ -499,19 +543,19 @@ export class TransposedGrid {
 
     return (
       <Host>
-        <div class={'transposed-grid'}>
+        <style>
+          {this.cssState}
+        </style>
+        <div ref={ref => this._rootElementRef = ref!} class={'transposed-grid'}>
           <div class={'toolbar__container'}>
             <grid-toolbar
               {...this.toolbarOptionsState}
               toolbarTemplate={this.toolbarTemplate}
             />
           </div>
-          <div class={'mdc-data-table table__container'}>
-            <table
-              class={tableClassNames.join(' ')}
-              onMouseLeave={() => this._handleTableMouseLeave()}
-            >
-              <thead class={'mdc-data-table--sticky-header'}>
+          <div class={`mdc-data-table table__container ${ tableClassNames.join(' ')}`} onMouseLeave={() => this._handleTableMouseLeave()}>
+            <table>
+              <tbody class={'mdc-data-table--sticky-header'}>
                 {
                   this._nonGroupRow?.filter(_row => _row.visible).map(row => {
                     return (
@@ -526,42 +570,48 @@ export class TransposedGrid {
                     )
                   })
                 }
-              </thead>
-              <tbody>
-                {
-                  this._groupedRows?.map(groupedRow => {
-                    return [
-                      <tr class={`group`}>
-                        <GroupHeader
-                          group={groupedRow.group}
-                          onToggle={() => this._toggleGroup(groupedRow.group)}
-                        />
-                        {
-                          this.dataState.map(_ => <GroupPlaceholder
+              </tbody>
+            </table>
+            <div>
+              <table>
+                <tbody>
+                  {
+                    this._groupedRows?.map(groupedRow => {
+                      return [
+                        <tr class={`group`}>
+                          <GroupHeader
                             group={groupedRow.group}
                             onToggle={() => this._toggleGroup(groupedRow.group)}
-                            colSpan={this.dataState.length}
-                          />)
-                        }
-                      </tr>,
-                      ...groupedRow.rows.filter(_row => _row.visible).map(row => {
-
-                        return (
-                          <tr>
-                            <ItemHeader
-                              row={row}
+                          />
+                          {
+                            this.dataState.map(_ => <GroupPlaceholder
                               group={groupedRow.group}
-                              onSort={() => this._sort(row)}
-                            />
-                            {renderDataFieldRow(row, groupedRow.group)}
-                          </tr>
-                        )
-                      }),
-                    ]
-                  })
-                }
-              </tbody>
-              <tfoot>
+                              onToggle={() => this._toggleGroup(groupedRow.group)}
+                              colSpan={this.dataState.length}
+                            />)
+                          }
+                        </tr>,
+                        ...groupedRow.rows.filter(_row => _row.visible).map(row => {
+
+                          return (
+                            <tr>
+                              <ItemHeader
+                                row={row}
+                                group={groupedRow.group}
+                                onSort={() => this._sort(row)}
+                              />
+                              {renderDataFieldRow(row, groupedRow.group)}
+                            </tr>
+                          )
+                        }),
+                      ]
+                    })
+                  }
+                </tbody>
+              </table>
+            </div>
+            <table>
+              <tbody>
                 <tr>
                   <ItemToolbarHeader
                     selectionMode={this.selectionOptionsState.mode!}
@@ -577,6 +627,7 @@ export class TransposedGrid {
                         <ItemToolbarCell
                           selectionMode={this.selectionOptionsState.mode!}
                           item={item}
+                          primaryKey={this._primaryKey}
 
                           isActive={this.activeItemIdxState === itemIdx}
                           isSelected={metadata.selected ?? false}
@@ -591,7 +642,7 @@ export class TransposedGrid {
                     })
                   }
                 </tr>
-              </tfoot>
+              </tbody>
             </table>
           </div>
         </div>

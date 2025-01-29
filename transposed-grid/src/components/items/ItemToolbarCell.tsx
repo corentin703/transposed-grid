@@ -6,6 +6,8 @@ import { MdCheckbox } from '../material/MdCheckbox';
 
 export type ItemToolbarCellProps = {
   item: Data;
+  primaryKey: string;
+
   isActive: boolean;
   isSelected: boolean;
   isStriped: boolean;
@@ -21,6 +23,7 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
   const classNames = [
     'mdc-data-table__cell',
     'cell__toolbar',
+    `cell__toolbar_${props.item[props.primaryKey]}`,
   ];
 
   if (props.isSelected) {
