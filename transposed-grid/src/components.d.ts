@@ -12,7 +12,7 @@ import { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
 import { CustomTemplate } from "./models/customTemplate";
 import { EditingOptions, EditionResultEvent } from "./models/edition";
 import { SelectionEvent, SelectionOptions } from "./models/selection";
-import { ClickEvent } from "./models/click";
+import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
 export { Data } from "./models/data";
 export { Group, GroupCollapsedEvent } from "./models/group";
 export { Row } from "./models/row";
@@ -20,7 +20,7 @@ export { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
 export { CustomTemplate } from "./models/customTemplate";
 export { EditingOptions, EditionResultEvent } from "./models/edition";
 export { SelectionEvent, SelectionOptions } from "./models/selection";
-export { ClickEvent } from "./models/click";
+export { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
 export namespace Components {
     interface DefaultCellEditTemplate {
         "data": Data;
@@ -131,9 +131,12 @@ declare global {
         new (): HTMLItemCellElement;
     };
     interface HTMLTransposedGridElementEventMap {
-        "itemClick": ClickEvent;
-        "itemDoubleClick": ClickEvent;
-        "itemHoovering": ClickEvent;
+        "itemClick": ItemClickEvent;
+        "itemDoubleClick": ItemDoubleClickEvent;
+        "itemHoovering": ItemHooveringEvent;
+        "itemContextMenu": ItemContextMenuEvent;
+        "headerClick": HeaderClickEvent;
+        "headerContextMenu": HeaderContextMenuEvent;
         "editionValidation": EditionResultEvent;
         "save": EditionResultEvent;
         "cancel": EditionResultEvent;
@@ -206,9 +209,12 @@ declare namespace LocalJSX {
         "onCancel"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onEditionValidation"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onGroupCollapsed"?: (event: TransposedGridCustomEvent<GroupCollapsedEvent>) => void;
-        "onItemClick"?: (event: TransposedGridCustomEvent<ClickEvent>) => void;
-        "onItemDoubleClick"?: (event: TransposedGridCustomEvent<ClickEvent>) => void;
-        "onItemHoovering"?: (event: TransposedGridCustomEvent<ClickEvent>) => void;
+        "onHeaderClick"?: (event: TransposedGridCustomEvent<HeaderClickEvent>) => void;
+        "onHeaderContextMenu"?: (event: TransposedGridCustomEvent<HeaderContextMenuEvent>) => void;
+        "onItemClick"?: (event: TransposedGridCustomEvent<ItemClickEvent>) => void;
+        "onItemContextMenu"?: (event: TransposedGridCustomEvent<ItemContextMenuEvent>) => void;
+        "onItemDoubleClick"?: (event: TransposedGridCustomEvent<ItemDoubleClickEvent>) => void;
+        "onItemHoovering"?: (event: TransposedGridCustomEvent<ItemHooveringEvent>) => void;
         "onItemSelectionChange"?: (event: TransposedGridCustomEvent<SelectionEvent>) => void;
         "onSave"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "primaryKey"?: string;
