@@ -1,19 +1,24 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var cors = require('cors');
+import express, { json, urlencoded } from 'express';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import cors from 'cors';
 
-var fakeDataRouter = require('./routes/fakeData');
+import fakeDataRouter from './routes/fakeData.js';
 
-var app = express();
+const PORT = process.env.PORT ?? 30000;
+
+const app = express();
 
 app.use(cors())
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(json());
+app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/fakeData', fakeDataRouter);
 
-module.exports = app;
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}`)
+})
+
+export default app;
