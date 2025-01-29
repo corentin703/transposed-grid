@@ -210,9 +210,24 @@ export class TransposedGrid {
     this._dataSnapshot = [...this.dataState];
   }
 
+  private _collapseGroupsAfterRenderTimeout?: NodeJS.Timeout;
   @Watch('groups')
   public watchGroups(groups?: Group[]) {
-    this.groupsState = groups;
+    if (this._collapseGroupsAfterRenderTimeout) {
+      clearTimeout(this._collapseGroupsAfterRenderTimeout);
+    }
+
+    this.groupsState = groups?.map(group => {
+      return {
+        ...group,
+        collapsed: false,
+      }
+    });
+
+    this._collapseGroupsAfterRenderTimeout = setTimeout(() => {
+      this._collapseGroupsAfterRenderTimeout = undefined;
+      this.groupsState = [...groups ?? []];
+    })
   }
 
   @Watch('editing')
@@ -516,7 +531,7 @@ export class TransposedGrid {
                 {
                   this._groupedRows?.map(groupedRow => {
                     return [
-                      <tr>
+                      <tr class={`group`}>
                         <GroupHeader
                           group={groupedRow.group}
                           onToggle={() => this._toggleGroup(groupedRow.group)}
@@ -636,6 +651,7 @@ export class TransposedGrid {
       this._dataSnapshot = sortByDataField(this._dataSnapshot, item => item[rowToSort.dataField], orderedBy);
     }
   }
+
   private _toggleGroup(group: Group) {
     if (!this.groupsState) {
       return;

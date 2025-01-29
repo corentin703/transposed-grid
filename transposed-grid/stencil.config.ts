@@ -23,7 +23,6 @@ export const config: Config = {
     },
     {
       type: 'www',
-      buildDir: 'www',
       serviceWorker: null, // disable service workers
     },
   ],
