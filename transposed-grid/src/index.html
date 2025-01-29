@@ -318,6 +318,19 @@
       transposedGrid.addEventListener('itemSelectionChange', (e) => {
         console.log('itemSelectionChange', e)
       })
+
+      transposedGrid.addEventListener('itemContextMenu', (e) => {
+        console.log('itemContextMenu', e)
+      })
+
+      transposedGrid.addEventListener('headerClick', (e) => {
+        console.log('headerClick', e)
+      })
+
+      transposedGrid.addEventListener('headerContextMenu', (e) => {
+        console.log('headerContextMenu', e)
+      })
+
       //
       // transposedGrid.addEventListener('groupCollapsed', (e) => {
       //   console.log('groupCollapsed', e)

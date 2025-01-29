@@ -15,6 +15,7 @@ export type ItemToolbarCellProps = {
   canDelete: boolean;
 
   onMouseEnter: () => void;
+  onContextMenu: (event: MouseEvent) => void;
   onSelectionChange: (isSelected: boolean) => void;
   onDelete: () => void;
 }
@@ -39,6 +40,10 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
       class={classNames.join(' ')}
       onClick={() => {
         props.onSelectionChange(!props.isSelected);
+      }}
+      onContextMenu={event => {
+        event.stopPropagation();
+        props.onContextMenu(event);
       }}
       onMouseEnter={() => props.onMouseEnter()}
     >

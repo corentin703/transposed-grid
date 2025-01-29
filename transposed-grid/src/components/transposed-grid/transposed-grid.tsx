@@ -20,7 +20,7 @@ import {
   SelectionStatus,
 } from '../../models/selection';
 import { Row } from '../../models/row';
-import { ClickEvent } from '../../models/click';
+import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from '../../models/click';
 import { SortOrder } from '../../models/sorting';
 import { sortByDataField } from '../../utils/sortByDataField';
 import { ToolbarOptions } from '../../models/toolbar';
@@ -99,9 +99,14 @@ export class TransposedGrid {
   @Prop() public focusedRowPrimaryKeyValue?: string;
 
   // Mouse events
-  @Event() public itemClick!: EventEmitter<ClickEvent>;
-  @Event() public itemDoubleClick!: EventEmitter<ClickEvent>;
-  @Event() public itemHoovering!: EventEmitter<ClickEvent>;
+  @Event() public itemClick!: EventEmitter<ItemClickEvent>;
+  @Event() public itemDoubleClick!: EventEmitter<ItemDoubleClickEvent>;
+  @Event() public itemHoovering!: EventEmitter<ItemHooveringEvent>;
+
+  @Event() public itemContextMenu!: EventEmitter<ItemContextMenuEvent>;
+  
+  @Event() public headerClick!: EventEmitter<HeaderClickEvent>;
+  @Event() public headerContextMenu!: EventEmitter<HeaderContextMenuEvent>;
 
   // Edition events
   @Event() public editionValidation!: EventEmitter<EditionResultEvent>;
@@ -441,45 +446,13 @@ export class TransposedGrid {
         break;
     }
   }
-
   
   public componentDidRender() {
     if (!this._isFirstRender) {
       return;
     }
 
-    const headerElements = Array.from(this._rootElementRef.getElementsByClassName('cell__header')) as HTMLDivElement[];
-    const maxHeaderWidth = Math.max(...headerElements.map(el => el.clientWidth));
-
-    let updatedCssState = this.cssState
-
-    updatedCssState = `${updatedCssState}
-      .cell__header {
-        min-width: ${maxHeaderWidth}px;
-      }
-
-      .cell__toolbar_header {
-        min-width: ${maxHeaderWidth + 1}px;
-      }
-    `;
-
-    this.dataState.forEach(record => {
-      const elements = Array.from(this._rootElementRef.getElementsByClassName(`cell_record_${record[this._primaryKey]}`)) as HTMLDivElement[];
-      const maxWidth = Math.max(...elements.map(el => el.clientWidth));
-
-      updatedCssState = `${updatedCssState}
-        .cell_record_${record[this._primaryKey]} {
-          min-width: ${maxWidth}px;
-        }
-
-        .cell__toolbar_${record[this._primaryKey]}{
-          min-width: ${maxWidth}px;
-        }
-      `;
-    });
-
-    this._isFirstRender = false;
-    this.cssState = updatedCssState;
+    setTimeout(() => this._updateCellWidths());
   }
 
   public render() {
@@ -532,6 +505,7 @@ export class TransposedGrid {
             onClick={() => this._handleCellClick(item, itemIdx, row)}
             onDoubleClick={() => this._handleCellDblClick(item, itemIdx, row)}
             onMouseEnter={() => this._handleItemMouseEnter(item, itemIdx)}
+            onContextMenu={event => this._handleCellContextMenu(event, item, itemIdx)}
 
             onTabKeyDown={() => this._handleTabKeyDown()}
             onEnterKeyDown={() => this._handleEnterKeyDown()}
@@ -563,7 +537,8 @@ export class TransposedGrid {
                         <ItemHeader
                           isSticky={true}
                           row={row}
-                          onSort={() => this._sort(row)}
+                          onClick={() => this._handleHeaderClick(row)}
+                          onContextMenu={event => this._handleHeaderContextMenu(event, row)}
                         />
                         {renderDataFieldRow(row)}
                       </tr>
@@ -598,7 +573,8 @@ export class TransposedGrid {
                               <ItemHeader
                                 row={row}
                                 group={groupedRow.group}
-                                onSort={() => this._sort(row)}
+                                onClick={() => this._handleHeaderClick(row)}
+                                onContextMenu={event => this._handleHeaderContextMenu(event, row)}
                               />
                               {renderDataFieldRow(row, groupedRow.group)}
                             </tr>
@@ -617,6 +593,7 @@ export class TransposedGrid {
                     selectionMode={this.selectionOptionsState.mode!}
                     selectionStatus={this.selectionState.status}
                     onSelectionChange={areSelected => this._selectAll(areSelected)}
+                    onContextMenu={event => this._handleHeaderContextMenu(event)}
                   />
                   {
                     this.dataState.map((item, itemIdx) => {
@@ -637,6 +614,7 @@ export class TransposedGrid {
                           onSelectionChange={isSelected => this._select(itemIdx, isSelected)}
                           canDelete={this._can(item, EditActionType.Delete)}
                           onDelete={() => alert('delete !')}
+                          onContextMenu={event => this._handleCellContextMenu(event, item, itemIdx)}
                         />
                       );
                     })
@@ -727,6 +705,42 @@ export class TransposedGrid {
     };
 
     this.groupsState = updatedGroups;
+  }
+
+  // Rendering
+  private _updateCellWidths() {
+    const headerElements = Array.from(this._rootElementRef.getElementsByClassName('cell__header')) as HTMLDivElement[];
+    const maxHeaderWidth = Math.max(...headerElements.map(el => el.clientWidth));
+
+    let updatedCssState = this.cssState
+
+    updatedCssState = `${updatedCssState}
+      .cell__header {
+        min-width: ${maxHeaderWidth}px;
+      }
+
+      .cell__toolbar_header {
+        min-width: ${maxHeaderWidth + 1}px;
+      }
+    `;
+
+    this.dataState.forEach(record => {
+      const elements = Array.from(this._rootElementRef.getElementsByClassName(`cell_record_${record[this._primaryKey]}`)) as HTMLDivElement[];
+      const maxWidth = Math.max(...elements.map(el => el.clientWidth));
+
+      updatedCssState = `${updatedCssState}
+        .cell_record_${record[this._primaryKey]} {
+          min-width: ${maxWidth}px;
+        }
+
+        .cell__toolbar_${record[this._primaryKey]}{
+          min-width: ${maxWidth}px;
+        }
+      `;
+    });
+
+    this._isFirstRender = false;
+    this.cssState = updatedCssState;
   }
 
   // Edit
@@ -1002,14 +1016,15 @@ export class TransposedGrid {
     this.selectionState = selectionState;
   }
 
-  private _handleItemClick(item: Data, itemIdx: number, options?: { preventSelection: boolean }) {
+  private _handleItemClick(item: Data, itemIdx: number, options?: { preventSelection: boolean, row?: Row, }) {
     const primaryKeyValue = item[this._primaryKey];
 
     const itemClickEventResult = this.itemClick.emit({
       item: item,
       itemIdx: itemIdx,
       primaryKey: this.primaryKey,
-      primaryKeyValue: primaryKeyValue
+      primaryKeyValue: primaryKeyValue,
+      row: options?.row,
     });
 
     if (itemClickEventResult.defaultPrevented) {
@@ -1022,14 +1037,15 @@ export class TransposedGrid {
     }
   }
 
-  private _handleItemDblClick(item: Data, itemIdx: number, options?: { preventSelection: boolean }) {
+  private _handleItemDblClick(item: Data, itemIdx: number, options?: { preventSelection: boolean, row?: Row }) {
     const primaryKeyValue = item[this._primaryKey]
 
     this.itemDoubleClick.emit({
       item: item,
       itemIdx: itemIdx,
       primaryKey: this.primaryKey,
-      primaryKeyValue: primaryKeyValue
+      primaryKeyValue: primaryKeyValue,
+      row: options?.row,
     });
 
     if (this.selectionOptionsState.selectAction === SelectAction.DoubleClick && !options?.preventSelection) {
@@ -1072,6 +1088,7 @@ export class TransposedGrid {
 
     this._handleItemClick(item, itemIdx, {
       preventSelection: editionToggled,
+      row: row,
     });
   }
 
@@ -1084,6 +1101,47 @@ export class TransposedGrid {
 
     this._handleItemDblClick(item, itemIdx, {
       preventSelection: editionToggled,
+      row: row,
     });
+  }
+
+  private _handleCellContextMenu(event: MouseEvent, item: Data, itemIdx: number, row?: Row) {
+    const primaryKeyValue = item[this._primaryKey];
+
+    const eventResult = this.itemContextMenu.emit({
+      item: item,
+      itemIdx: itemIdx,
+      primaryKey: this.primaryKey,
+      primaryKeyValue: primaryKeyValue,
+      row: row,
+    });
+
+    if (eventResult.defaultPrevented) {
+      event.preventDefault();
+      return;
+    }
+  }
+
+  private _handleHeaderClick(row: Row) {
+    const eventResult = this.headerClick.emit({
+      row: row,
+    });
+
+    if (eventResult.defaultPrevented) {
+      return;
+    }
+
+    this._sort(row);
+  }
+
+  private _handleHeaderContextMenu(event: MouseEvent, row?: Row) {
+    const eventResult = this.headerContextMenu.emit({
+      row: row,
+    });
+
+    if (eventResult.defaultPrevented) {
+      event.preventDefault();
+      return;
+    }
   }
 }

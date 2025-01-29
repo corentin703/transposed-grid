@@ -6,6 +6,7 @@ export type ItemToolbarHeaderProps = {
   selectionMode: SelectionMode;
   selectionStatus: SelectionStatus;
   onSelectionChange: (areSelected: boolean) => void;
+  onContextMenu: (event: MouseEvent) => void;
 }
 
 export const ItemToolbarHeader: FunctionalComponent<ItemToolbarHeaderProps> = (props) => {
@@ -18,6 +19,10 @@ export const ItemToolbarHeader: FunctionalComponent<ItemToolbarHeaderProps> = (p
         } else {
           props.onSelectionChange(true)
         }
+      }}
+      onContextMenu={event => {
+        event.stopPropagation();
+        props.onContextMenu(event);
       }}
     >
       {

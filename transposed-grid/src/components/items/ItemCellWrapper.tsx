@@ -22,6 +22,7 @@ export type ItemCellWrapperProps = {
 
   onClick: () => void;
   onDoubleClick: () => void;
+  onContextMenu: (event: MouseEvent) => void;
   onEnterKeyDown: () => void;
   onEscapeKeyDown: () => void;
   onTabKeyDown: () => void;
@@ -95,6 +96,10 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
     <td
       class={classNames.join(' ')}
       onKeyDown={handleKeyDown}
+      onContextMenu={event => {
+        event.stopPropagation();
+        props.onContextMenu(event);
+      }}
       onClick={event => {
         event.preventDefault();
         event.stopPropagation();

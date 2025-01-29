@@ -10,7 +10,8 @@ export type ItemHeaderProps = {
 
   row: Row;
   group?: Group;
-  onSort: () => void;
+  onClick: () => void;
+  onContextMenu: (event: MouseEvent) => void;
 }
 
 export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
@@ -50,10 +51,14 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
       onClick={event => {
         event.preventDefault();
         event.stopPropagation();
-        props.onSort();
+        props.onClick();
       }}
       onDblClick={event => {
         event.preventDefault();
+      }}
+      onContextMenu={event => {
+        event.stopPropagation();
+        props.onContextMenu(event);
       }}
     >
       <div class={'cell__header_content'}>
