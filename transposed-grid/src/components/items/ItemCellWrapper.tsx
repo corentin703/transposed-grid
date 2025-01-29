@@ -4,7 +4,7 @@ import { Group } from '../../models/group';
 import { Row } from '../../models/row';
 
 export type ItemCellWrapperProps = {
-  data: Data;
+  item: Data;
   primaryKey: string;
   value: any;
   originalValue?: any;
@@ -42,6 +42,7 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
   const classNames = [
     'mdc-data-table__cell',
     'cell',
+    `cell_record_${props.item[props.primaryKey]}`,
     props.group ? `cell-grouped` : 'cell-no_grouped',
   ];
 
@@ -109,7 +110,7 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
       <item-cell
         isEditing={props.isEditing}
         primaryKey={props.primaryKey}
-        data={props.data}
+        data={props.item}
         group={props.group}
         row={props.row}
         originalValue={props.originalValue}

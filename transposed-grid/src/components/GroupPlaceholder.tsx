@@ -17,6 +17,7 @@ export const GroupPlaceholder: FunctionalComponent<GroupPlaceholderProps> = (pro
       }}
       // colSpan={props.colSpan}
     >
+      &#8203;
       {/*&#8203; /!* Empty character for scrolling cells *!/*/}
     </td>
   );
