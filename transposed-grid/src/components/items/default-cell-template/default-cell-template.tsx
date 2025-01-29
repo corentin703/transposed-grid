@@ -9,7 +9,7 @@ function renderObject(object: any) {
     return object.toUTCString();
   }
 
-  return object.toString();
+  return object?.toString() ?? '';
 }
 
 @Component({

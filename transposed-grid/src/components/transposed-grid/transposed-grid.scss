@@ -91,6 +91,7 @@ th {
 .group {
   color: var(--transposed-table-group-color);
   background-color: var(--transposed-table-group-bg);
+  border: solid var(--transposed-table-group-bg);
 }
 
 .group__header {

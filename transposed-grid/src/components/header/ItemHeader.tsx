@@ -43,7 +43,7 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
   }
 
   const caption = props.row.caption ?? props.row.dataField;
-  const minWidth = caption.length * 0.6 + 2;
+  const minWidth = caption.length * 0.5;
 
   return (
     <th
@@ -57,7 +57,7 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
         event.preventDefault();
       }}
       style={{
-        minWidth: `${minWidth}em`
+        minWidth: `${minWidth}rem`
       }}
     >
       <div class={'cell__header_content'}>
