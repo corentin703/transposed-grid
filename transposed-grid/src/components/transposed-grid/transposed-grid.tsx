@@ -184,6 +184,8 @@ export class TransposedGrid {
   // private _groupTableContainer!: HTMLDivElement;
   private _groupTableContainers: Record<string, HTMLDivElement> = {};
   private _toolbarTableContainer!: HTMLDivElement;
+  private _isMouseScrollLocked: boolean = false;
+  private _groupTableSectionRef!: HTMLElement;
 
   public connectedCallback() {
     this.groupsState = this.groups;
@@ -560,7 +562,6 @@ export class TransposedGrid {
           {this.cssState}
         </style>
 
-
         <div ref={ref => this._rootElementRef = ref!} class={'transposed-grid'}>
           <div class={'toolbar__container'}>
             <grid-toolbar
@@ -568,7 +569,18 @@ export class TransposedGrid {
               toolbarTemplate={this.toolbarTemplate}
             />
           </div>
-          <div class={'table2_container'}>
+          <div 
+            class={'table2_container'}
+            onMouseOver={() => {
+              this._isMouseScrollLocked = true;
+            }}
+            onWheel={event => {
+              this._groupTableSectionRef.scrollBy(0, event.deltaY)
+            }}
+            onMouseLeave={() => {
+              this._isMouseScrollLocked = true;
+            }}
+          >
             <section class={'table2_section_container table2_nongroup_container'}>
               <table class={'table2-header'}>
                 <tbody class={'mdc-data-table--sticky-header'}>
@@ -604,7 +616,11 @@ export class TransposedGrid {
                 </table>
               </div>
             </section>
-            <section class={'table2_vscroll'} style={{ maxHeight: this.groupSectionHeight, }}>
+            <section 
+              class={'table2_vscroll'} 
+              ref={ref => this._groupTableSectionRef = ref!}
+              style={{ maxHeight: this.groupSectionHeight, }}
+            >
               {
                 this._groupedRows?.map(groupedRow => {
 
