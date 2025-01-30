@@ -11,7 +11,7 @@ export type GroupHeaderType = {
 export const GroupHeader: FunctionalComponent<GroupHeaderType> = (props) => {
   return (
     <th
-      class={`mdc-data-table__header-cell group__header`}
+      class={`mdc-data-table__header-cell group__header group__header_${props.group.name}`}
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();

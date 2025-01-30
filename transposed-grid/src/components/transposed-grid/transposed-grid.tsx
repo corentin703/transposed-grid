@@ -507,7 +507,8 @@ export class TransposedGrid {
     //   // },
     // });
 
-    setTimeout(() => this._updateCellWidths());
+    setTimeout(() => this._updateCellDimensions());
+    this._isFirstRender = false;
   }
 
   public render() {
@@ -587,14 +588,14 @@ export class TransposedGrid {
               ref={ref => this._tableContainerRef = ref!} 
               class={`mdc-data-table table__container ${ tableClassNames.join(' ')}`} 
               onMouseLeave={() => this._handleTableMouseLeave()}
-              onScroll={() => this._groupTableRef.scrollLeft = this._tableContainerRef.scrollLeft}
+              // onScroll={() => this._groupTableRef.scrollLeft = this._tableContainerRef.scrollLeft}
             >
               <table>
                 <tbody class={'mdc-data-table--sticky-header'}>
                   {
                     this._nonGroupRow?.filter(_row => _row.visible).map(row => {
                       return (
-                        <tr>
+                        <tr class={`cell_${row.dataField}`}>
                           <ItemHeader
                             isSticky={true}
                             row={row}
@@ -608,36 +609,28 @@ export class TransposedGrid {
                   }
                 </tbody>
               </table>
-              <div class={'table_groups_container'} ref={ref => this._groupTableContainer = ref!} style={{ maxHeight: this.groupSectionHeight }}>
-                <table ref={ref => this._groupTableRef = ref!} style={{ maxHeight: this.groupSectionHeight }}>
+              <div class={'table_groups_container'} style={{ maxHeight: this.groupSectionHeight }}>
+                <table>
                   <tbody>
                     {
                       this._groupedRows?.map(groupedRow => {
                         return [
-                          <tr class={`group`}>
+                          <tr class={`group group_${groupedRow.group.name}`}>
                             <GroupHeader
                               group={groupedRow.group}
                               onToggle={() => this._toggleGroup(groupedRow.group)}
                             />
-                            {
-                              this.dataState.map(_ => <GroupPlaceholder
-                                group={groupedRow.group}
-                                onToggle={() => this._toggleGroup(groupedRow.group)}
-                                colSpan={this.dataState.length}
-                              />)
-                            }
                           </tr>,
                           ...groupedRow.rows.filter(_row => _row.visible).map(row => {
 
                             return (
-                              <tr>
+                              <tr class={`cell_${row.dataField}`}>
                                 <ItemHeader
                                   row={row}
                                   group={groupedRow.group}
                                   onClick={() => this._handleHeaderClick(row)}
                                   onContextMenu={event => this._handleHeaderContextMenu(event, row)}
                                 />
-                                {renderDataFieldRow(row, groupedRow.group)}
                               </tr>
                             )
                           }),
@@ -646,7 +639,38 @@ export class TransposedGrid {
                     }
                   </tbody>
                 </table>
+                <div class={'table_groups_scroll_container'} ref={ref => this._groupTableContainer = ref!}>
+              
+                  <table ref={ref => this._groupTableRef = ref!}>
+                    <tbody>
+                      {
+                        this._groupedRows?.map(groupedRow => {
+                          return [
+                            <tr class={`group group_${groupedRow.group.name}`}>
+                              {
+                                this.dataState.map(_ => <GroupPlaceholder
+                                  group={groupedRow.group}
+                                  onToggle={() => this._toggleGroup(groupedRow.group)}
+                                  colSpan={this.dataState.length}
+                                />)
+                              }
+                            </tr>,
+                            ...groupedRow.rows.filter(_row => _row.visible).map(row => {
+
+                              return (
+                                <tr class={`cell_${row.dataField}`}>
+                                  {renderDataFieldRow(row, groupedRow.group)}
+                                </tr>
+                              )
+                            }),
+                          ]
+                        })
+                      }
+                    </tbody>
+                  </table>
+                </div>
               </div>
+              
               <table>
                 <tbody>
                   <tr>
@@ -770,19 +794,16 @@ export class TransposedGrid {
   }
 
   // Rendering
-  private _updateCellWidths() {
+  private _updateCellDimensions() {
     const headerElements = Array.from(this._rootElementRef.getElementsByClassName('cell__header')) as HTMLDivElement[];
-    const maxHeaderWidth = Math.max(...headerElements.map(el => el.clientWidth));
+    const maxHeaderWidth = Math.max(...headerElements.map(el => el.clientWidth)) + 50;
 
     let updatedCssState = this.cssState
 
     updatedCssState = `${updatedCssState}
-      .cell__header {
+      .cell__toolbar_header, .cell__header {
         min-width: ${maxHeaderWidth}px;
-      }
-
-      .cell__toolbar_header {
-        min-width: ${maxHeaderWidth + 1}px;
+        width: ${maxHeaderWidth}px;
       }
     `;
 
@@ -791,17 +812,40 @@ export class TransposedGrid {
       const maxWidth = Math.max(...elements.map(el => el.clientWidth));
 
       updatedCssState = `${updatedCssState}
-        .cell_record_${record[this._primaryKey]} {
+        .cell__toolbar_${record[this._primaryKey]}, .cell_record_${record[this._primaryKey]} {
           min-width: ${maxWidth}px;
-        }
-
-        .cell__toolbar_${record[this._primaryKey]}{
-          min-width: ${maxWidth}px;
+          width: ${maxWidth}px;
         }
       `;
     });
 
-    this._isFirstRender = false;
+    this.rowsState?.forEach(row => {
+      const headerElements = Array.from(this._rootElementRef.getElementsByClassName(`cell__header_${row.dataField}`)) as HTMLDivElement[];
+      const cellElements = Array.from(this._rootElementRef.getElementsByClassName(`cell_${row.dataField}`)) as HTMLDivElement[];
+
+      const maxHeight = Math.max(...headerElements.map(el => el.clientHeight), ...cellElements.map(el => el.clientHeight));
+
+      updatedCssState = `${updatedCssState}
+        .cell_header_${row.dataField}, .cell_${row.dataField} {
+          min-height: ${maxHeight}px;
+          height: ${maxHeight}px;
+        }
+      `;
+    });
+
+    this.groupsState?.forEach(group => {
+      const groupHeadersElements = Array.from(this._rootElementRef.getElementsByClassName(`group__header_${group.name}`)) as HTMLDivElement[];
+      const groupElements = Array.from(this._rootElementRef.getElementsByClassName(`group_${group.name}`)) as HTMLDivElement[];
+      const maxHeight = Math.max(...groupHeadersElements.map(el => el.clientHeight), ...groupElements.map(el => el.clientHeight));
+
+      updatedCssState = `${updatedCssState}
+        .group__header_${group.name}, .group_${group.name} {
+          min-height: ${maxHeight}px;
+          height: ${maxHeight}px;
+        }
+      `;
+    });
+
     this.cssState = updatedCssState;
   }
 

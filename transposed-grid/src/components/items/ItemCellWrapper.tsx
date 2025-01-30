@@ -43,6 +43,7 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
   const classNames = [
     'mdc-data-table__cell',
     'cell',
+    `cell_${props.row.dataField}`,
     `cell_record_${props.item[props.primaryKey]}`,
     props.group ? `cell-grouped` : 'cell-no_grouped',
   ];

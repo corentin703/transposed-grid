@@ -64,15 +64,20 @@ th {
   overflow-y: scroll;
 }
 
+
+
 .table_groups_container {
+  display: flex;
   float: left;
   overflow-x: hidden;
   overflow-y: overlay;
+}
 
-  th {
-    position: fixed;
-    left: 0;
-    top: auto;
+.table_groups_scroll_container {
+
+
+  .cell__header {
+    position: static;
   }
 }
 
