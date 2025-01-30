@@ -49,6 +49,30 @@ table {
   border-spacing: 0;
 }
 
+.table2_container {
+  section {
+    display: flex;
+  }
+
+  .table2-header {
+    flex-shrink: 1;
+  }
+}
+
+.table2-data-container {
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.table2_xscroll {
+  overflow-x: overlay;
+}
+
+.table2_vscroll {
+  overflow-y: overlay;
+}
+
+
 // Head column & scroll
 th {
   position: sticky;
