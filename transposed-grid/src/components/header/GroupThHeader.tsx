@@ -8,10 +8,10 @@ export type GroupHeaderType = {
   onToggle: () => void;
 }
 
-export const GroupHeader: FunctionalComponent<GroupHeaderType> = (props) => {
+export const GroupThHeader: FunctionalComponent<GroupHeaderType> = (props) => {
   return (
-    <div
-      class={`mdc-data-table__header-cell group__header group__header_${props.group.name} group__header-sticky`}
+    <th
+      class={`mdc-data-table__header-cell group__header group__header_${props.group.name}`}
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -30,7 +30,7 @@ export const GroupHeader: FunctionalComponent<GroupHeaderType> = (props) => {
           {props.group.caption ?? props.group.name}
         </div>
       </div>
-    </div>
+    </th>
   );
 }
 

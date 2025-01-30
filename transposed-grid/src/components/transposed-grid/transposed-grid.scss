@@ -50,7 +50,7 @@ table {
 }
 
 .table2_container {
-  section {
+  .table2_section_container {
     display: flex;
   }
 
@@ -149,8 +149,6 @@ th {
 
   overflow: initial;
 
-  z-index: 2 !important;
-
   svg {
     filter: invert(100%);
   }
@@ -171,6 +169,12 @@ th {
   }
 }
 
+.group__header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+}
+
 .cell__header {
   width: 100%;
   z-index: 10;
@@ -178,7 +182,7 @@ th {
   border-right: 1px solid var(--transposed-table-header-border);
 
   .cell__header_label {
-    padding: 4px;
+    padding: 1px;
     font-weight: bold;
   }
 
