@@ -178,9 +178,10 @@ export class TransposedGrid {
 
   private _rootElementRef!: HTMLDivElement;
   private _isFirstRender: boolean = true;
+
+  private _nonGroupTableContainer!: HTMLDivElement;
   private _groupTableContainer!: HTMLDivElement;
-  private _groupTableRef!: HTMLTableElement;
-  private _tableContainerRef!: HTMLDivElement;
+  private _toolbarTableContainer!: HTMLDivElement;
 
   public connectedCallback() {
     this.groupsState = this.groups;
@@ -483,29 +484,9 @@ export class TransposedGrid {
   }
 
   public componentDidRender() {
-
-
     if (!this._isFirstRender) {
       return;
     }
-
-    // const scrollbar = OverlayScrollbars({ 
-    //   target: this._groupTableContainer,
-    //   elements: {
-    //     viewport: this._groupTableContainer,
-    //   },
-    //   // target: this._groupTableRef,
-    //   scrollbars: {
-    //     slot: this._tableContainerRef,
-    //   },
-
-    // }, {
-    //   showNativeOverlaidScrollbars: false,
-    //   // overflow: {
-    //   //   x: 'scroll',
-    //   //   y: 'scroll',
-    //   // },
-    // });
 
     setTimeout(() => this._updateCellDimensions());
     this._isFirstRender = false;
@@ -576,6 +557,8 @@ export class TransposedGrid {
         <style>
           {this.cssState}
         </style>
+
+
         <div ref={ref => this._rootElementRef = ref!} class={'transposed-grid'}>
           <div class={'toolbar__container'}>
             <grid-toolbar
@@ -583,14 +566,9 @@ export class TransposedGrid {
               toolbarTemplate={this.toolbarTemplate}
             />
           </div>
-          <div>
-            <div 
-              ref={ref => this._tableContainerRef = ref!} 
-              class={`mdc-data-table table__container ${ tableClassNames.join(' ')}`} 
-              onMouseLeave={() => this._handleTableMouseLeave()}
-              // onScroll={() => this._groupTableRef.scrollLeft = this._tableContainerRef.scrollLeft}
-            >
-              <table>
+          <div class={'table2_container'}>
+            <section class={'table2_nongroup_container'}>
+              <table class={'table2-header'}>
                 <tbody class={'mdc-data-table--sticky-header'}>
                   {
                     this._nonGroupRow?.filter(_row => _row.visible).map(row => {
@@ -602,35 +580,96 @@ export class TransposedGrid {
                             onClick={() => this._handleHeaderClick(row)}
                             onContextMenu={event => this._handleHeaderContextMenu(event, row)}
                           />
-                          {renderDataFieldRow(row)}
                         </tr>
                       )
                     })
                   }
                 </tbody>
               </table>
-              <div class={'table_groups_container'} style={{ maxHeight: this.groupSectionHeight }}>
-                <table>
+              <div class={'table2-data-container'} ref={ref => this._nonGroupTableContainer = ref!}>
+                <table class={'table2-data'}>
+                  <tbody class={'mdc-data-table--sticky-header'}>
+                    {
+                      this._nonGroupRow?.filter(_row => _row.visible).map(row => {
+                        return (
+                          <tr class={`cell_${row.dataField}`}>
+                            {renderDataFieldRow(row)}
+                          </tr>
+                        )
+                      })
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section class={'table2_group_container table2_vscroll'} style={{ maxHeight: this.groupSectionHeight, }}>
+              <table class={'table2-header'}>
+                <tbody>
+                  {
+                    this._groupedRows?.map(groupedRow => {
+
+                      const groupHeader = 
+                        <tr class={`group group_${groupedRow.group.name}`}>
+                          <GroupHeader
+                            group={groupedRow.group}
+                            onToggle={() => this._toggleGroup(groupedRow.group)}
+                          />
+                        </tr>
+                      ;
+
+                      if (groupedRow.group.collapsed) {
+                        return [groupHeader];
+                      }
+
+                      return [
+                        groupHeader,
+                        ...groupedRow.rows.filter(_row => _row.visible).map(row => {
+
+                          return (
+                            <tr class={`cell_${row.dataField}`}>
+                              <ItemHeader
+                                row={row}
+                                group={groupedRow.group}
+                                onClick={() => this._handleHeaderClick(row)}
+                                onContextMenu={event => this._handleHeaderContextMenu(event, row)}
+                              />
+                            </tr>
+                          )
+                        }),
+                      ]
+                    })
+                  }
+                </tbody>
+              </table>
+              <div class={'table2-data-container'} ref={ref => this._groupTableContainer = ref!}>
+                <table class={'table2-data'}>
                   <tbody>
                     {
                       this._groupedRows?.map(groupedRow => {
-                        return [
+
+                        const placeHolder = 
                           <tr class={`group group_${groupedRow.group.name}`}>
-                            <GroupHeader
-                              group={groupedRow.group}
-                              onToggle={() => this._toggleGroup(groupedRow.group)}
-                            />
-                          </tr>,
+                            {
+                              this.dataState.map(_ => <GroupPlaceholder
+                                group={groupedRow.group}
+                                onToggle={() => this._toggleGroup(groupedRow.group)}
+                                colSpan={this.dataState.length}
+                              />)
+                            }
+                          </tr>
+                        ;
+
+                        if (groupedRow.group.collapsed) {
+                          return [placeHolder]
+                        }
+
+                        return [
+                          placeHolder,
                           ...groupedRow.rows.filter(_row => _row.visible).map(row => {
 
                             return (
                               <tr class={`cell_${row.dataField}`}>
-                                <ItemHeader
-                                  row={row}
-                                  group={groupedRow.group}
-                                  onClick={() => this._handleHeaderClick(row)}
-                                  onContextMenu={event => this._handleHeaderContextMenu(event, row)}
-                                />
+                                {renderDataFieldRow(row, groupedRow.group)}
                               </tr>
                             )
                           }),
@@ -639,39 +678,11 @@ export class TransposedGrid {
                     }
                   </tbody>
                 </table>
-                <div class={'table_groups_scroll_container'} ref={ref => this._groupTableContainer = ref!}>
-              
-                  <table ref={ref => this._groupTableRef = ref!}>
-                    <tbody>
-                      {
-                        this._groupedRows?.map(groupedRow => {
-                          return [
-                            <tr class={`group group_${groupedRow.group.name}`}>
-                              {
-                                this.dataState.map(_ => <GroupPlaceholder
-                                  group={groupedRow.group}
-                                  onToggle={() => this._toggleGroup(groupedRow.group)}
-                                  colSpan={this.dataState.length}
-                                />)
-                              }
-                            </tr>,
-                            ...groupedRow.rows.filter(_row => _row.visible).map(row => {
-
-                              return (
-                                <tr class={`cell_${row.dataField}`}>
-                                  {renderDataFieldRow(row, groupedRow.group)}
-                                </tr>
-                              )
-                            }),
-                          ]
-                        })
-                      }
-                    </tbody>
-                  </table>
-                </div>
               </div>
-              
-              <table>
+            </section>
+
+            <section class={'table2_toolbar_container'}>
+              <table class={'table2-header'}>
                 <tbody>
                   <tr>
                     <ItemToolbarHeader
@@ -680,34 +691,49 @@ export class TransposedGrid {
                       onSelectionChange={areSelected => this._selectAll(areSelected)}
                       onContextMenu={event => this._handleHeaderContextMenu(event)}
                     />
-                    {
-                      this.dataState.map((item, itemIdx) => {
-                        const metadata = this._getItemMetadata(item);
-                        const isStriped = this.striped && itemIdx % 2 !== 0
-
-                        return (
-                          <ItemToolbarCell
-                            selectionMode={this.selectionOptionsState.mode!}
-                            item={item}
-                            primaryKey={this._primaryKey}
-
-                            isActive={this.activeItemIdxState === itemIdx}
-                            isSelected={metadata.selected ?? false}
-                            isStriped={isStriped}
-
-                            onMouseEnter={() => this._handleItemMouseEnter(item, itemIdx)}
-                            onSelectionChange={isSelected => this._select(itemIdx, isSelected)}
-                            canDelete={this._can(item, EditActionType.Delete)}
-                            onDelete={() => alert('delete !')}
-                            onContextMenu={event => this._handleCellContextMenu(event, item, itemIdx)}
-                          />
-                        );
-                      })
-                    }
                   </tr>
                 </tbody>
               </table>
-            </div>
+              <div 
+                class={'table2-data-container table2_xscroll'} 
+                ref={ref => this._toolbarTableContainer = ref!}
+                onScroll={() => {
+                  this._nonGroupTableContainer.scrollLeft = this._toolbarTableContainer.scrollLeft;
+                  this._groupTableContainer.scrollLeft = this._toolbarTableContainer.scrollLeft;
+                }}
+              >
+                <table class={'table2-data'}>
+                  <tbody>
+                    <tr>
+                      {
+                        this.dataState.map((item, itemIdx) => {
+                          const metadata = this._getItemMetadata(item);
+                          const isStriped = this.striped && itemIdx % 2 !== 0
+
+                          return (
+                            <ItemToolbarCell
+                              selectionMode={this.selectionOptionsState.mode!}
+                              item={item}
+                              primaryKey={this._primaryKey}
+
+                              isActive={this.activeItemIdxState === itemIdx}
+                              isSelected={metadata.selected ?? false}
+                              isStriped={isStriped}
+
+                              onMouseEnter={() => this._handleItemMouseEnter(item, itemIdx)}
+                              onSelectionChange={isSelected => this._select(itemIdx, isSelected)}
+                              canDelete={this._can(item, EditActionType.Delete)}
+                              onDelete={() => alert('delete !')}
+                              onContextMenu={event => this._handleCellContextMenu(event, item, itemIdx)}
+                            />
+                          );
+                        })
+                      }
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
           </div>
         </div>
       </Host>
@@ -800,6 +826,7 @@ export class TransposedGrid {
 
     let updatedCssState = this.cssState
 
+    console.log(maxHeaderWidth)
     updatedCssState = `${updatedCssState}
       .cell__toolbar_header, .cell__header {
         min-width: ${maxHeaderWidth}px;
