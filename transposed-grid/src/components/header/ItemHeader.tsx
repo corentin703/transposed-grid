@@ -30,6 +30,7 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
   const classNames = [
     'mdc-data-table__header-cell',
     'cell__header',
+    `cell__header_${props.row.dataField}`,
     props.group
       ? 'cell__header-grouped'
       : 'cell__header-no-grouped',
