@@ -684,8 +684,19 @@ export class TransposedGrid {
                 class={'table2-data-container table2_xscroll'} 
                 ref={ref => this._toolbarTableContainer = ref!}
                 onScroll={() => {
-                  this._nonGroupTableContainer.scrollLeft = this._toolbarTableContainer.scrollLeft;
-                  Object.values(this._groupTableContainers).forEach(container => container.scrollLeft = this._toolbarTableContainer.scrollLeft)
+                  if (!this._toolbarTableContainer) {
+                    return;
+                  }
+
+                  if (this._nonGroupTableContainer.scrollLeft) {
+                    this._nonGroupTableContainer.scrollLeft = this._toolbarTableContainer.scrollLeft;
+                  }
+                  
+                  Object.values(this._groupTableContainers).forEach(container => {
+                    if (container) {
+                      container.scrollLeft = this._toolbarTableContainer.scrollLeft;
+                    }
+                  })
                 }}
               >
                 <table class={'table2-data'}>
