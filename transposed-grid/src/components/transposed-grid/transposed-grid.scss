@@ -172,12 +172,12 @@ th {
 .group__header-sticky {
   position: sticky;
   top: 0;
-  z-index: 10000;
+  z-index: 2;
 }
 
 .cell__header {
   width: 100%;
-  z-index: 10;
+  z-index: 1;
   background-color: var(--transposed-table-header-bg);
   border-right: 1px solid var(--transposed-table-header-border);
 
@@ -200,7 +200,7 @@ th {
 
 // Z-index
 .cell__toolbar_header {
-  z-index: 10;
+  z-index: 1;
 }
 
 // Scrollbar
