@@ -44,6 +44,7 @@
       bordered
       group-section-height="40vh"
       primary-key="id"
+      fixed-column-width="200px"
     >
 
     </transposed-grid>
@@ -89,6 +90,13 @@
           dataField: 'name',
           allowSorting: true,
         },
+        {
+          caption: 'Lorem',
+          dataField: 'lorem5',
+          allowSorting: true,
+          maxPixelHeight: 200,
+        },
+
         {
           caption: 'Company',
           dataField: 'company',

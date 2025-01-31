@@ -4,6 +4,9 @@ import { CellTemplate, EditCellTemplate } from './customTemplate';
 import { CustomTemplate } from './customTemplate';
 
 export type Row = {
+  fixedHeight?: string;
+  maxPixelHeight?: number;
+  
   dataField: string;
   caption?: string;
   group?: string;
