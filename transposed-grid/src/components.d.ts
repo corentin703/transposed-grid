@@ -59,10 +59,12 @@ export namespace Components {
         "allowHeaderFiltering"?: boolean;
         "allowSorting"?: boolean;
         "editing"?: EditingOptions;
+        "fixedColumnWidth"?: string;
         "focusedRowPrimaryKeyValue"?: string;
         "groupSectionHeight"?: string;
         "groups"?: Group[];
         "items": Data[];
+        "maxPixelColumnWidth"?: number;
         "primaryKey"?: string;
         "rows"?: Row[];
         "selection"?: SelectionOptions;
@@ -204,10 +206,12 @@ declare namespace LocalJSX {
         "allowHeaderFiltering"?: boolean;
         "allowSorting"?: boolean;
         "editing"?: EditingOptions;
+        "fixedColumnWidth"?: string;
         "focusedRowPrimaryKeyValue"?: string;
         "groupSectionHeight"?: string;
         "groups"?: Group[];
         "items"?: Data[];
+        "maxPixelColumnWidth"?: number;
         "onCancel"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onEditionValidation"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onGroupCollapsed"?: (event: TransposedGridCustomEvent<GroupCollapsedEvent>) => void;

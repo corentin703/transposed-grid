@@ -21,6 +21,7 @@ router.get('/', function(req, res, next) {
 			bear: faker.animal.bear(),
 			avatar: faker.internet.avatar(),
 			photo: faker.internet.avatar(),
+			lorem5: faker.lorem.paragraphs(5),
 			commonAvatar: 'https://corentin-verot.fr/_next/image?url=%2Fimg%2Fskills%2Ftechs%2Freact.png&w=640&q=75',
 			commonPhoto: 'https://corentin-verot.fr/_next/image?url=%2Fimg%2Fskills%2Ftechs%2Freact.png&w=640&q=75',
 			// editing: {

@@ -24,23 +24,12 @@ import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMe
 import { SortOrder } from '../../models/sorting';
 import { sortByDataField } from '../../utils/sortByDataField';
 import { ToolbarOptions } from '../../models/toolbar';
-import { GroupThHeader } from '../header/GroupThHeader';
 import { ItemHeader } from '../header/ItemHeader';
 import { ItemToolbarHeader } from '../header/ItemToolbarHeader';
 import { ItemCellWrapper } from '../items/ItemCellWrapper';
 import { ItemToolbarCell } from '../items/ItemToolbarCell';
-import { GroupPlaceholder } from '../GroupPlaceholder';
 import { CustomTemplate } from '../../models/customTemplate';
 import { GroupHeader } from '../header/GroupHeader';
-
-// import { 
-//   OverlayScrollbars, 
-//   ScrollbarsHidingPlugin, 
-//   SizeObserverPlugin, 
-//   ClickScrollPlugin 
-// } from 'overlayscrollbars';
-
-// OverlayScrollbars.plugin(ClickScrollPlugin);
 
 type EditingState = {
   itemIdx: number;
@@ -107,6 +96,9 @@ export class TransposedGrid {
   @Prop() public allowHeaderFiltering?: boolean;
 
   @Prop() public striped: boolean = true;
+
+  @Prop() public maxPixelColumnWidth?: number;
+  @Prop() public fixedColumnWidth?: string;
 
   @Prop() public focusedRowPrimaryKeyValue?: string;
 
@@ -184,7 +176,6 @@ export class TransposedGrid {
   // private _groupTableContainer!: HTMLDivElement;
   private _groupTableContainers: Record<string, HTMLDivElement> = {};
   private _toolbarTableContainer!: HTMLDivElement;
-  private _isMouseScrollLocked: boolean = false;
   private _groupTableSectionRef!: HTMLElement;
 
   public connectedCallback() {
@@ -248,17 +239,12 @@ export class TransposedGrid {
   public watchEditingOptions(editing?: EditingOptions) {
     const texts = editing?.texts ?? { };
 
-    // texts.addRow = 'Add';
     texts.cancel = 'Cancel';
-    // texts.deleteRow = 'Delete';
     texts.editRow = 'Edit';
     texts.save = 'Save';
-    // texts.undelete = 'Restore';
 
     this.editingOptionsState = {
       ...this.editing,
-      // allowAdding: editing?.allowAdding ?? false,
-      // allowDeleting: editing?.allowDeleting ?? false,
       allowUpdating: editing?.allowUpdating ?? false,
 
       confirmDelete: editing?.confirmDelete ?? true,
@@ -571,14 +557,9 @@ export class TransposedGrid {
           </div>
           <div 
             class={'table2_container'}
-            onMouseOver={() => {
-              this._isMouseScrollLocked = true;
-            }}
+            onMouseLeave={() => this._handleTableMouseLeave()}
             onWheel={event => {
               this._groupTableSectionRef.scrollBy(0, event.deltaY)
-            }}
-            onMouseLeave={() => {
-              this._isMouseScrollLocked = true;
             }}
           >
             <section class={'table2_section_container table2_nongroup_container'}>
@@ -831,36 +812,55 @@ export class TransposedGrid {
 
     let updatedCssState = this.cssState
 
-    console.log(maxHeaderWidth)
     updatedCssState = `${updatedCssState}
-      .cell__toolbar_header, .cell__header {
+      .cell__header, .cell__toolbar_header {
         min-width: ${maxHeaderWidth}px;
         width: ${maxHeaderWidth}px;
       }
     `;
 
     this.dataState.forEach(record => {
-      const elements = Array.from(this._rootElementRef.getElementsByClassName(`cell_record_${record[this._primaryKey]}`)) as HTMLDivElement[];
-      const maxWidth = Math.max(...elements.map(el => el.clientWidth));
+      const getRecordWidth = () => {
+        const elements = Array.from(this._rootElementRef.getElementsByClassName(`cell_record_${record[this._primaryKey]}`)) as HTMLDivElement[];
+        const width = Math.max(...elements.map(el => el.clientWidth));
 
+        if (this.maxPixelColumnWidth && width > this.maxPixelColumnWidth) {
+          return this.maxPixelColumnWidth;
+        }
+
+        return width;
+      };
+
+      const width = this.fixedColumnWidth ?? `${getRecordWidth()}px`;
       updatedCssState = `${updatedCssState}
         .cell__toolbar_${record[this._primaryKey]}, .cell_record_${record[this._primaryKey]} {
-          min-width: ${maxWidth}px;
-          width: ${maxWidth}px;
+          min-width: ${width};
+          width: ${width};
+          max-width: ${width};
         }
       `;
     });
 
     this.rowsState?.forEach(row => {
-      const headerElements = Array.from(this._rootElementRef.getElementsByClassName(`cell__header_${row.dataField}`)) as HTMLDivElement[];
-      const cellElements = Array.from(this._rootElementRef.getElementsByClassName(`cell_${row.dataField}`)) as HTMLDivElement[];
+      const getRowHeight = () => {
+        const headerElements = Array.from(this._rootElementRef.getElementsByClassName(`cell__header_${row.dataField}`)) as HTMLDivElement[];
+        const cellElements = Array.from(this._rootElementRef.getElementsByClassName(`cell_${row.dataField}`)) as HTMLDivElement[];
+  
+        const height = Math.max(...headerElements.map(el => el.clientHeight), ...cellElements.map(el => el.clientHeight));
 
-      const maxHeight = Math.max(...headerElements.map(el => el.clientHeight), ...cellElements.map(el => el.clientHeight));
+        if (row.maxPixelHeight && height > row.maxPixelHeight) {
+          return row.maxPixelHeight;
+        }
 
+        return height;
+      };
+
+      const height = row.fixedHeight ?? `${getRowHeight()}px`;
       updatedCssState = `${updatedCssState}
         .cell_header_${row.dataField}, .cell_${row.dataField} {
-          min-height: ${maxHeight}px;
-          height: ${maxHeight}px;
+          min-height: ${height};
+          height: ${height};
+          max-height: ${height};
         }
       `;
     });
@@ -874,6 +874,7 @@ export class TransposedGrid {
         .group__header_${group.name}, .group_${group.name} {
           min-height: ${maxHeight}px;
           height: ${maxHeight}px;
+          max-height: ${maxHeight}px;
         }
       `;
     });
