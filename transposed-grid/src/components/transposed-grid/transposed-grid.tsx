@@ -88,6 +88,7 @@ export class TransposedGrid {
   @Prop() public selection?: SelectionOptions;
   
   @Prop() public groupSectionHeight?: string;
+  @Prop() public nonGroupSectionHeight?: string;
 
   @Prop() public toolbar?: ToolbarOptions;
   @Prop() toolbarTemplate?: (props: CustomTemplate<ToolbarOptions>) => void;
@@ -177,6 +178,7 @@ export class TransposedGrid {
   private _groupTableContainers: Record<string, HTMLDivElement> = {};
   private _toolbarTableContainer!: HTMLDivElement;
   private _groupTableSectionRef!: HTMLElement;
+  private _nonGroupTableSectionRef!: HTMLElement;
 
   public connectedCallback() {
     this.groupsState = this.groups;
@@ -559,12 +561,26 @@ export class TransposedGrid {
             class={'table2_container'}
             onMouseLeave={() => this._handleTableMouseLeave()}
             onWheel={event => {
-              this._groupTableSectionRef.scrollBy(0, event.deltaY)
+              if (this.nonGroupSectionHeight && this.groupSectionHeight) {
+                return;
+              }
+
+              if (this.nonGroupSectionHeight) {
+                this._nonGroupTableSectionRef.scrollBy(0, event.deltaY)
+              }
+
+              if (this.groupSectionHeight) {
+                this._groupTableSectionRef.scrollBy(0, event.deltaY)
+              }
             }}
           >
-            <section class={'table2_section_container table2_nongroup_container'}>
+            <section 
+              class={'table2_vscroll table2_section_container'}
+              ref={ref => this._nonGroupTableSectionRef = ref!}
+              style={{ maxHeight: this.nonGroupSectionHeight, }}
+            >
               <table class={'table2-header'}>
-                <tbody class={'mdc-data-table--sticky-header'}>
+                <tbody>
                   {
                     this._nonGroupRow?.filter(_row => _row.visible).map(row => {
                       return (
@@ -583,7 +599,7 @@ export class TransposedGrid {
               </table>
               <div class={'table2-data-container'} ref={ref => this._nonGroupTableContainer = ref!}>
                 <table class={'table2-data'}>
-                  <tbody class={'mdc-data-table--sticky-header'}>
+                  <tbody>
                     {
                       this._nonGroupRow?.filter(_row => _row.visible).map(row => {
                         return (
@@ -667,7 +683,7 @@ export class TransposedGrid {
               }
             </section>
 
-            <section class={'table2_section_container table2_toolbar_container'}>
+            <section class={'table2_section_container'}>
               <table class={'table2-header'}>
                 <tbody>
                   <tr>
@@ -688,7 +704,7 @@ export class TransposedGrid {
                     return;
                   }
 
-                  if (this._nonGroupTableContainer.scrollLeft) {
+                  if (this._nonGroupTableContainer) {
                     this._nonGroupTableContainer.scrollLeft = this._toolbarTableContainer.scrollLeft;
                   }
                   

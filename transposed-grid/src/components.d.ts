@@ -65,6 +65,7 @@ export namespace Components {
         "groups"?: Group[];
         "items": Data[];
         "maxPixelColumnWidth"?: number;
+        "nonGroupSectionHeight"?: string;
         "primaryKey"?: string;
         "rows"?: Row[];
         "selection"?: SelectionOptions;
@@ -212,6 +213,7 @@ declare namespace LocalJSX {
         "groups"?: Group[];
         "items"?: Data[];
         "maxPixelColumnWidth"?: number;
+        "nonGroupSectionHeight"?: string;
         "onCancel"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onEditionValidation"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onGroupCollapsed"?: (event: TransposedGridCustomEvent<GroupCollapsedEvent>) => void;
