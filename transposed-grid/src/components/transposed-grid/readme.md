@@ -33,6 +33,7 @@
 | Event                 | Description | Type                                                                                                                                             |
 | --------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `cancel`              |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
+| `contentRendered`     |             | `CustomEvent<void>`                                                                                                                              |
 | `editionValidation`   |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
 | `groupCollapsed`      |             | `CustomEvent<{ group: Group; rows: Row[]; collapsed: boolean; }>`                                                                                |
 | `headerClick`         |             | `CustomEvent<{ row?: Row \| undefined; }>`                                                                                                       |
@@ -43,6 +44,39 @@
 | `itemHoovering`       |             | `CustomEvent<{ item: Data; itemIdx: number; primaryKey?: string \| undefined; primaryKeyValue?: string \| undefined; row?: Row \| undefined; }>` |
 | `itemSelectionChange` |             | `CustomEvent<{ selectedItems: Data[]; mode: SelectionMode; areAllSelected: boolean; status: SelectionStatus; }>`                                 |
 | `save`                |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
+
+
+## Methods
+
+### `cancelEdit() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `redraw() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `saveEdit() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
 
 
 ## Dependencies

@@ -58,6 +58,7 @@ export namespace Components {
     interface TransposedGrid {
         "allowHeaderFiltering"?: boolean;
         "allowSorting"?: boolean;
+        "cancelEdit": () => Promise<void>;
         "editing"?: EditingOptions;
         "fixedColumnWidth"?: string;
         "focusedRowPrimaryKeyValue"?: string;
@@ -67,7 +68,9 @@ export namespace Components {
         "maxPixelColumnWidth"?: number;
         "nonGroupSectionHeight"?: string;
         "primaryKey"?: string;
+        "redraw": () => Promise<void>;
         "rows"?: Row[];
+        "saveEdit": () => Promise<void>;
         "selection"?: SelectionOptions;
         "striped": boolean;
         "tableClass"?: string;
@@ -146,6 +149,7 @@ declare global {
         "cancel": EditionResultEvent;
         "itemSelectionChange": SelectionEvent;
         "groupCollapsed": GroupCollapsedEvent;
+        "contentRendered": void;
     }
     interface HTMLTransposedGridElement extends Components.TransposedGrid, HTMLStencilElement {
         addEventListener<K extends keyof HTMLTransposedGridElementEventMap>(type: K, listener: (this: HTMLTransposedGridElement, ev: TransposedGridCustomEvent<HTMLTransposedGridElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -215,6 +219,7 @@ declare namespace LocalJSX {
         "maxPixelColumnWidth"?: number;
         "nonGroupSectionHeight"?: string;
         "onCancel"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
+        "onContentRendered"?: (event: TransposedGridCustomEvent<void>) => void;
         "onEditionValidation"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onGroupCollapsed"?: (event: TransposedGridCustomEvent<GroupCollapsedEvent>) => void;
         "onHeaderClick"?: (event: TransposedGridCustomEvent<HeaderClickEvent>) => void;
