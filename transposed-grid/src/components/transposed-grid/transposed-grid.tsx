@@ -316,7 +316,7 @@ export class TransposedGrid {
 
     const rows: Row[] = [];
 
-    if (!this.items || this.items.length === 1) {
+    if (!this.items || this.items.length === 0) {
       this.rowsState = rows;
       return;
     }
