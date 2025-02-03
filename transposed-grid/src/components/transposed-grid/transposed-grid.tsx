@@ -1,4 +1,4 @@
-import { Component, Element, Event, EventEmitter, h, Host, Listen, Prop, State, Watch } from '@stencil/core';
+import { Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { Data } from '../../models/data';
 import { Group, GroupCollapsedEvent } from '../../models/group';
 import {
@@ -121,6 +121,7 @@ export class TransposedGrid {
   @Event() public itemSelectionChange!: EventEmitter<SelectionEvent>;
 
   @Event() public groupCollapsed!: EventEmitter<GroupCollapsedEvent>;
+  @Event() public contentRendered!: EventEmitter<void>;
 
   @State() public groupsState?: Group[];
   @State() public rowsState?: Row[];
@@ -400,21 +401,21 @@ export class TransposedGrid {
     if (this.editingOptionsState.allowUpdating) {
       const saveButtonIdx = rightPart.findIndex(btn => btn.caption === this.editingOptionsState.texts?.save);
       if (saveButtonIdx !== -1) {
-        rightPart[saveButtonIdx].onClick = this.saveEdit.bind(this);
+        rightPart[saveButtonIdx].onClick = this._saveEdit.bind(this);
       } else {
         rightPart.push({
           caption: this.editingOptionsState.texts?.save,
-          onClick: this.saveEdit.bind(this),
+          onClick: this._saveEdit.bind(this),
         });
       }
 
       const cancelButtonIdx = rightPart.findIndex(btn => btn.caption === this.editingOptionsState.texts?.cancel);
       if (cancelButtonIdx !== -1) {
-        rightPart[cancelButtonIdx].onClick = this.cancelEdit.bind(this);
+        rightPart[cancelButtonIdx].onClick = this._cancelEdit.bind(this);
       } else {
         rightPart.push({
           caption: this.editingOptionsState.texts?.cancel,
-          onClick: this.cancelEdit.bind(this),
+          onClick: this._cancelEdit.bind(this),
         });
       }
     }
@@ -440,48 +441,28 @@ export class TransposedGrid {
     }
   }
   
-  public saveEdit() {
-    const eventDetails = {
-      ...this._getAlteredData(),
-      data: this.dataState,
-      original: this._dataSnapshot ?? [],
-      cancelEdit: false,
-    };
-
-    const validationEventResult = this.editionValidation.emit(eventDetails);
-    if (validationEventResult.defaultPrevented || validationEventResult.detail.cancelEdit) {
-      this._resetEdit(true);
-      return;
-    }
-
-    this.save.emit(eventDetails);
-    this._resetEdit(false);
+  @Method()
+  public async saveEdit() {
+    this._saveEdit();
   }
 
-  public cancelEdit() {
-    const eventDetails = {
-      ...this._getAlteredData(),
-      data: this.dataState,
-      original: this._dataSnapshot ?? [],
-      cancelEdit: true,
-    };
+  @Method()
+  public async redraw() {
+    this._redraw();
+  }
 
-    const cancelEditEventResult = this.cancel.emit(eventDetails);
-
-    if (cancelEditEventResult.defaultPrevented || !cancelEditEventResult.detail.cancelEdit) {
-      return;
-    }
-
-    this._resetEdit(true);
+  @Method()
+  public async cancelEdit() {
+    this._cancelEdit();
   }
 
   public componentDidRender() {
-    if (!this._isFirstRender) {
-      return;
+    if (this._isFirstRender) {
+      setTimeout(() => this._updateCellDimensions());
+      this._isFirstRender = false;
     }
 
-    setTimeout(() => this._updateCellDimensions());
-    this._isFirstRender = false;
+    this.contentRendered.emit();
   }
 
   public render() {
@@ -751,6 +732,45 @@ export class TransposedGrid {
         </div>
       </Host>
     );
+  }
+
+  private _saveEdit() {
+    const eventDetails = {
+      ...this._getAlteredData(),
+      data: this.dataState,
+      original: this._dataSnapshot ?? [],
+      cancelEdit: false,
+    };
+
+    const validationEventResult = this.editionValidation.emit(eventDetails);
+    if (validationEventResult.defaultPrevented || validationEventResult.detail.cancelEdit) {
+      this._resetEdit(true);
+      return;
+    }
+
+    this.save.emit(eventDetails);
+    this._resetEdit(false);
+  }
+
+  private _cancelEdit() {
+    const eventDetails = {
+      ...this._getAlteredData(),
+      data: this.dataState,
+      original: this._dataSnapshot ?? [],
+      cancelEdit: true,
+    };
+
+    const cancelEditEventResult = this.cancel.emit(eventDetails);
+
+    if (cancelEditEventResult.defaultPrevented || !cancelEditEventResult.detail.cancelEdit) {
+      return;
+    }
+
+    this._resetEdit(true);
+  }
+
+  private _redraw() {
+    this._updateCellDimensions();
   }
 
   private _getItemMetadata(item: Data): ItemMetadata {
