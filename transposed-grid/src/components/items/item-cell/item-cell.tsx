@@ -20,7 +20,8 @@ export class ItemCell {
 
   @Event() public valueChange!: EventEmitter<any>;
 
-  private _destructor?: void | (() => void);
+  private _customTemplateDestructor?: void | (() => void);
+  private _customTemplateFocus: (() => void) | undefined;
 
   render() {
     const cellProps: CellTemplate = {
@@ -32,9 +33,9 @@ export class ItemCell {
       value: this.value,
     };
 
-    if (this._destructor && typeof(this._destructor) === 'function') {
-      this._destructor();
-      this._destructor = undefined;
+    if (this._customTemplateDestructor && typeof(this._customTemplateDestructor) === 'function') {
+      this._customTemplateDestructor();
+      this._customTemplateDestructor = undefined;
     }
 
     const renderViewer = () => {
@@ -59,7 +60,7 @@ export class ItemCell {
         }
 
         if (typeof result === 'object') {
-          this._destructor = result.destructor;
+          this._customTemplateDestructor = result.destructor;
           return (
             <div 
               ref={ref => {
@@ -107,7 +108,8 @@ export class ItemCell {
         }
 
         if (typeof result === 'object') {
-          this._destructor = result.destructor;
+          this._customTemplateDestructor = result.destructor;
+          this._customTemplateFocus = result.focus;
           return (
             <div 
               ref={ref => {
@@ -117,6 +119,10 @@ export class ItemCell {
 
                 ref.innerHTML = '';
                 ref.append(result.element);
+
+                if (this._customTemplateFocus && typeof(this._customTemplateFocus) === 'function') {
+                  this._customTemplateFocus();
+                }
               }} 
             />
           );

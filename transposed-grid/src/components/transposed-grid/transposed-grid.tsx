@@ -125,7 +125,9 @@ export class TransposedGrid {
   @Event() public headerContextMenu!: EventEmitter<HeaderContextMenuEvent>;
 
   // Edition events
+  @Event() public editionStarted!: EventEmitter<EditionResultEvent>;
   @Event() public editionValidation!: EventEmitter<EditionResultEvent>;
+  @Event() public editionEnded!: EventEmitter<EditionResultEvent>;
   @Event() public save!: EventEmitter<EditionResultEvent>;
   @Event() public cancel!: EventEmitter<EditionResultEvent>;
 
@@ -233,6 +235,27 @@ export class TransposedGrid {
     this.dataState = [...items];
     this._dataSnapshot = [...this.dataState];
   }
+
+  @Watch('isEditingState')
+  public watchEditing(newValue: boolean, oldValue: boolean) {
+    if (newValue === oldValue) {
+      return;
+    }
+
+    const eventDetails = {
+      ...this._getAlteredData(),
+      data: this.dataState,
+      original: this._dataSnapshot ?? [],
+      cancelEdit: false,
+    };
+
+    const eventToEmit = newValue ? this.editionStarted : this.editionEnded;
+    const eventResult = eventToEmit.emit(eventDetails);
+    if (eventResult.defaultPrevented || eventResult.detail.cancelEdit) {
+      this.isEditingState = oldValue;
+    }
+  }
+
 
   @Watch('groups')
   public watchGroups(groups?: Group[]) {
@@ -959,8 +982,6 @@ export class TransposedGrid {
         const groupHeadersElements = Array.from(this._rootElementRef.getElementsByClassName(`group__header_${group.name}`)) as HTMLDivElement[];
         const height = Math.max(...groupHeadersElements.map(el => el.clientHeight));
 
-        console.log(this._rootElementRef.getElementsByClassName(`group__header_${group.name}`), height)
-
         if (Number.isNaN(height) || !Number.isFinite(height)) {
           return FALLBACK_GROUP_HEIGHT;
         }
@@ -1082,7 +1103,7 @@ export class TransposedGrid {
     this.editingItemState = undefined;
     this.isEditingState = false;
 
-    if (editingCancelled) {
+    if (!editingCancelled) {
       this._dataSnapshot = this.dataState;
       return;
     }
@@ -1133,6 +1154,14 @@ export class TransposedGrid {
         itemIndex++;
         orderedRowIdx = 0;
         continue;
+      }
+      
+      if (nextRow.group) {
+        const group = this.groupsState?.find(group => group.name === nextRow.group);
+        if (group && group.collapsed) {
+          orderedRowIdx++;
+          continue;
+        }
       }
 
       isResolved = this._toggleEdit(item, itemIndex, nextRow);

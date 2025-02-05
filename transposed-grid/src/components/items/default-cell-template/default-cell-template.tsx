@@ -25,7 +25,6 @@ export class DefaultCellTemplate implements CellTemplate {
   @Prop() public value: any;
   @Prop() public originalValue: any;
 
-
   render() {
     const getItem = () => {
       switch (typeof this.value) {

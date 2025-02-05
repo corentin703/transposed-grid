@@ -34,6 +34,8 @@
 | --------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `cancel`              |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
 | `contentRendered`     |             | `CustomEvent<void>`                                                                                                                              |
+| `editionEnded`        |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
+| `editionStarted`      |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
 | `editionValidation`   |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
 | `groupCollapsed`      |             | `CustomEvent<{ group: Group; rows: Row[]; collapsed: boolean; }>`                                                                                |
 | `headerClick`         |             | `CustomEvent<{ row?: Row \| undefined; }>`                                                                                                       |
