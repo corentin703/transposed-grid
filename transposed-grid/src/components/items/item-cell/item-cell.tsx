@@ -1,5 +1,5 @@
-import { Component, Host, h, Prop, Event, EventEmitter, State, Watch } from '@stencil/core';
-import { CellTemplate, EditCellTemplate, EditCellTemplateMethods } from '../../../models/customTemplate';
+import { Component, Host, h, Prop, Event, EventEmitter } from '@stencil/core';
+import { CellTemplate, EditCellTemplateMethods } from '../../../models/customTemplate';
 import { Data } from '../../../models/data';
 import { Group } from '../../../models/group';
 import { Row } from '../../../models/row';
@@ -20,27 +20,7 @@ export class ItemCell {
 
   @Event() public valueChange!: EventEmitter<any>;
 
-  @State() public renderDefaultTemplate: boolean = true;
-  @State() public lastRenderedContainerElement?: HTMLElement;
-
-  public connectedCallback() {
-    this.watchTemplateStatus();
-  }
-
-  @Watch('isEditing')
-  @Watch('row')
-  public watchTemplateStatus() {
-    const renderDefaultTemplate = this.isEditing
-      ? this.row.editionCellTemplate === undefined
-      : this.row.cellTemplate === undefined
-    ;
-
-    if (this.renderDefaultTemplate !== renderDefaultTemplate) {
-      this.renderDefaultTemplate = renderDefaultTemplate;
-    }
-
-    this.lastRenderedContainerElement = undefined;
-  }
+  private _destructor?: void | (() => void);
 
   render() {
     const cellProps: CellTemplate = {
@@ -52,20 +32,95 @@ export class ItemCell {
       value: this.value,
     };
 
-    const editCellProps: EditCellTemplate = {
-      ...cellProps,
-      onValueChange: (event) => {
-        this.valueChange.emit(event.detail);
-      },
+    if (this._destructor && typeof(this._destructor) === 'function') {
+      this._destructor();
+      this._destructor = undefined;
+    }
+
+    const renderViewer = () => {
+      if (this.row.cellTemplate) {
+        const result = this.row.cellTemplate({
+          ...cellProps,
+        });
+
+        if (result instanceof HTMLElement) {
+          return (
+            <div 
+              ref={ref => {
+                if (!ref) {
+                  return;
+                }
+
+                ref.innerHTML = '';
+                ref.append(result);
+              }} 
+            />
+          );
+        }
+
+        if (typeof result === 'object') {
+          this._destructor = result.destructor;
+          return (
+            <div 
+              ref={ref => {
+                if (!ref) {
+                  return;
+                }
+
+                ref.innerHTML = '';
+                ref.append(result.element);
+              }} 
+            />
+          );
+        }
+      }
+
+      return (
+        <default-cell-template
+          {...cellProps}
+        />
+      );
     };
 
-    const getCellContent = () => {
-      if (!this.isEditing) {
-        return (
-          <default-cell-template
-            {...cellProps}
-          />
-        );
+    const renderEditing = () => {
+      if (this.row.editionCellTemplate) {
+        const result = this.row.editionCellTemplate({
+          ...cellProps,
+          onValueChange: (value) => {
+            this.valueChange.emit(value);
+          },
+        });
+
+        if (result instanceof HTMLElement) {
+          return (
+            <div 
+              ref={ref => {
+                if (!ref) {
+                  return;
+                }
+
+                ref.innerHTML = '';
+                ref.append(result);
+              }} 
+            />
+          );
+        }
+
+        if (typeof result === 'object') {
+          this._destructor = result.destructor;
+          return (
+            <div 
+              ref={ref => {
+                if (!ref) {
+                  return;
+                }
+
+                ref.innerHTML = '';
+                ref.append(result.element);
+              }} 
+            />
+          );
+        }
       }
 
       const onEditorRefLoaded = (editor?: EditCellTemplateMethods) => {
@@ -76,59 +131,17 @@ export class ItemCell {
       return (
         <default-cell-edit-template
           ref={onEditorRefLoaded}
-          {...editCellProps}
+          {...cellProps}
           onValueChange={event => {
             this.valueChange.emit(event.detail);
           }}
         />
       );
-    }
-
-    if (this.renderDefaultTemplate) {
-      return (
-        <Host>
-          {getCellContent()}
-        </Host>
-      );
-    }
-
-    const onTemplateContainerRefLoaded = (element: HTMLElement) => {
-      const renderDefaultTemplate = () => {
-        this.renderDefaultTemplate = true;
-      }
-
-      if (this.isEditing && this.row.editionCellTemplate) {
-        this.row.editionCellTemplate({
-          ...editCellProps,
-          element: element,
-          renderDefault: renderDefaultTemplate,
-        });
-        return;
-      }
-
-      if (!this.isEditing && this.row.cellTemplate) {
-        this.row.cellTemplate({
-          ...cellProps,
-          element: element,
-          renderDefault: renderDefaultTemplate,
-        });
-        return;
-      }
-
-      renderDefaultTemplate();
-    }
+    };
 
     return (
       <Host>
-        <div
-          ref={element => {
-            if (!element) {
-              return;
-            }
-
-            onTemplateContainerRefLoaded(element);
-          }}
-        />
+        {this.isEditing ? renderEditing() : renderViewer()}
       </Host>
     );
   }

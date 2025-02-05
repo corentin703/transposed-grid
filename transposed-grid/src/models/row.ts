@@ -1,7 +1,8 @@
 import { EditingOptions } from './edition';
 import { SortOrder } from './sorting';
-import { CellTemplate, EditCellTemplate } from './customTemplate';
+import { CellTemplate, CustomTemplateFactoryReturnType, EditCellTemplate } from './customTemplate';
 import { CustomTemplate } from './customTemplate';
+
 
 export type Row = {
   fixedHeight?: string;
@@ -18,6 +19,6 @@ export type Row = {
   visible?: boolean;
   orderedBy?: SortOrder;
 
-  cellTemplate?: (props: CustomTemplate<CellTemplate>) => void;
-  editionCellTemplate?: (props: CustomTemplate<EditCellTemplate>) => void;
+  cellTemplate?: (props: CustomTemplate<CellTemplate>) => CustomTemplateFactoryReturnType;
+  editionCellTemplate?: (props: CustomTemplate<EditCellTemplate>) => CustomTemplateFactoryReturnType;
 }

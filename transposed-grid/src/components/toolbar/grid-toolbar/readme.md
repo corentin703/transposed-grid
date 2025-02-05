@@ -7,12 +7,12 @@
 
 ## Properties
 
-| Property          | Attribute | Description | Type                                                             | Default     |
-| ----------------- | --------- | ----------- | ---------------------------------------------------------------- | ----------- |
-| `center`          | --        |             | `ToolbarButtonOptions[] \| undefined`                            | `undefined` |
-| `left`            | --        |             | `ToolbarButtonOptions[] \| undefined`                            | `undefined` |
-| `right`           | --        |             | `ToolbarButtonOptions[] \| undefined`                            | `undefined` |
-| `toolbarTemplate` | --        |             | `((props: CustomTemplate<ToolbarOptions>) => void) \| undefined` | `undefined` |
+| Property          | Attribute | Description | Type                                                                        | Default     |
+| ----------------- | --------- | ----------- | --------------------------------------------------------------------------- | ----------- |
+| `center`          | --        |             | `ToolbarButtonOptions[] \| undefined`                                       | `undefined` |
+| `left`            | --        |             | `ToolbarButtonOptions[] \| undefined`                                       | `undefined` |
+| `right`           | --        |             | `ToolbarButtonOptions[] \| undefined`                                       | `undefined` |
+| `toolbarTemplate` | --        |             | `((props: ToolbarOptions) => CustomTemplateFactoryReturnType) \| undefined` | `undefined` |
 
 
 ## Dependencies
