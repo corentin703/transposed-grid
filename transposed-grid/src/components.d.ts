@@ -9,7 +9,7 @@ import { Data } from "./models/data";
 import { Group, GroupCollapsedEvent } from "./models/group";
 import { Row } from "./models/row";
 import { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
-import { CustomTemplate } from "./models/customTemplate";
+import { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/customTemplate";
 import { EditingOptions, EditionResultEvent } from "./models/edition";
 import { SelectionEvent, SelectionOptions } from "./models/selection";
 import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
@@ -17,7 +17,7 @@ export { Data } from "./models/data";
 export { Group, GroupCollapsedEvent } from "./models/group";
 export { Row } from "./models/row";
 export { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
-export { CustomTemplate } from "./models/customTemplate";
+export { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/customTemplate";
 export { EditingOptions, EditionResultEvent } from "./models/edition";
 export { SelectionEvent, SelectionOptions } from "./models/selection";
 export { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
@@ -44,7 +44,7 @@ export namespace Components {
         "center"?: ToolbarButtonOptions[];
         "left"?: ToolbarButtonOptions[];
         "right"?: ToolbarButtonOptions[];
-        "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => void;
+        "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
     }
     interface ItemCell {
         "data": Data;
@@ -75,7 +75,7 @@ export namespace Components {
         "striped": boolean;
         "tableClass"?: string;
         "toolbar"?: ToolbarOptions;
-        "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => void;
+        "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
     }
 }
 export interface DefaultCellEditTemplateCustomEvent<T> extends CustomEvent<T> {
@@ -195,7 +195,7 @@ declare namespace LocalJSX {
         "center"?: ToolbarButtonOptions[];
         "left"?: ToolbarButtonOptions[];
         "right"?: ToolbarButtonOptions[];
-        "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => void;
+        "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
     }
     interface ItemCell {
         "data": Data;
@@ -236,7 +236,7 @@ declare namespace LocalJSX {
         "striped"?: boolean;
         "tableClass"?: string;
         "toolbar"?: ToolbarOptions;
-        "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => void;
+        "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
     }
     interface IntrinsicElements {
         "default-cell-edit-template": DefaultCellEditTemplate;

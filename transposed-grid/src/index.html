@@ -246,14 +246,16 @@
             allowUpdating: false,
           },
           cellTemplate: (props) => {
-            props.element.innerHTML = '';
+            const element = document.createElement('div');
+            element.innerHTML = '';
 
             if (!props.value) {
-              props.element.innerHTML = 'Aucune image';
+              element.innerHTML = 'Aucune image';
               return;
             }
 
-            props.element.innerHTML = `<img src="${props.value}" alt="photo" style="width: 5rem; height: 5rem;" />`;
+            element.innerHTML = `<img src="${props.value}" alt="photo" style="width: 5rem; height: 5rem;" />`;
+            return element;
           }
           // cellTemplate: (props, defaultTemplate) => {
           //   // props.setSettings({
@@ -397,7 +399,7 @@
         {
           name: 'address',
           caption: 'Address',
-          collapsed: false,
+          collapsed: true,
           // onGroupCollapsed: (evt) => {
           //   evt.collapsed = false
           // }
@@ -405,17 +407,17 @@
         {
           name: 'internet',
           caption: 'Internet of Things & bla bla bla bla bla and bla bla bla',
-          collapsed: false,
+          collapsed: true,
         },
         {
           name: 'animal',
           caption: 'Animal',
-          collapsed: false,
+          collapsed: true,
         },
         {
           name: 'test',
           caption: 'Test',
-          collapsed: false,
+          collapsed: true,
         }
       ];
 

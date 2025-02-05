@@ -28,7 +28,7 @@ import { ItemHeader } from '../header/ItemHeader';
 import { ItemToolbarHeader } from '../header/ItemToolbarHeader';
 import { ItemCellWrapper } from '../items/ItemCellWrapper';
 import { ItemToolbarCell } from '../items/ItemToolbarCell';
-import { CustomTemplate } from '../../models/customTemplate';
+import { CustomTemplate, CustomTemplateFactoryReturnType } from '../../models/customTemplate';
 import { GroupHeader } from '../header/GroupHeader';
 
 type EditingState = {
@@ -91,7 +91,7 @@ export class TransposedGrid {
   @Prop() public nonGroupSectionHeight?: string;
 
   @Prop() public toolbar?: ToolbarOptions;
-  @Prop() toolbarTemplate?: (props: CustomTemplate<ToolbarOptions>) => void;
+  @Prop() toolbarTemplate?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
 
   @Prop() public allowSorting?: boolean;
   @Prop() public allowHeaderFiltering?: boolean;
@@ -162,7 +162,7 @@ export class TransposedGrid {
 
   @State() public toolbarOptionsState: ToolbarOptions = { };
   
-  @State() public cssState: string = '';
+  @State() public cssState?: string
 
   private _primaryKey!: string;
   private _groupedRows?: GroupedRows[];
@@ -175,11 +175,12 @@ export class TransposedGrid {
   private _isFirstRender: boolean = true;
 
   private _nonGroupTableContainer!: HTMLDivElement;
-  // private _groupTableContainer!: HTMLDivElement;
   private _groupTableContainers: Record<string, HTMLDivElement> = {};
   private _toolbarTableContainer!: HTMLDivElement;
   private _groupTableSectionRef!: HTMLElement;
   private _nonGroupTableSectionRef!: HTMLElement;
+
+  private _mustRedraw: boolean = true;
 
   public connectedCallback() {
     this.groupsState = this.groups;
@@ -218,24 +219,16 @@ export class TransposedGrid {
     this._dataSnapshot = [...this.dataState];
   }
 
-  private _collapseGroupsAfterRenderTimeout?: NodeJS.Timeout;
   @Watch('groups')
   public watchGroups(groups?: Group[]) {
-    if (this._collapseGroupsAfterRenderTimeout) {
-      clearTimeout(this._collapseGroupsAfterRenderTimeout);
-    }
+    this.groupsState = [...groups ?? []];
+  }
 
-    this.groupsState = groups?.map(group => {
-      return {
-        ...group,
-        collapsed: false,
-      }
-    });
-
-    this._collapseGroupsAfterRenderTimeout = setTimeout(() => {
-      this._collapseGroupsAfterRenderTimeout = undefined;
-      this.groupsState = [...groups ?? []];
-    })
+  @Watch('groupsState')
+  @Watch('rowsState')
+  @Watch('dataState')
+  public watchRedraw() {
+    this._mustRedraw = true;
   }
 
   @Watch('editing')
@@ -457,8 +450,9 @@ export class TransposedGrid {
   }
 
   public componentDidRender() {
-    if (this._isFirstRender) {
-      setTimeout(() => this._updateCellDimensions());
+    if (this._isFirstRender || this._mustRedraw) {
+      setTimeout(() => this._redraw());
+      this._mustRedraw = false;
       this._isFirstRender = false;
     }
 
@@ -855,9 +849,13 @@ export class TransposedGrid {
   // Rendering
   private _updateCellDimensions() {
     const headerElements = Array.from(this._rootElementRef.getElementsByClassName('cell__header')) as HTMLDivElement[];
-    const maxHeaderWidth = Math.max(...headerElements.map(el => el.clientWidth)) + 50;
+    let maxHeaderWidth = Math.max(...headerElements.map(el => el.clientWidth));
 
-    let updatedCssState = this.cssState
+    if (this._isFirstRender) {
+      maxHeaderWidth += 50;
+    }
+
+    let updatedCssState = ''
 
     updatedCssState = `${updatedCssState}
       .cell__header, .cell__toolbar_header {

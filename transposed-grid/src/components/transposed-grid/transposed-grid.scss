@@ -176,7 +176,6 @@ th {
 }
 
 .cell__header {
-  width: 100%;
   z-index: 1;
   background-color: var(--transposed-table-header-bg);
   border-right: 1px solid var(--transposed-table-header-border);
@@ -194,7 +193,6 @@ th {
     align-items: center;
     flex-direction: row;
     justify-content: space-between;
-    width: 100%;
   }
 }
 

@@ -1,7 +1,7 @@
 import { Component, Host, h, Prop, State, Watch } from '@stencil/core';
 import { ToolbarButtonOptions, ToolbarOptions } from '../../../models/toolbar';
 import { GridToolbarButton } from '../GridToolbarButton';
-import { CustomTemplate } from '../../../models/customTemplate';
+import { CustomTemplate, CustomTemplateFactoryReturnType } from '../../../models/customTemplate';
 
 @Component({
   tag: 'grid-toolbar',
@@ -13,9 +13,11 @@ export class GridToolbar implements ToolbarOptions {
   @Prop() public center?: ToolbarButtonOptions[];
   @Prop() public right?: ToolbarButtonOptions[];
 
-  @Prop() public toolbarTemplate?: (props: CustomTemplate<ToolbarOptions>) => void;
+  @Prop() public toolbarTemplate?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
 
   @State() public renderDefaultTemplate: boolean = true;
+
+  private _customTemplateDestructor?: () => void;
 
   public connectedCallback() {
     this.watchToolbarTemplate();
@@ -27,44 +29,52 @@ export class GridToolbar implements ToolbarOptions {
   }
 
   render() {
-    if (!this.renderDefaultTemplate) {
-      const onTemplateContainerElementLoaded = (element: HTMLElement) => {
-        const renderDefaultTemplate = () => {
-          this.renderDefaultTemplate = true;
-        };
+    if (this._customTemplateDestructor) {
+      this._customTemplateDestructor();
+      this._customTemplateDestructor = undefined;
+    }
 
-        if (this.toolbarTemplate === undefined) {
-          renderDefaultTemplate();
-          return;
-        }
-
-        this.toolbarTemplate({
+    const renderToolbar = () => {
+      if (this.toolbarTemplate) {
+        const result = this.toolbarTemplate({
           left: this.left,
           center: this.center,
           right: this.right,
-
-          element: element,
-          renderDefault: renderDefaultTemplate,
         });
-      };
+
+        if (result) {
+          if (result instanceof HTMLElement) {
+            return (
+              <div 
+                ref={ref => {
+                  if (!ref) {
+                    return;
+                  }
+  
+                  ref.innerHTML = '';
+                  ref.append(result);
+                }} 
+              />
+            );
+          }
+  
+          this._customTemplateDestructor = result.destructor;
+          return (
+            <div 
+              ref={ref => {
+                if (!ref) {
+                  return;
+                }
+
+                ref.innerHTML = '';
+                ref.append(result.element);
+              }} 
+            />
+          );
+        }
+      }
 
       return (
-        <Host>
-          <div
-            ref={(element) => {
-              if (!element) {
-                return;
-              }
-
-              onTemplateContainerElementLoaded(element);
-            }}
-          />
-        </Host>
-      );
-    }
-
-    return (
-      <Host>
         <div class={'toolbar'}>
           <div class={'toolbar__part'}>
             {this.left?.map((button, _) =>
@@ -91,6 +101,12 @@ export class GridToolbar implements ToolbarOptions {
             )}
           </div>
         </div>
+      )
+    }
+
+    return (
+      <Host>
+        {renderToolbar()}
       </Host>
     );
   }

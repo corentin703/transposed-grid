@@ -3,13 +3,10 @@ import { Group } from './group';
 import { Row } from './row';
 import { EventEmitter } from '@stencil/core';
 
+export type CustomTemplateFactoryReturnType = (HTMLElement | undefined | { element: HTMLElement, destructor: () => void });
+
 export type CustomTemplate<TContext> =
   & TContext
-  & {
-      element: HTMLElement;
-      renderDefault: () => void;
-    }
-
 export interface CellTemplate {
   data: Data;
   group?: Group;
