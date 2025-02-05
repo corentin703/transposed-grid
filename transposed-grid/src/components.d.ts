@@ -144,7 +144,9 @@ declare global {
         "itemContextMenu": ItemContextMenuEvent;
         "headerClick": HeaderClickEvent;
         "headerContextMenu": HeaderContextMenuEvent;
+        "editionStarted": EditionResultEvent;
         "editionValidation": EditionResultEvent;
+        "editionEnded": EditionResultEvent;
         "save": EditionResultEvent;
         "cancel": EditionResultEvent;
         "itemSelectionChange": SelectionEvent;
@@ -220,6 +222,8 @@ declare namespace LocalJSX {
         "nonGroupSectionHeight"?: string;
         "onCancel"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onContentRendered"?: (event: TransposedGridCustomEvent<void>) => void;
+        "onEditionEnded"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
+        "onEditionStarted"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onEditionValidation"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onGroupCollapsed"?: (event: TransposedGridCustomEvent<GroupCollapsedEvent>) => void;
         "onHeaderClick"?: (event: TransposedGridCustomEvent<HeaderClickEvent>) => void;

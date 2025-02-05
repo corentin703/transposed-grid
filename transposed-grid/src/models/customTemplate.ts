@@ -3,7 +3,7 @@ import { Group } from './group';
 import { Row } from './row';
 import { EventEmitter } from '@stencil/core';
 
-export type CustomTemplateFactoryReturnType = (HTMLElement | undefined | { element: HTMLElement, destructor: () => void });
+export type CustomTemplateFactoryReturnType = (HTMLElement | undefined | { element: HTMLElement, destructor?: () => void, focus?: () => void, });
 
 export type CustomTemplate<TContext> =
   & TContext
