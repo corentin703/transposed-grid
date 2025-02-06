@@ -889,7 +889,7 @@ export class TransposedGrid {
     let updatedCssState = ''
 
     const getHeadersWidth = () => {
-      const headerElements = Array.from(this._rootElementRef.getElementsByClassName('cell__header')) as HTMLDivElement[];
+      const headerElements = Array.from(this._rootElementRef.getElementsByClassName('cell_header')) as HTMLDivElement[];
       let maxHeaderWidth = Math.max(...headerElements.map(el => el.clientWidth));
   
       if (this._lastMaxHeaderWidth && Math.abs(this._lastMaxHeaderWidth - maxHeaderWidth) < UPDATE_CELL_DELTA) {
@@ -901,11 +901,12 @@ export class TransposedGrid {
       }
 
       this._lastMaxHeaderWidth = maxHeaderWidth;
+      return maxHeaderWidth;
     }
 
     const headersWidth = getHeadersWidth();
     updatedCssState = `${updatedCssState}
-      .cell__header, .cell__toolbar_header {
+      .cell_header, .cell_toolbar_header {
         min-width: ${headersWidth}px;
         width: ${headersWidth}px;
         max-width: ${headersWidth}px;
@@ -979,7 +980,7 @@ export class TransposedGrid {
 
     this.groupsState?.forEach(group => {
       const getHeight = () => {
-        const groupHeadersElements = Array.from(this._rootElementRef.getElementsByClassName(`group__header_${group.name}`)) as HTMLDivElement[];
+        const groupHeadersElements = Array.from(this._rootElementRef.getElementsByClassName(`group_header_${group.name}`)) as HTMLDivElement[];
         const height = Math.max(...groupHeadersElements.map(el => el.clientHeight));
 
         if (Number.isNaN(height) || !Number.isFinite(height)) {
@@ -997,7 +998,7 @@ export class TransposedGrid {
 
       const maxHeight = getHeight();
       updatedCssState = `${updatedCssState}
-        .group__header_${group.name}, .group_${group.name} {
+        .group_header_${group.name}, .group_${group.name} {
           min-height: ${maxHeight}px;
           height: ${maxHeight}px;
           max-height: ${maxHeight}px;

@@ -29,15 +29,15 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
 
   const classNames = [
     'mdc-data-table__header-cell',
-    'cell__header',
-    `cell__header_${props.row.dataField}`,
+    'cell_header',
+    `cell_header_${props.row.dataField}`,
     props.group
-      ? 'cell__header-grouped'
-      : 'cell__header-no-grouped',
+      ? 'cell_header-grouped'
+      : 'cell_header-no-grouped',
   ];
 
   if (props.isSticky) {
-    classNames.push('cell__header-sticky');
+    classNames.push('cell_header-sticky');
   }
 
   if (props.group?.collapsed) {
@@ -58,15 +58,14 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
         event.preventDefault();
       }}
       onContextMenu={event => {
-        event.stopPropagation();
         props.onContextMenu(event);
       }}
     >
-      <div class={'cell__header_content'}>
-        <div class={'cell__header_label'}>
+      <div class={'cell_header_content'}>
+        <div class={'cell_header_label'}>
           {caption}
         </div>
-        <div class={'cell__header_toolbar'}>
+        <div class={'cell_header_toolbar'}>
           {getOrderByIndicator()}
         </div>
       </div>

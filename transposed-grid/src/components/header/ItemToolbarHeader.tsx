@@ -12,7 +12,7 @@ export type ItemToolbarHeaderProps = {
 export const ItemToolbarHeader: FunctionalComponent<ItemToolbarHeaderProps> = (props) => {
   return (
     <th
-      class={'cell__header mdc-data-table__header-cell cell__toolbar_header'}
+      class={'cell_header mdc-data-table__header-cell cell_toolbar_header'}
       onClick={() => {
         if (props.selectionStatus === SelectionStatus.All) {
           props.onSelectionChange(false)
@@ -21,7 +21,6 @@ export const ItemToolbarHeader: FunctionalComponent<ItemToolbarHeaderProps> = (p
         }
       }}
       onContextMenu={event => {
-        event.stopPropagation();
         props.onContextMenu(event);
       }}
     >
