@@ -42,7 +42,6 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
         props.onSelectionChange(!props.isSelected);
       }}
       onContextMenu={event => {
-        event.stopPropagation();
         props.onContextMenu(event);
       }}
       onMouseEnter={() => props.onMouseEnter()}

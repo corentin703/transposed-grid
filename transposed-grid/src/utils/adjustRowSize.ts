@@ -4,7 +4,7 @@ const MIN_ROW_WIDTH = 100
 
 
 const CELL_HEADER_CLASS_LIST = [
-  'cell__toolbar_header'
+  'cell_toolbar_header'
 ]
 
 const getStyleDivId = (tableId: string, dataField?: string) => {

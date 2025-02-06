@@ -98,7 +98,6 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
       class={classNames.join(' ')}
       onKeyDown={handleKeyDown}
       onContextMenu={event => {
-        event.stopPropagation();
         props.onContextMenu(event);
       }}
       onClick={event => {
