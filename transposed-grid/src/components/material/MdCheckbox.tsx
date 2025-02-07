@@ -21,9 +21,9 @@ export const MdCheckbox: FunctionalComponent<MdCheckboxProps> = (props) => {
           props.onChange(checkBox.checked)
         }}
       />
-      <div class={'mdc-checkbox__background'}>
+      <div class={'mdc-checkbox__background selection-checkbox-border'}>
         <svg
-          class={'mdc-checkbox__checkmark'}
+          class={'mdc-checkbox__checkmark selection-checkbox-bg'}
          viewBox={'0 0 24 24'}
         >
           <path
