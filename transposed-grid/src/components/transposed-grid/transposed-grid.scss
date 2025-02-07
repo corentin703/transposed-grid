@@ -201,6 +201,14 @@ th {
   z-index: 1;
 }
 
+.selection-checkbox-border {
+  border-color: var(--transposed-table-section-checkbox-color) !important;
+}
+
+.selection-checkbox-bg {
+  background-color: var(--transposed-table-section-checkbox-color) !important;
+}
+
 // Scrollbar
 ::-webkit-scrollbar-track {
   //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
