@@ -6,6 +6,10 @@ export type Group = {
   name: string;
 }
 
+export type GroupState = Group & {
+  isFixed: boolean;
+}
+
 export type GroupCollapsedEvent = {
   group: Group;
   rows: Row[];
