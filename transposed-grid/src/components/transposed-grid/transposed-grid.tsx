@@ -192,9 +192,7 @@ export class TransposedGrid {
   private _fixedGroupTableContainers: Record<string, HTMLDivElement> = {};
   private _groupTableContainers: Record<string, HTMLDivElement> = {};
   private _toolbarTableContainer!: HTMLDivElement;
-  private _fixedGroupTableSectionRef!: HTMLElement;
   private _groupTableSectionRef!: HTMLElement;
-  private _nonGroupTableSectionRef!: HTMLElement;
 
   private _mustRedraw: boolean = true;
   private _lastMaxHeaderWidth?: number;
@@ -583,10 +581,6 @@ export class TransposedGrid {
                 return;
               }
 
-              // if (this.nonGroupSectionHeight && !this.scrollableGroupSectionHeight) {
-              //   this._nonGroupTableSectionRef.scrollBy(0, event.deltaY)
-              // }
-
               if (this.scrollableGroupSectionHeight) {
                 this._groupTableSectionRef.scrollBy(0, event.deltaY)
               }
@@ -594,7 +588,6 @@ export class TransposedGrid {
           >
             <section 
               class={'table2_vscroll table2_section_container'}
-              ref={ref => this._nonGroupTableSectionRef = ref!}
               style={{ maxHeight: this.nonGroupSectionHeight, }}
             >
               <table class={'table2-header'}>
@@ -631,9 +624,7 @@ export class TransposedGrid {
                 </table>
               </div>
             </section>
-            <section 
-              ref={ref => this._fixedGroupTableSectionRef = ref!}
-            >
+            <section>
               {
                 this._groupedRows?.filter(state => state.group.isFixed)?.map(groupedRow => {
 
