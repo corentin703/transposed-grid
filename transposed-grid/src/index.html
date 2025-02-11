@@ -38,7 +38,7 @@
       style="height: 50vh;"
     > -->
 
-    <transposed-grid
+    <!-- <transposed-grid
       id="transposed-grid"
       striped
       bordered
@@ -46,6 +46,16 @@
       group-section-height="30vh"
       primary-key="id"
       fixed-column-width="200px"
+    > -->
+
+    <transposed-grid
+      id="transposed-grid"
+      striped
+      bordered
+      non-group-section-height="30vh"
+      scrollable-group-section-height="30vh"
+      primary-key="id"
+      style="height: 50vh;"
     >
 
     </transposed-grid>
@@ -396,6 +406,50 @@
           dataField: 'email',
           allowSorting: true,
         },
+
+        {
+          group: 'test',
+          caption: 'Country',
+          dataField: 'country_2',
+          allowSorting: true,
+        },
+
+        {
+          group: 'address_fixed',
+          caption: 'Name',
+          dataField: 'name',
+          allowSorting: true,
+        },
+        {
+          group: 'address_fixed',
+          caption: 'Company',
+          dataField: 'company',
+          allowSorting: true,
+        },
+        {
+          group: 'address_fixed',
+          caption: 'Birth Date bla bla bla bla bla',
+          dataField: 'birthdate',
+          allowSorting: true,
+        },
+        {
+          group: 'internet_fixed',
+          caption: 'City',
+          dataField: 'city',
+          allowSorting: true,
+        },
+        {
+          group: 'internet_fixed',
+          caption: 'Country',
+          dataField: 'country',
+          allowSorting: true,
+        },
+        {
+          group: 'internet_fixed',
+          caption: 'Email',
+          dataField: 'email',
+          allowSorting: true,
+        },
       ];
 
       const groups = [
@@ -424,8 +478,25 @@
         }
       ];
 
+      const fixedGroups = [
+        {
+          name: 'address_fixed',
+          caption: 'Address fixed',
+          collapsed: true,
+          // onGroupCollapsed: (evt) => {
+          //   evt.collapsed = false
+          // }
+        },
+        {
+          name: 'internet_fixed',
+          caption: 'Internet fixed of Things & bla bla bla bla bla and bla bla bla',
+          collapsed: true,
+        },
+      ];
+
       const transposedGrid = document.getElementById('transposed-grid')
       transposedGrid.groups = groups;
+      transposedGrid.fixedGroups = fixedGroups;
       transposedGrid.rows = rows;
 
       transposedGrid.editing = editing;
