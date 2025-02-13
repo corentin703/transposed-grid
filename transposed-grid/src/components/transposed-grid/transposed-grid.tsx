@@ -99,8 +99,8 @@ export class TransposedGrid {
   @Prop() public editing?: EditingOptions;
   @Prop() public selection?: SelectionOptions;
   
-  @Prop() public scrollableGroupSectionHeight?: string;
-  @Prop() public nonGroupSectionHeight?: string;
+  @Prop() public height?: string;
+  @Prop() public groupSectionHeightProportion?: number;
 
   @Prop() public toolbar?: ToolbarOptions;
   @Prop() toolbarTemplate?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
@@ -511,6 +511,12 @@ export class TransposedGrid {
       tableClassNames.push(this.tableClass)
     }
 
+    let groupSectionHeight : string | undefined = undefined;
+
+    if (this.groupSectionHeightProportion) {
+      groupSectionHeight = `calc(${this.height} * 0.${this.groupSectionHeightProportion})`;
+    }
+
     const renderDataFieldRow = (row: Row, group?: Group) => {
       return this.dataState.map((item, itemIdx) => {
         const isEditing =
@@ -566,7 +572,7 @@ export class TransposedGrid {
           {this.cssState}
         </style>
 
-        <div ref={ref => this._rootElementRef = ref!} class={'transposed-grid'}>
+        <div ref={ref => this._rootElementRef = ref!} class={'transposed-grid'} style={{ maxHeight: this.height, }}>
           <div class={'toolbar__container'}>
             <grid-toolbar
               {...this.toolbarOptionsState}
@@ -577,18 +583,13 @@ export class TransposedGrid {
             class={'table2_container'}
             onMouseLeave={() => this._handleTableMouseLeave()}
             onWheel={event => {
-              if (this.nonGroupSectionHeight && this.scrollableGroupSectionHeight) {
-                return;
-              }
-
-              if (this.scrollableGroupSectionHeight) {
+              if (groupSectionHeight) {
                 this._groupTableSectionRef.scrollBy(0, event.deltaY)
               }
             }}
           >
             <section 
-              class={'table2_vscroll table2_section_container'}
-              style={{ maxHeight: this.nonGroupSectionHeight, }}
+              class={'table2_section_container'}
             >
               <table class={'table2-header'}>
                 <tbody>
@@ -692,7 +693,7 @@ export class TransposedGrid {
             <section 
               class={'table2_vscroll'} 
               ref={ref => this._groupTableSectionRef = ref!}
-              style={{ maxHeight: this.scrollableGroupSectionHeight, }}
+              style={{ maxHeight: groupSectionHeight, }}
             >
               {
                 this._groupedRows?.filter(state => !state.group.isFixed)?.map(groupedRow => {

@@ -63,15 +63,15 @@ export namespace Components {
         "fixedColumnWidth"?: string;
         "fixedGroups"?: Group[];
         "focusedRowPrimaryKeyValue"?: string;
+        "groupSectionHeightProportion"?: number;
         "groups"?: Group[];
+        "height"?: string;
         "items": Data[];
         "maxPixelColumnWidth"?: number;
-        "nonGroupSectionHeight"?: string;
         "primaryKey"?: string;
         "redraw": () => Promise<void>;
         "rows"?: Row[];
         "saveEdit": () => Promise<void>;
-        "scrollableGroupSectionHeight"?: string;
         "selection"?: SelectionOptions;
         "striped": boolean;
         "tableClass"?: string;
@@ -217,10 +217,11 @@ declare namespace LocalJSX {
         "fixedColumnWidth"?: string;
         "fixedGroups"?: Group[];
         "focusedRowPrimaryKeyValue"?: string;
+        "groupSectionHeightProportion"?: number;
         "groups"?: Group[];
+        "height"?: string;
         "items"?: Data[];
         "maxPixelColumnWidth"?: number;
-        "nonGroupSectionHeight"?: string;
         "onCancel"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onContentRendered"?: (event: TransposedGridCustomEvent<void>) => void;
         "onEditionEnded"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
@@ -237,7 +238,6 @@ declare namespace LocalJSX {
         "onSave"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "primaryKey"?: string;
         "rows"?: Row[];
-        "scrollableGroupSectionHeight"?: string;
         "selection"?: SelectionOptions;
         "striped"?: boolean;
         "tableClass"?: string;
