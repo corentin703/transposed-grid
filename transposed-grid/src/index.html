@@ -48,17 +48,18 @@
       fixed-column-width="200px"
     > -->
 
-    <transposed-grid
-      id="transposed-grid"
-      striped
-      bordered
-      non-group-section-height="30vh"
-      scrollable-group-section-height="30vh"
-      primary-key="id"
-      style="height: 50vh;"
-    >
+    <div style="height: 80vh;">
+      <transposed-grid
+        id="transposed-grid"
+        striped
+        bordered
+        group-section-height-proportion="30"
+        height="80vh"
+        primary-key="id"
+      >
 
-    </transposed-grid>
+      </transposed-grid>
+    </div>
 
     <style>
       .h-\[40vh\] {
@@ -141,99 +142,100 @@
           allowSorting: true,
         },
 
-        {
-          caption: 'Name',
-          dataField: 'name',
-          allowSorting: true,
-        },
-        {
-          caption: 'Company',
-          dataField: 'company',
-          allowSorting: true,
-        },
-        {
-          caption: 'Country',
-          dataField: 'country',
-          allowSorting: true,
-        },
-        {
-          dataField: 'bird_2',
-          caption: 'Bird',
-          allowSorting: true,
-        },
-        {
-          dataField: 'bear_2',
-          caption: 'Bear',
-          allowSorting: true,
-        },
-        {
-          caption: 'Country',
-          dataField: 'country_2',
-          allowSorting: true,
-        },
+        // {
+        //   caption: 'Name',
+        //   dataField: 'name',
+        //   allowSorting: true,
+        // },
+        // {
+        //   caption: 'Company',
+        //   dataField: 'company',
+        //   allowSorting: true,
+        // },
+        // {
+        //   caption: 'Country',
+        //   dataField: 'country',
+        //   allowSorting: true,
+        // },
+        // {
+        //   dataField: 'bird_2',
+        //   caption: 'Bird',
+        //   allowSorting: true,
+        // },
+        // {
+        //   dataField: 'bear_2',
+        //   caption: 'Bear',
+        //   allowSorting: true,
+        // },
+        // {
+        //   caption: 'Country',
+        //   dataField: 'country_2',
+        //   allowSorting: true,
+        // },
 
-        {
-          caption: 'Name',
-          dataField: 'name',
-          allowSorting: true,
-        },
-        {
-          caption: 'Company',
-          dataField: 'company',
-          allowSorting: true,
-        },
-        {
-          caption: 'Country',
-          dataField: 'country',
-          allowSorting: true,
-        },
-        {
-          dataField: 'bird_2',
-          caption: 'Bird',
-          allowSorting: true,
-        },
-        {
-          dataField: 'bear_2',
-          caption: 'Bear',
-          allowSorting: true,
-        },
-        {
-          caption: 'Country',
-          dataField: 'country_2',
-          allowSorting: true,
-        },
+        // {
+        //   caption: 'Name',
+        //   dataField: 'name',
+        //   allowSorting: true,
+        // },
+        // {
+        //   caption: 'Company',
+        //   dataField: 'company',
+        //   allowSorting: true,
+        // },
+        // {
+        //   caption: 'Country',
+        //   dataField: 'country',
+        //   allowSorting: true,
+        // },
+        // {
+        //   dataField: 'bird_2',
+        //   caption: 'Bird',
+        //   allowSorting: true,
+        // },
+        // {
+        //   dataField: 'bear_2',
+        //   caption: 'Bear',
+        //   allowSorting: true,
+        // },
+        // {
+        //   caption: 'Country',
+        //   dataField: 'country_2',
+        //   allowSorting: true,
+        // },
 
-        {
-          caption: 'Name',
-          dataField: 'name',
-          allowSorting: true,
-        },
-        {
-          caption: 'Company',
-          dataField: 'company',
-          allowSorting: true,
-        },
-        {
-          caption: 'Birth Date bla bla bla bla bla',
-          dataField: 'birthdate',
-          allowSorting: true,
-        },
-        {
-          caption: 'City',
-          dataField: 'city',
-          allowSorting: true,
-        },
+        // {
+        //   caption: 'Name',
+        //   dataField: 'name',
+        //   allowSorting: true,
+        // },
+        // {
+        //   caption: 'Company',
+        //   dataField: 'company',
+        //   allowSorting: true,
+        // },
+        // {
+        //   caption: 'Birth Date bla bla bla bla bla',
+        //   dataField: 'birthdate',
+        //   allowSorting: true,
+        // },
+        // {
+        //   caption: 'City',
+        //   dataField: 'city',
+        //   allowSorting: true,
+        // },
 
-        {
-          caption: 'Company',
-          dataField: 'company',
-          allowSorting: true,
-        },
-        {
-          caption: 'Birth Date bla bla bla bla bla',
-          dataField: 'birthdate',
-          allowSorting: true,
-        },
+        // {
+        //   caption: 'Company',
+        //   dataField: 'company',
+        //   allowSorting: true,
+        // },
+        // {
+        //   caption: 'Birth Date bla bla bla bla bla',
+        //   dataField: 'birthdate',
+        //   allowSorting: true,
+        // },
+
         {
           group: 'address',
           caption: 'City',
@@ -287,21 +289,21 @@
           //   )
           // }
         },
-        {
-          group: 'address',
-          caption: 'Photo',
-          dataField: 'commonPhoto',
-          cellTemplate: (props) => {
-            props.element.innerHTML = '';
+        // {
+        //   group: 'address',
+        //   caption: 'Photo',
+        //   dataField: 'commonPhoto',
+        //   cellTemplate: (props) => {
+        //     props.element.innerHTML = '';
 
-            if (!props.value) {
-              props.element.innerHTML = 'Aucune image';
-              return;
-            }
+        //     if (!props.value) {
+        //       props.element.innerHTML = 'Aucune image';
+        //       return;
+        //     }
 
-            props.element.innerHTML = `<img src="${props.value}" alt="photo" style="width: 5rem; height: 5rem;" />`;
-          }
-        },
+        //     props.element.innerHTML = `<img src="${props.value}" alt="photo" style="width: 5rem; height: 5rem;" />`;
+        //   }
+        // },
         {
           group: 'animal',
           dataField: 'dog',
