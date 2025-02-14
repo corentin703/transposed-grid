@@ -872,7 +872,13 @@ export class TransposedGrid {
   }
 
   private _redraw() {
-    this._updateCellDimensions();
+    return new Promise<void>((resolve) => {
+      this.cssState = '';
+      queueMicrotask(() => {
+        this._updateCellDimensions();
+        resolve();
+      });
+    })
   }
 
   private _getItemMetadata(item: Data): ItemMetadata {
