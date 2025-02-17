@@ -9,13 +9,30 @@
     <script type="module" src="/build/transposed-grid.esm.js"></script>
     <script nomodule src="/build/transposed-grid.js"></script>
   </head>
-  <body>
-<!--    <style>-->
-<!--      .tbl {-->
-<!--        overflow-y: scroll;-->
-<!--        /*max-height: 20vh;*/-->
-<!--      }-->
-<!--    </style>-->
+    <style>
+      :root {
+          --transposed-table-color: #000;
+          --transposed-table-bg: #fff;
+          --transposed-table-header-bg: #f5f5f5;
+          --transposed-table-header-border: #e0e0e0;
+          --transposed-table-group-color: #939393;
+          --transposed-table-group-bg: #f4f4f4;
+          --transposed-table-selected-color: #000;
+          --transposed-table-selected-bg: #e0e0e0;
+          --transposed-table-striped-color: #000;
+          --transposed-table-striped-bg: #f5f5f5;
+          --transposed-table-hoover-color: #000;
+          --transposed-table-hoover-bg: #eee;
+          --transposed-table-cell-updated-color: #000;
+          --transposed-table-cell-updated-bg: #a5d6a7;
+          --transposed-table-section-checkbox-color: var(--primary-color, #018786);
+
+          --sp-vgrid-comparing-ref: var(--terciary-color);
+          --sp-vgrid-comparing-diff: #C6EFCE;
+
+          --transposed-table-group-header-padding: 2px;
+      }
+    </style>
 
 <!--    <my-component first="Stencil" last="'Don't call me a framework' JS"></my-component>-->
 <!--    <div style="max-height: 60vh; overflow-y: scroll">-->
