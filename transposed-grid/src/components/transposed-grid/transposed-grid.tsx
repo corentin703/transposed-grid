@@ -254,6 +254,12 @@ export class TransposedGrid {
     }
   }
 
+  @Watch('cssState')
+  public watchCssState(cssState?: string) {
+    if (cssState === '') {
+      setTimeout(() => this._updateCellDimensions());
+    }
+  }
 
   @Watch('groups')
   @Watch('fixedGroups')
@@ -876,13 +882,7 @@ export class TransposedGrid {
   }
 
   private _redraw() {
-    return new Promise<void>((resolve) => {
-      this.cssState = '';
-      queueMicrotask(() => {
-        this._updateCellDimensions();
-        resolve();
-      });
-    })
+    this.cssState = '';
   }
 
   private _getItemMetadata(item: Data): ItemMetadata {
@@ -962,6 +962,7 @@ export class TransposedGrid {
     };
 
     this.groupsState = updatedGroups;
+    this._redraw();
   }
 
   // Rendering
@@ -989,7 +990,6 @@ export class TransposedGrid {
       .cell_header, .cell_toolbar_header {
         min-width: ${headersWidth}px;
         width: ${headersWidth}px;
-        max-width: ${headersWidth}px;
       }
     `;
 
@@ -1019,7 +1019,6 @@ export class TransposedGrid {
         .cell__toolbar_${record[this._primaryKey]}, .cell_record_${record[this._primaryKey]} {
           min-width: ${width};
           width: ${width};
-          max-width: ${width};
         }
       `;
     });
@@ -1053,7 +1052,6 @@ export class TransposedGrid {
         .cell_header_${row.dataField}, .cell_${row.dataField} {
           min-height: ${height};
           height: ${height};
-          max-height: ${height};
         }
       `;
     });
@@ -1081,7 +1079,6 @@ export class TransposedGrid {
         .group_header_${group.name}, .group_${group.name} {
           min-height: ${maxHeight}px;
           height: ${maxHeight}px;
-          max-height: ${maxHeight}px;
         }
       `;
     });
