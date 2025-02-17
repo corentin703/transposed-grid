@@ -31,6 +31,14 @@
 //  --transposed-table-cell-updated-bg: var(--transposed-table-cell-updated-bg, #{theme.$green-200});
 //}
 
+:host {
+  --mdc-typography-font-family: var(--transposed-table-font-family);
+  --mdc-typography-subtitle2-font-family: var(--transposed-table-header-font-family, var(--transposed-table-font-family));
+
+  --mdc-typography-body2-font-size: var(--transposed-table-font-size, 0.875rem);
+  --mdc-typography-subtitle2-font-size: var(--transposed-table-header-font-size, 1.1em);
+}
+
 .mdc-data-table {
   display: block;
 }
@@ -164,7 +172,7 @@ th {
     .group_header_label, .group_header_toolbar {
       padding: var(--transposed-table-group-header-padding, 6px);
       font-weight: bold;
-      font-size: 1.1em;
+      font-size: var(--transposed-table-group-header-font-size, 1.1em);
     }
   }
 }
@@ -183,6 +191,8 @@ th {
   .cell_header_label {
     padding: 1px;
     font-weight: bold;
+    font-family: var(--transposed-table-header-font-family);
+    font-size: var(--transposed-table-header-font-size, 1.1em);
   }
 
   .cell_header_content {

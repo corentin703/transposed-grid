@@ -23,6 +23,16 @@
   --transposed-table-cell-updated-bg: #{theme.$green-200};
 
   --transposed-table-section-checkbox-color: #{theme.$secondary};
+  --transposed-table-font-family: 'Roboto', sans-serif;
+
+  --transposed-table-font-size: 0.875rem;
+
+  --transposed-table-header-font-size: 1.1em;
+  --transposed-table-header-font-family: var(--transposed-table-font-family, "'Roboto', sans-serif");
+
+  --transposed-table-group-header-padding: 6px;
+  --transposed-table-group-header-font-size: var(--transposed-table-header-font-size, 1.1em);
+  --transposed-table-group-header-font-family: var(--transposed-table-font-family, "'Roboto', sans-serif");
 }
 
 //:root {
