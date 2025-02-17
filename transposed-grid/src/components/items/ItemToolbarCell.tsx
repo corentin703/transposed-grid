@@ -23,6 +23,7 @@ export type ItemToolbarCellProps = {
 export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props) => {
   const classNames = [
     'mdc-data-table__cell',
+    'cell-data',
     'cell__toolbar',
     `cell__toolbar_${props.item[props.primaryKey]}`,
   ];
