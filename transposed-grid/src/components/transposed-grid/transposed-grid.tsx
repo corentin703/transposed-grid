@@ -517,6 +517,10 @@ export class TransposedGrid {
       groupSectionHeight = `calc(${this.height} * 0.${this.groupSectionHeightProportion})`;
     }
 
+    if ((this._nonGroupRow?.length ?? 0) === 0 && (this._groupedRows?.filter(state => state.group.isFixed)?.length ?? 0) === 0) {
+      groupSectionHeight = `calc(${this.height} * 0.9)`;
+    } 
+
     const renderDataFieldRow = (row: Row, group?: Group) => {
       return this.dataState.map((item, itemIdx) => {
         const isEditing =
