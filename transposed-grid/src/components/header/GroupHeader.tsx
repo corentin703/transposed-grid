@@ -22,8 +22,8 @@ export const GroupHeader: FunctionalComponent<GroupHeaderType> = (props) => {
         <div class={'group_header_toolbar'}>
           {
             props.group.collapsed
-              ? <MdChevronRight size={'1.5rem'} />
-              : <MdChevronDown size={'1.5rem'} />
+              ? <MdChevronRight size={'1.5rem'} color={'var(--transposed-table-group-color)'} />
+              : <MdChevronDown size={'1.5rem'}  color={'var(--transposed-table-group-color)'} />
           }
         </div>
         <div class={'group_header_label'}>

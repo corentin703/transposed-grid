@@ -162,7 +162,7 @@ th {
     max-width: 100px;
 
     .group_header_label, .group_header_toolbar {
-      padding: 6px;
+      padding: var(--transposed-table-group-header-padding, 6px);
       font-weight: bold;
       font-size: 1.1em;
     }

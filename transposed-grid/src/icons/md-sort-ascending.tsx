@@ -7,6 +7,8 @@ export const MdSortAscending: FunctionalComponent<IconProps> = (props) => {
       style={{
         height: props.size,
         width: props.size,
+        fill: props.color,
+        transform: 'rotate(90deg)',
       }}
     >
       <svg xmlns={'http://www.w3.org/2000/svg'} viewBox={'0 0 24 24'}>
