@@ -4,6 +4,8 @@
 :root {
   --transposed-table-color: #{theme.$on-surface};
   --transposed-table-bg: #{theme.$surface};
+  --transposed-table-border-color: #{theme.$grey-300};
+
   --transposed-table-header-bg: #{theme.$grey-100};
   --transposed-table-header-border: #{theme.$grey-300};
 
