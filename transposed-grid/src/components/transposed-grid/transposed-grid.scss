@@ -119,6 +119,7 @@ th {
 
   color: var(--transposed-table-color);
   background-color: var(--transposed-table-bg);
+  border-color: var(--transposed-table-border-color);
 }
 
 .cell-editing {
@@ -186,7 +187,7 @@ th {
 .cell_header {
   z-index: 1;
   background-color: var(--transposed-table-header-bg);
-  border-right: 1px solid var(--transposed-table-header-border);
+  border-right: 1px solid var(--transposed-table-header-border-color);
 
   .cell_header_label {
     padding: 1px;
