@@ -194,7 +194,6 @@ export class TransposedGrid {
   private _toolbarTableContainer!: HTMLDivElement;
   private _groupTableSectionRef!: HTMLElement;
 
-  private _mustRedraw: boolean = true;
   private _lastMaxHeaderWidth?: number;
   private _lastGroupHeaderHeight: Record<string, number> = {};
   private _lastFieldHeight: Record<string, number> = {};
@@ -254,12 +253,12 @@ export class TransposedGrid {
     }
   }
 
-  @Watch('cssState')
-  public watchCssState(cssState?: string) {
-    if (cssState === '') {
-      setTimeout(() => this._updateCellDimensions());
-    }
-  }
+  // @Watch('cssState')
+  // public watchCssState(cssState?: string) {
+  //   if (cssState === '') {
+  //     setTimeout(() => this._updateCellDimensions());
+  //   }
+  // }
 
   @Watch('groups')
   @Watch('fixedGroups')
@@ -278,7 +277,7 @@ export class TransposedGrid {
   @Watch('rowsState')
   @Watch('dataState')
   public watchRedraw() {
-    this._mustRedraw = true;
+    this.redraw();
   }
 
   @Watch('editing')
@@ -488,7 +487,7 @@ export class TransposedGrid {
 
   @Method()
   public async redraw() {
-    this._redraw();
+    await this._redraw();
   }
 
   @Method()
@@ -497,9 +496,8 @@ export class TransposedGrid {
   }
 
   public componentDidRender() {
-    if (this._isFirstRender || this._mustRedraw) {
-      setTimeout(() => this._redraw());
-      this._mustRedraw = false;
+    if (this._isFirstRender) {
+      this._redraw();
       this._isFirstRender = false;
     }
 
@@ -882,7 +880,12 @@ export class TransposedGrid {
   }
 
   private _redraw() {
-    this.cssState = '';
+    return new Promise<void>((resolve, _) => {
+      setTimeout(() => {
+        this._updateCellDimensions();
+        resolve();
+      });
+    })
   }
 
   private _getItemMetadata(item: Data): ItemMetadata {
@@ -971,7 +974,7 @@ export class TransposedGrid {
 
     const getHeadersWidth = () => {
       const headerElements = Array.from(this._rootElementRef.getElementsByClassName('cell_header')) as HTMLDivElement[];
-      let maxHeaderWidth = Math.max(...headerElements.map(el => el.clientWidth));
+      let maxHeaderWidth = Math.max(...headerElements.map(el => el.offsetWidth));
   
       if (this._lastMaxHeaderWidth && Math.abs(this._lastMaxHeaderWidth - maxHeaderWidth) < UPDATE_CELL_DELTA) {
         return this._lastMaxHeaderWidth;
@@ -1019,16 +1022,21 @@ export class TransposedGrid {
         .cell__toolbar_${record[this._primaryKey]}, .cell_record_${record[this._primaryKey]} {
           min-width: ${width};
           width: ${width};
+          max-width: ${width};
         }
       `;
     });
 
     this.rowsState?.forEach(row => {
       const getRowHeight = () => {
+        if (!this._rootElementRef) {
+          return;
+        }
+
         const headerElements = Array.from(this._rootElementRef.getElementsByClassName(`cell_header_${row.dataField}`)) as HTMLDivElement[];
         const cellElements = Array.from(this._rootElementRef.getElementsByClassName(`cell_${row.dataField}`)) as HTMLDivElement[];
   
-        const height = Math.max(...headerElements.map(el => el.clientHeight), ...cellElements.map(el => el.clientHeight));
+        const height = Math.max(...headerElements.map(el => el.offsetHeight), ...cellElements.map(el => el.clientHeight));
 
         if (row.maxPixelHeight && height > row.maxPixelHeight) {
           return row.maxPixelHeight;
@@ -1059,7 +1067,7 @@ export class TransposedGrid {
     this.groupsState?.forEach(group => {
       const getHeight = () => {
         const groupHeadersElements = Array.from(this._rootElementRef.getElementsByClassName(`group_header_${group.name}`)) as HTMLDivElement[];
-        const height = Math.max(...groupHeadersElements.map(el => el.clientHeight));
+        const height = Math.max(...groupHeadersElements.map(el => el.offsetHeight));
 
         if (Number.isNaN(height) || !Number.isFinite(height)) {
           return FALLBACK_GROUP_HEIGHT;
