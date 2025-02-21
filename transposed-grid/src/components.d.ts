@@ -10,7 +10,7 @@ import { Group, GroupCollapsedEvent } from "./models/group";
 import { Row } from "./models/row";
 import { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
 import { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/customTemplate";
-import { EditingOptions, EditionResultEvent } from "./models/edition";
+import { EditingOptions, EditionResultEvent, EditionValidationEvent } from "./models/edition";
 import { SelectionEvent, SelectionOptions } from "./models/selection";
 import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
 export { Data } from "./models/data";
@@ -18,7 +18,7 @@ export { Group, GroupCollapsedEvent } from "./models/group";
 export { Row } from "./models/row";
 export { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
 export { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/customTemplate";
-export { EditingOptions, EditionResultEvent } from "./models/edition";
+export { EditingOptions, EditionResultEvent, EditionValidationEvent } from "./models/edition";
 export { SelectionEvent, SelectionOptions } from "./models/selection";
 export { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
 export namespace Components {
@@ -146,7 +146,7 @@ declare global {
         "headerClick": HeaderClickEvent;
         "headerContextMenu": HeaderContextMenuEvent;
         "editionStarted": EditionResultEvent;
-        "editionValidation": EditionResultEvent;
+        "editionValidation": EditionValidationEvent;
         "editionEnded": EditionResultEvent;
         "save": EditionResultEvent;
         "cancel": EditionResultEvent;
@@ -226,7 +226,7 @@ declare namespace LocalJSX {
         "onContentRendered"?: (event: TransposedGridCustomEvent<void>) => void;
         "onEditionEnded"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onEditionStarted"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
-        "onEditionValidation"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
+        "onEditionValidation"?: (event: TransposedGridCustomEvent<EditionValidationEvent>) => void;
         "onGroupCollapsed"?: (event: TransposedGridCustomEvent<GroupCollapsedEvent>) => void;
         "onHeaderClick"?: (event: TransposedGridCustomEvent<HeaderClickEvent>) => void;
         "onHeaderContextMenu"?: (event: TransposedGridCustomEvent<HeaderContextMenuEvent>) => void;

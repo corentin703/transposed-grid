@@ -55,10 +55,23 @@ export type EditionResult = {
   // deleted: EditEvent[],
 }
 
-export type EditionResultEvent =
+export type EditionBaseEvent =
   & EditionResult
   & {
       data: Data[];
       original: Data[];
+    }
+
+export type EditionResultEvent =
+  & EditionResult
+  & EditionBaseEvent
+  & {
       cancelEdit: boolean;
+    }
+
+export type EditionValidationEvent =
+  & EditionResult
+  & EditionBaseEvent
+  & {
+      isValid: boolean;
     }
