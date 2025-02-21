@@ -33,11 +33,11 @@
 
 | Event                 | Description | Type                                                                                                                                             |
 | --------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `cancel`              |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
+| `cancel`              |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; } & { cancelEdit: boolean; }>`                                                    |
 | `contentRendered`     |             | `CustomEvent<void>`                                                                                                                              |
-| `editionEnded`        |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
-| `editionStarted`      |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
-| `editionValidation`   |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
+| `editionEnded`        |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; } & { cancelEdit: boolean; }>`                                                    |
+| `editionStarted`      |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; } & { cancelEdit: boolean; }>`                                                    |
+| `editionValidation`   |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; } & { isValid: boolean; }>`                                                       |
 | `groupCollapsed`      |             | `CustomEvent<{ group: Group; rows: Row[]; collapsed: boolean; }>`                                                                                |
 | `headerClick`         |             | `CustomEvent<{ row?: Row \| undefined; }>`                                                                                                       |
 | `headerContextMenu`   |             | `CustomEvent<{ row?: Row \| undefined; }>`                                                                                                       |
@@ -46,7 +46,7 @@
 | `itemDoubleClick`     |             | `CustomEvent<{ item: Data; itemIdx: number; primaryKey?: string \| undefined; primaryKeyValue?: string \| undefined; row?: Row \| undefined; }>` |
 | `itemHoovering`       |             | `CustomEvent<{ item: Data; itemIdx: number; primaryKey?: string \| undefined; primaryKeyValue?: string \| undefined; row?: Row \| undefined; }>` |
 | `itemSelectionChange` |             | `CustomEvent<{ selectedItems: Data[]; mode: SelectionMode; areAllSelected: boolean; status: SelectionStatus; }>`                                 |
-| `save`                |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; cancelEdit: boolean; }>`                                                          |
+| `save`                |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; } & { cancelEdit: boolean; }>`                                                    |
 
 
 ## Methods

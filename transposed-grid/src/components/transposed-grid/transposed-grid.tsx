@@ -8,6 +8,7 @@ import {
   EditingOptions,
   EditionResult,
   EditionResultEvent,
+  EditionValidationEvent,
   RecordLevelOptions,
   StartEditAction,
 } from '../../models/edition';
@@ -40,6 +41,7 @@ const UPDATE_CELL_DELTA = 5;
 type EditingState = {
   itemIdx: number;
   row: Row;
+  isValid: boolean;
 }
 
 type GroupedRows = {
@@ -127,7 +129,7 @@ export class TransposedGrid {
 
   // Edition events
   @Event() public editionStarted!: EventEmitter<EditionResultEvent>;
-  @Event() public editionValidation!: EventEmitter<EditionResultEvent>;
+  @Event() public editionValidation!: EventEmitter<EditionValidationEvent>;
   @Event() public editionEnded!: EventEmitter<EditionResultEvent>;
   @Event() public save!: EventEmitter<EditionResultEvent>;
   @Event() public cancel!: EventEmitter<EditionResultEvent>;
@@ -185,7 +187,7 @@ export class TransposedGrid {
   private _dataSnapshot?: Data[];
   private _itemsMetadata: Map<string, ItemMetadata> = new Map();
 
-  private _rootElementRef!: HTMLDivElement;
+  private _rootElementRef?: HTMLDivElement;
   private _isFirstRender: boolean = true;
 
   private _nonGroupTableContainer!: HTMLDivElement;
@@ -252,13 +254,6 @@ export class TransposedGrid {
       this.isEditingState = oldValue;
     }
   }
-
-  // @Watch('cssState')
-  // public watchCssState(cssState?: string) {
-  //   if (cssState === '') {
-  //     setTimeout(() => this._updateCellDimensions());
-  //   }
-  // }
 
   @Watch('groups')
   @Watch('fixedGroups')
@@ -580,7 +575,7 @@ export class TransposedGrid {
           {this.cssState}
         </style>
 
-        <div ref={ref => this._rootElementRef = ref!} class={'transposed-grid'} style={{ maxHeight: this.height, }}>
+        <div ref={ref => this._rootElementRef = ref} class={'transposed-grid'} style={{ maxHeight: this.height, }}>
           <div class={'toolbar__container'}>
             <grid-toolbar
               {...this.toolbarOptionsState}
@@ -845,18 +840,16 @@ export class TransposedGrid {
   }
 
   private _saveEdit() {
+    if (!this._handleValidation()) {
+      return;
+    }
+
     const eventDetails = {
       ...this._getAlteredData(),
       data: this.dataState,
       original: this._dataSnapshot ?? [],
       cancelEdit: false,
     };
-
-    const validationEventResult = this.editionValidation.emit(eventDetails);
-    if (validationEventResult.defaultPrevented || validationEventResult.detail.cancelEdit) {
-      this._resetEdit(true);
-      return;
-    }
 
     this.save.emit(eventDetails);
     this._resetEdit(false);
@@ -970,10 +963,14 @@ export class TransposedGrid {
 
   // Rendering
   private _updateCellDimensions() {
+    if (!this._rootElementRef) {
+      return;
+    }
+
     let updatedCssState = ''
 
     const getHeadersWidth = () => {
-      const headerElements = Array.from(this._rootElementRef.getElementsByClassName('cell_header')) as HTMLDivElement[];
+      const headerElements = Array.from(this._rootElementRef!.getElementsByClassName('cell_header')) as HTMLDivElement[];
       let maxHeaderWidth = Math.max(...headerElements.map(el => el.offsetWidth));
   
       if (this._lastMaxHeaderWidth && Math.abs(this._lastMaxHeaderWidth - maxHeaderWidth) < UPDATE_CELL_DELTA) {
@@ -998,7 +995,7 @@ export class TransposedGrid {
 
     this.dataState.forEach(record => {
       const getRecordWidth = () => {
-        const elements = Array.from(this._rootElementRef.getElementsByClassName(`cell_record_${record[this._primaryKey]}`)) as HTMLDivElement[];
+        const elements = Array.from(this._rootElementRef!.getElementsByClassName(`cell_record_${record[this._primaryKey]}`)) as HTMLDivElement[];
         const width = Math.max(...elements.map(el => el.clientWidth));
 
         if (this.maxPixelColumnWidth && width > this.maxPixelColumnWidth) {
@@ -1029,12 +1026,8 @@ export class TransposedGrid {
 
     this.rowsState?.forEach(row => {
       const getRowHeight = () => {
-        if (!this._rootElementRef) {
-          return;
-        }
-
-        const headerElements = Array.from(this._rootElementRef.getElementsByClassName(`cell_header_${row.dataField}`)) as HTMLDivElement[];
-        const cellElements = Array.from(this._rootElementRef.getElementsByClassName(`cell_${row.dataField}`)) as HTMLDivElement[];
+        const headerElements = Array.from(this._rootElementRef!.getElementsByClassName(`cell_header_${row.dataField}`)) as HTMLDivElement[];
+        const cellElements = Array.from(this._rootElementRef!.getElementsByClassName(`cell_${row.dataField}`)) as HTMLDivElement[];
   
         const height = Math.max(...headerElements.map(el => el.offsetHeight), ...cellElements.map(el => el.clientHeight));
 
@@ -1066,7 +1059,7 @@ export class TransposedGrid {
 
     this.groupsState?.forEach(group => {
       const getHeight = () => {
-        const groupHeadersElements = Array.from(this._rootElementRef.getElementsByClassName(`group_header_${group.name}`)) as HTMLDivElement[];
+        const groupHeadersElements = Array.from(this._rootElementRef!.getElementsByClassName(`group_header_${group.name}`)) as HTMLDivElement[];
         const height = Math.max(...groupHeadersElements.map(el => el.offsetHeight));
 
         if (Number.isNaN(height) || !Number.isFinite(height)) {
@@ -1117,7 +1110,29 @@ export class TransposedGrid {
     return rights.allowUpdating ?? false;
   }
 
+  private _handleValidation() {
+    if (!this.editingItemState) {
+      return true;
+    }
+
+    const eventDetails = {
+      ...this._getAlteredData(),
+      data: this.dataState,
+      original: this._dataSnapshot ?? [],
+      isValid: true,
+    };
+
+    const validationEventResult = this.editionValidation.emit(eventDetails);
+    this.editingItemState.isValid = validationEventResult.detail.isValid;
+
+    return validationEventResult.detail.isValid;
+  }
+
   private _toggleEdit(item: Data, itemIdx: number, row: Row): boolean {
+    if (this.editingItemState && !this.editingItemState.isValid) {
+      return true;
+    }
+    
     if (!row) {
       return false;
     }
@@ -1129,8 +1144,10 @@ export class TransposedGrid {
     this.editingItemState = {
       itemIdx: itemIdx,
       row: row,
+      isValid: true,
     };
 
+    this._handleValidation();
     setTimeout(() => this._updateCellDimensions());
 
     return true;
@@ -1156,6 +1173,8 @@ export class TransposedGrid {
     updatedData[itemIdx] = updatedItem;
     this.dataState = updatedData;
     this.isEditingState = true;
+
+    this._handleValidation();
   }
 
   private _getAlteredData(): EditionResult {
@@ -1202,15 +1221,27 @@ export class TransposedGrid {
   }
 
   private _handleEnterKeyDown() {
+    if (this.editingItemState && !this._handleValidation()) {
+      return;
+    }
+
     this.editingItemState = undefined;
   }
 
   private _handleEscapeKeyDown() {
+    if (this.editingItemState && !this._handleValidation()) {
+      return;
+    }
+
     this.editingItemState = undefined;
   }
 
   private _handleTabKeyDown() {
     if (!this.editingItemState || !this.rowsState) {
+      return;
+    }
+
+    if (!this._handleValidation()) {
       return;
     }
 
