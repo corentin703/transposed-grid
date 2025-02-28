@@ -65,6 +65,8 @@ table {
   .table2-header {
     flex-shrink: 1;
   }
+
+  height: 100%;
 }
 
 .table2-data-container {
@@ -95,8 +97,6 @@ th {
   overflow-x: overlay;
   overflow-y: scroll;
 }
-
-
 
 .table_groups_container {
   display: flex;
