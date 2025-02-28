@@ -102,7 +102,6 @@ export class TransposedGrid {
   @Prop() public selection?: SelectionOptions;
   
   @Prop() public height?: string;
-  @Prop() public groupSectionHeightProportion?: number;
 
   @Prop() public toolbar?: ToolbarOptions;
   @Prop() toolbarTemplate?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
@@ -190,16 +189,21 @@ export class TransposedGrid {
   private _rootElementRef?: HTMLDivElement;
   private _isFirstRender: boolean = true;
 
-  private _nonGroupTableContainer!: HTMLDivElement;
-  private _fixedGroupTableContainers: Record<string, HTMLDivElement> = {};
-  private _groupTableContainers: Record<string, HTMLDivElement> = {};
-  private _toolbarTableContainer!: HTMLDivElement;
-  private _groupTableSectionRef!: HTMLElement;
+  private _nonGroupTableSectionRef?: HTMLElement;
+  private _fixedGroupTableSectionRef?: HTMLElement;
+  private _nonGroupTableContainerRef?: HTMLDivElement;
+
+  private _fixedGroupTableContainersRefs: Record<string, HTMLDivElement> = {};
+  private _groupTableContainersRefs: Record<string, HTMLDivElement> = {};
+  private _toolbarTableContainerRef?: HTMLDivElement;
+  private _groupTableSectionRef?: HTMLElement;
 
   private _lastMaxHeaderWidth?: number;
   private _lastGroupHeaderHeight: Record<string, number> = {};
   private _lastFieldHeight: Record<string, number> = {};
   private _lastRecordWidth: Record<string, number> = {};
+
+  private _scrollableGroupsSectionHeight: string | undefined;
 
   public connectedCallback() {
     this._dataSnapshot = undefined;
@@ -502,23 +506,13 @@ export class TransposedGrid {
   public render() {
     const tableClassNames = [
       'mdc-data-table__table',
-      'mdc-data-table--sticky-header',
+      'mdc-data-table-sticky-header',
       `${this.striped ? 'transposed_table-striped' : ''}`,
     ];
 
     if (this.tableClass) {
       tableClassNames.push(this.tableClass)
     }
-
-    let groupSectionHeight : string | undefined = undefined;
-
-    if (this.groupSectionHeightProportion) {
-      groupSectionHeight = `calc(${this.height} * 0.${this.groupSectionHeightProportion})`;
-    }
-
-    if ((this._nonGroupRow?.length ?? 0) === 0 && (this._groupedRows?.filter(state => state.group.isFixed)?.length ?? 0) === 0) {
-      groupSectionHeight = `calc(${this.height} * 0.9)`;
-    } 
 
     const renderDataFieldRow = (row: Row, group?: Group) => {
       return this.dataState.map((item, itemIdx) => {
@@ -575,7 +569,7 @@ export class TransposedGrid {
           {this.cssState}
         </style>
 
-        <div ref={ref => this._rootElementRef = ref} class={'transposed-grid'} style={{ maxHeight: this.height, }}>
+        <div ref={ref => this._rootElementRef = ref} class={'transposed-grid'} style={{ height: this.height, }}>
           <div class={'toolbar__container'}>
             <grid-toolbar
               {...this.toolbarOptionsState}
@@ -586,70 +580,69 @@ export class TransposedGrid {
             class={'table2_container'}
             onMouseLeave={() => this._handleTableMouseLeave()}
             onWheel={event => {
-              if (groupSectionHeight) {
-                this._groupTableSectionRef.scrollBy(0, event.deltaY)
+              if (this._scrollableGroupsSectionHeight) {
+                this._groupTableSectionRef?.scrollBy(0, event.deltaY)
               }
             }}
           >
-            <section 
-              class={'table2_section_container'}
-            >
+            <div class={'table-content-container'}>
+              <section class={'table2_section_container'} ref={ref => this._nonGroupTableSectionRef = ref!}>
               <table class={'table2-header'}>
-                <tbody>
-                  {
-                    this._nonGroupRow?.filter(_row => _row.visible).map(row => {
-                      return (
-                        <tr class={`cell_${row.dataField}`}>
-                          <ItemHeader
-                            isSticky={true}
-                            row={row}
-                            onClick={() => this._handleHeaderClick(row)}
-                            onContextMenu={event => this._handleHeaderContextMenu(event, row)}
-                          />
-                        </tr>
-                      )
-                    })
-                  }
-                </tbody>
-              </table>
-              <div class={'table2-data-container'} ref={ref => this._nonGroupTableContainer = ref!}>
-                <table class={'table2-data'}>
                   <tbody>
                     {
                       this._nonGroupRow?.filter(_row => _row.visible).map(row => {
                         return (
                           <tr class={`cell_${row.dataField}`}>
-                            {renderDataFieldRow(row)}
+                            <ItemHeader
+                              isSticky={true}
+                              row={row}
+                              onClick={() => this._handleHeaderClick(row)}
+                              onContextMenu={event => this._handleHeaderContextMenu(event, row)}
+                            />
                           </tr>
                         )
                       })
                     }
                   </tbody>
                 </table>
-              </div>
-            </section>
-            <section>
-              {
-                this._groupedRows?.filter(state => state.group.isFixed)?.map(groupedRow => {
+              <div class={'table2-data-container'} ref={ref => this._nonGroupTableContainerRef = ref!}>
+                <table class={'table2-data'}>
+                    <tbody>
+                      {
+                        this._nonGroupRow?.filter(_row => _row.visible).map(row => {
+                          return (
+                            <tr class={`cell_${row.dataField}`}>
+                              {renderDataFieldRow(row)}
+                            </tr>
+                          )
+                        })
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+              <section ref={ref => this._fixedGroupTableSectionRef = ref!}>
+                {
+                  this._groupedRows?.filter(state => state.group.isFixed)?.map(groupedRow => {
 
-                  const groupHeader = (
-                    <GroupHeader
-                      group={groupedRow.group}
-                      onToggle={() => this._toggleGroup(groupedRow.group)}
-                    />
-                  )
+                    const groupHeader = (
+                      <GroupHeader
+                        group={groupedRow.group}
+                        onToggle={() => this._toggleGroup(groupedRow.group)}
+                      />
+                    )
 
-                  if (groupedRow.group.collapsed) {
+                    if (groupedRow.group.collapsed) {
+                      return (
+                        <div>
+                          {groupHeader}
+                        </div>
+                      )
+                    }
+
                     return (
                       <div>
                         {groupHeader}
-                      </div>
-                    )
-                  }
-
-                  return (
-                    <div>
-                      {groupHeader}
                       <div class={'table2_section_container'}>
                         <table class={'table2-header'}>
                           <tbody>
@@ -670,99 +663,100 @@ export class TransposedGrid {
                             }
                           </tbody>
                         </table>
-                        <div class={'table2-data-container'} ref={ref => this._fixedGroupTableContainers[groupedRow.group.name] = ref!}>
+                        <div class={'table2-data-container'} ref={ref => this._fixedGroupTableContainersRefs[groupedRow.group.name] = ref!}>
                           <table class={'table2-data'}>
-                            <tbody>
-                              {
-                                groupedRow.rows.filter(_row => _row.visible).map(row => {
+                              <tbody>
+                                {
+                                  groupedRow.rows.filter(_row => _row.visible).map(row => {
 
-                                  return (
-                                    <tr class={`cell_${row.dataField}`}>
-                                      {renderDataFieldRow(row, groupedRow.group)}
-                                    </tr>
-                                  )
-                                })
-                              }
-                            </tbody>
-                          </table>
+                                    return (
+                                      <tr class={`cell_${row.dataField}`}>
+                                        {renderDataFieldRow(row, groupedRow.group)}
+                                      </tr>
+                                    )
+                                  })
+                                }
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                  )
-                })
-              }
-            </section>
-            <section 
+                    )
+                  })
+                }
+              </section>
+              <section 
               class={'table2_vscroll'} 
-              ref={ref => this._groupTableSectionRef = ref!}
-              style={{ maxHeight: groupSectionHeight, }}
-            >
-              {
-                this._groupedRows?.filter(state => !state.group.isFixed)?.map(groupedRow => {
+                ref={ref => this._groupTableSectionRef = ref!}
+                style={{ maxHeight: this._scrollableGroupsSectionHeight, }}
+              >
+                {
+                  this._groupedRows?.filter(state => !state.group.isFixed)?.map(groupedRow => {
 
-                  const groupHeader = (
-                    <GroupHeader
-                      group={groupedRow.group}
-                      onToggle={() => this._toggleGroup(groupedRow.group)}
-                    />
-                  )
+                    const groupHeader = (
+                      <GroupHeader
+                        group={groupedRow.group}
+                        onToggle={() => this._toggleGroup(groupedRow.group)}
+                      />
+                    )
 
-                  if (groupedRow.group.collapsed) {
+                    if (groupedRow.group.collapsed) {
+                      return (
+                        <div>
+                          {groupHeader}
+                        </div>
+                      )
+                    }
+
                     return (
                       <div>
                         {groupHeader}
-                      </div>
-                    )
-                  }
-
-                  return (
-                    <div>
-                      {groupHeader}
                       <div class={'table2_section_container'}>
                         <table class={'table2-header'}>
-                          <tbody>
-                            {
-                              groupedRow.rows.filter(_row => _row.visible).map(row => {
-
-                                return (
-                                  <tr class={`cell_${row.dataField}`}>
-                                    <ItemHeader
-                                      row={row}
-                                      group={groupedRow.group}
-                                      onClick={() => this._handleHeaderClick(row)}
-                                      onContextMenu={event => this._handleHeaderContextMenu(event, row)}
-                                    />
-                                  </tr>
-                                )
-                              })
-                            }
-                          </tbody>
-                        </table>
-                        <div class={'table2-data-container'} ref={ref => this._groupTableContainers[groupedRow.group.name] = ref!}>
-                          <table class={'table2-data'}>
                             <tbody>
                               {
                                 groupedRow.rows.filter(_row => _row.visible).map(row => {
 
                                   return (
                                     <tr class={`cell_${row.dataField}`}>
-                                      {renderDataFieldRow(row, groupedRow.group)}
+                                      <ItemHeader
+                                        row={row}
+                                        group={groupedRow.group}
+                                        onClick={() => this._handleHeaderClick(row)}
+                                        onContextMenu={event => this._handleHeaderContextMenu(event, row)}
+                                      />
                                     </tr>
                                   )
                                 })
                               }
                             </tbody>
                           </table>
+                        <div class={'table2-data-container'} ref={ref => this._groupTableContainersRefs[groupedRow.group.name] = ref!}>
+                          <table class={'table2-data'}>
+                              <tbody>
+                                {
+                                  groupedRow.rows.filter(_row => _row.visible).map(row => {
+
+                                    return (
+                                      <tr class={`cell_${row.dataField}`}>
+                                        {renderDataFieldRow(row, groupedRow.group)}
+                                      </tr>
+                                    )
+                                  })
+                                }
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                  )
-                })
-              }
-            </section>
+                    )
+                  })
+                }
+              </section>
 
+            </div>
             <section class={'table2_section_container'}>
               <table class={'table2-header'}>
                 <tbody>
@@ -778,27 +772,29 @@ export class TransposedGrid {
               </table>
               <div 
                 class={'table2-data-container table2_xscroll'} 
-                ref={ref => this._toolbarTableContainer = ref!}
+                ref={ref => this._toolbarTableContainerRef = ref!}
                 onScroll={() => {
-                  if (!this._toolbarTableContainer) {
+                  if (!this._toolbarTableContainerRef) {
                     return;
                   }
 
-                  if (this._nonGroupTableContainer) {
-                    this._nonGroupTableContainer.scrollLeft = this._toolbarTableContainer.scrollLeft;
+                  if (this._nonGroupTableContainerRef) {
+                    this._nonGroupTableContainerRef.scrollLeft = this._toolbarTableContainerRef.scrollLeft;
                   }
                   
-                  Object.values(this._groupTableContainers).forEach(container => {
-                    if (container) {
-                      container.scrollLeft = this._toolbarTableContainer.scrollLeft;
-                    }
-                  });
+                  if (this._toolbarTableContainerRef) {
+                      Object.values(this._groupTableContainersRefs).forEach(container => {
+                        if (container) {
+                          container.scrollLeft = this._toolbarTableContainerRef!.scrollLeft;
+                        }
+                      });
 
-                  Object.values(this._fixedGroupTableContainers).forEach(container => {
-                    if (container) {
-                      container.scrollLeft = this._toolbarTableContainer.scrollLeft;
-                    }
-                  });
+                      Object.values(this._fixedGroupTableContainersRefs).forEach(container => {
+                        if (container) {
+                          container.scrollLeft = this._toolbarTableContainerRef!.scrollLeft;
+                        }
+                      });
+                  }
                 }}
               >
                 <table class={'table2-data'}>
@@ -1083,6 +1079,18 @@ export class TransposedGrid {
         }
       `;
     });
+    
+    if (this.height && this._toolbarTableContainerRef) {
+      const tableDataContainerHeight = `calc(${this.height} - ${this._toolbarTableContainerRef.clientHeight}px)`;
+      updatedCssState = `${updatedCssState}
+        .table-content-container {
+          min-height: ${tableDataContainerHeight};
+          height: ${tableDataContainerHeight};
+        }
+      `;
+      
+      this._scrollableGroupsSectionHeight = `calc(${tableDataContainerHeight} - ${this._fixedGroupTableSectionRef?.clientHeight ?? 0}px - ${this._nonGroupTableSectionRef?.clientHeight ?? 0}px)`;
+    }
 
     this.cssState = updatedCssState;
   }
