@@ -207,8 +207,12 @@ th {
   }
 }
 
+.cell__toolbar {
+  border-top: 1px solid var(--transposed-table-header-border-color);
+}
+
 // Z-index
-.cell_toolbar_header {
+.cell__toolbarr_header {
   z-index: 1;
 }
 
