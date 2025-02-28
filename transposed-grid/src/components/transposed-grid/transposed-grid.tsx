@@ -569,7 +569,7 @@ export class TransposedGrid {
           {this.cssState}
         </style>
 
-        <div ref={ref => this._rootElementRef = ref} class={'transposed-grid'} style={{ height: this.height, }}>
+        <div ref={ref => this._rootElementRef = ref} class={'transposed-grid'}>
           <div class={'toolbar__container'}>
             <grid-toolbar
               {...this.toolbarOptionsState}
@@ -578,6 +578,7 @@ export class TransposedGrid {
           </div>
           <div 
             class={'table_container'}
+            style={{ height: this.height, }}
             onMouseLeave={() => this._handleTableMouseLeave()}
             onWheel={event => {
               if (this._scrollableGroupsSectionHeight) {
