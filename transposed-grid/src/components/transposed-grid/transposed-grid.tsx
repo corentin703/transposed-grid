@@ -577,7 +577,7 @@ export class TransposedGrid {
             />
           </div>
           <div 
-            class={'table2_container'}
+            class={'table_container'}
             onMouseLeave={() => this._handleTableMouseLeave()}
             onWheel={event => {
               if (this._scrollableGroupsSectionHeight) {
@@ -586,8 +586,8 @@ export class TransposedGrid {
             }}
           >
             <div class={'table-content-container'}>
-              <section class={'table2_section_container'} ref={ref => this._nonGroupTableSectionRef = ref!}>
-              <table class={'table2-header'}>
+              <section class={'table_section_container'} ref={ref => this._nonGroupTableSectionRef = ref!}>
+              <table class={'table-header'}>
                   <tbody>
                     {
                       this._nonGroupRow?.filter(_row => _row.visible).map(row => {
@@ -605,8 +605,8 @@ export class TransposedGrid {
                     }
                   </tbody>
                 </table>
-              <div class={'table2-data-container'} ref={ref => this._nonGroupTableContainerRef = ref!}>
-                <table class={'table2-data'}>
+              <div class={'table-data-container'} ref={ref => this._nonGroupTableContainerRef = ref!}>
+                <table class={'table-data'}>
                     <tbody>
                       {
                         this._nonGroupRow?.filter(_row => _row.visible).map(row => {
@@ -643,8 +643,8 @@ export class TransposedGrid {
                     return (
                       <div>
                         {groupHeader}
-                      <div class={'table2_section_container'}>
-                        <table class={'table2-header'}>
+                      <div class={'table_section_container'}>
+                        <table class={'table-header'}>
                           <tbody>
                             {
                               groupedRow.rows.filter(_row => _row.visible).map(row => {
@@ -663,8 +663,8 @@ export class TransposedGrid {
                             }
                           </tbody>
                         </table>
-                        <div class={'table2-data-container'} ref={ref => this._fixedGroupTableContainersRefs[groupedRow.group.name] = ref!}>
-                          <table class={'table2-data'}>
+                        <div class={'table-data-container'} ref={ref => this._fixedGroupTableContainersRefs[groupedRow.group.name] = ref!}>
+                          <table class={'table-data'}>
                               <tbody>
                                 {
                                   groupedRow.rows.filter(_row => _row.visible).map(row => {
@@ -687,7 +687,7 @@ export class TransposedGrid {
                 }
               </section>
               <section 
-              class={'table2_vscroll'} 
+              class={'table_vscroll'} 
                 ref={ref => this._groupTableSectionRef = ref!}
                 style={{ maxHeight: this._scrollableGroupsSectionHeight, }}
               >
@@ -712,8 +712,8 @@ export class TransposedGrid {
                     return (
                       <div>
                         {groupHeader}
-                      <div class={'table2_section_container'}>
-                        <table class={'table2-header'}>
+                      <div class={'table_section_container'}>
+                        <table class={'table-header'}>
                             <tbody>
                               {
                                 groupedRow.rows.filter(_row => _row.visible).map(row => {
@@ -732,8 +732,8 @@ export class TransposedGrid {
                               }
                             </tbody>
                           </table>
-                        <div class={'table2-data-container'} ref={ref => this._groupTableContainersRefs[groupedRow.group.name] = ref!}>
-                          <table class={'table2-data'}>
+                        <div class={'table-data-container'} ref={ref => this._groupTableContainersRefs[groupedRow.group.name] = ref!}>
+                          <table class={'table-data'}>
                               <tbody>
                                 {
                                   groupedRow.rows.filter(_row => _row.visible).map(row => {
@@ -757,8 +757,8 @@ export class TransposedGrid {
               </section>
 
             </div>
-            <section class={'table2_section_container'}>
-              <table class={'table2-header'}>
+            <section class={'table_section_container'}>
+              <table class={'table-header'}>
                 <tbody>
                   <tr>
                     <ItemToolbarHeader
@@ -771,7 +771,7 @@ export class TransposedGrid {
                 </tbody>
               </table>
               <div 
-                class={'table2-data-container table2_xscroll'} 
+                class={'table-data-container table_xscroll'} 
                 ref={ref => this._toolbarTableContainerRef = ref!}
                 onScroll={() => {
                   if (!this._toolbarTableContainerRef) {
@@ -797,7 +797,7 @@ export class TransposedGrid {
                   }
                 }}
               >
-                <table class={'table2-data'}>
+                <table class={'table-data'}>
                   <tbody>
                     <tr>
                       {

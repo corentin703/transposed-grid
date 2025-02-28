@@ -57,28 +57,28 @@ table {
   border-spacing: 0;
 }
 
-.table2_container {
-  .table2_section_container {
+.table_container {
+  .table_section_container {
     display: flex;
   }
 
-  .table2-header {
+  .table-header {
     flex-shrink: 1;
   }
 
   height: 100%;
 }
 
-.table2-data-container {
+.table-data-container {
   overflow-x: hidden;
   height: 100%;
 }
 
-.table2_xscroll {
+.table_xscroll {
   overflow-x: overlay;
 }
 
-.table2_vscroll {
+.table_vscroll {
   overflow-y: overlay;
 }
 
