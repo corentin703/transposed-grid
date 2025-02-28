@@ -63,7 +63,6 @@ export namespace Components {
         "fixedColumnWidth"?: string;
         "fixedGroups"?: Group[];
         "focusedRowPrimaryKeyValue"?: string;
-        "groupSectionHeightProportion"?: number;
         "groups"?: Group[];
         "height"?: string;
         "items": Data[];
@@ -217,7 +216,6 @@ declare namespace LocalJSX {
         "fixedColumnWidth"?: string;
         "fixedGroups"?: Group[];
         "focusedRowPrimaryKeyValue"?: string;
-        "groupSectionHeightProportion"?: number;
         "groups"?: Group[];
         "height"?: string;
         "items"?: Data[];
