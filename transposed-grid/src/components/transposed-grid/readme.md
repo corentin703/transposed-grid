@@ -37,7 +37,7 @@
 | `editionEnded`        |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; } & { cancelEdit: boolean; }>`                                                    |
 | `editionStarted`      |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; } & { cancelEdit: boolean; }>`                                                    |
 | `editionValidation`   |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; } & { isValid: boolean; }>`                                                       |
-| `groupCollapsed`      |             | `CustomEvent<{ group: Group; rows: Row[]; collapsed: boolean; }>`                                                                                |
+| `groupToggled`        |             | `CustomEvent<{ group: Group; rows: Row[]; collapsed: boolean; }>`                                                                                |
 | `headerClick`         |             | `CustomEvent<{ row?: Row \| undefined; }>`                                                                                                       |
 | `headerContextMenu`   |             | `CustomEvent<{ row?: Row \| undefined; }>`                                                                                                       |
 | `itemClick`           |             | `CustomEvent<{ item: Data; itemIdx: number; primaryKey?: string \| undefined; primaryKeyValue?: string \| undefined; row?: Row \| undefined; }>` |

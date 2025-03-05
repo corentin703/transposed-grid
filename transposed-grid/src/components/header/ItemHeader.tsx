@@ -8,6 +8,7 @@ import { Group } from '../../models/group';
 export type ItemHeaderProps = {
   isSticky?: boolean;
 
+  isEditing: boolean;
   row: Row;
   group?: Group;
   onClick: () => void;
@@ -40,6 +41,10 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
     classNames.push('cell_header-sticky');
   }
 
+  if (props.isEditing) {
+    classNames.push(`cell_header_editing_${props.row.dataField}`);
+  } 
+
   if (props.group?.collapsed) {
     classNames.push('cell-hidden');
   }
@@ -61,7 +66,7 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
         props.onContextMenu(event);
       }}
     >
-      <div class={'cell_header_content'}>
+      <div class={'cell_header_content'} style={{ minHeight: props.row.fixedHeight, height: props.row.fixedHeight, maxHeight: props.row.fixedHeight, }}>
         <div class={'cell_header_label'}>
           {caption}
         </div>
