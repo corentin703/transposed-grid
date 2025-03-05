@@ -6,6 +6,7 @@ import { CustomTemplate } from './customTemplate';
 
 export type Row = {
   fixedHeight?: string;
+  fixedEditingHeight?: string;
   maxPixelHeight?: number;
   
   dataField: string;

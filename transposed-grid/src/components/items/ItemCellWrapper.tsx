@@ -59,6 +59,7 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
 
   if (props.isEditing) {
     classNames.push('cell-editing');
+    classNames.push(`cell__editing_${props.row.dataField}`);
   } else if (hasBeenUpdated) {
     classNames.push('cell-updated');
   } else if (props.isSelected) {

@@ -10,7 +10,7 @@ export type GroupState = Group & {
   isFixed: boolean;
 }
 
-export type GroupCollapsedEvent = {
+export type GroupToggledEvent = {
   group: Group;
   rows: Row[];
   collapsed: boolean;

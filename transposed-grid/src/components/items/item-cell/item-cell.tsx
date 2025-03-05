@@ -145,9 +145,13 @@ export class ItemCell {
       );
     };
 
+    const fixedHeight = this.isEditing ? this.row.fixedEditingHeight : this.row.fixedHeight;
+
     return (
       <Host>
-        {this.isEditing ? renderEditing() : renderViewer()}
+        <div style={{ minHeight: fixedHeight, height: fixedHeight, maxHeight: fixedHeight, }}>
+          {this.isEditing ? renderEditing() : renderViewer()}
+        </div>
       </Host>
     );
   }

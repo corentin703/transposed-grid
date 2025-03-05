@@ -1,6 +1,6 @@
 import { Component, Element, Event, EventEmitter, h, Host, Listen, Method, Prop, State, Watch } from '@stencil/core';
 import { Data } from '../../models/data';
-import { Group, GroupCollapsedEvent, GroupState } from '../../models/group';
+import { Group, GroupToggledEvent, GroupState } from '../../models/group';
 import {
   EditActionType,
   EditEvent,
@@ -135,7 +135,7 @@ export class TransposedGrid {
 
   @Event() public itemSelectionChange!: EventEmitter<SelectionEvent>;
 
-  @Event() public groupCollapsed!: EventEmitter<GroupCollapsedEvent>;
+  @Event() public groupToggled!: EventEmitter<GroupToggledEvent>;
   @Event() public contentRendered!: EventEmitter<void>;
 
   @State() public groupsState?: GroupState[];
@@ -201,6 +201,7 @@ export class TransposedGrid {
   private _lastMaxHeaderWidth?: number;
   private _lastGroupHeaderHeight: Record<string, number> = {};
   private _lastFieldHeight: Record<string, number> = {};
+  private _fieldHeightToRestoreAfterEditing: Record<string, number | undefined> = {};
   private _lastRecordWidth: Record<string, number> = {};
 
   private _scrollableGroupsSectionHeight: string | undefined;
@@ -257,6 +258,11 @@ export class TransposedGrid {
     if (eventResult.defaultPrevented || eventResult.detail.cancelEdit) {
       this.isEditingState = oldValue;
     }
+  }
+
+  @Watch('height')
+  public watchHeight() {
+    this._updateCellDimensions();
   }
 
   @Watch('groups')
@@ -592,10 +598,13 @@ export class TransposedGrid {
                   <tbody>
                     {
                       this._nonGroupRow?.filter(_row => _row.visible).map(row => {
+                        const isEditing = this.editingItemState?.row?.dataField === row.dataField;
+                        
                         return (
                           <tr class={`cell_${row.dataField}`}>
                             <ItemHeader
                               isSticky={true}
+                              isEditing={isEditing}
                               row={row}
                               onClick={() => this._handleHeaderClick(row)}
                               onContextMenu={event => this._handleHeaderContextMenu(event, row)}
@@ -649,11 +658,13 @@ export class TransposedGrid {
                           <tbody>
                             {
                               groupedRow.rows.filter(_row => _row.visible).map(row => {
+                                const isEditing = this.editingItemState?.row?.dataField === row.dataField;
 
                                 return (
                                   <tr class={`cell_${row.dataField}`}>
                                     <ItemHeader
                                       row={row}
+                                      isEditing={isEditing}
                                       group={groupedRow.group}
                                       onClick={() => this._handleHeaderClick(row)}
                                       onContextMenu={event => this._handleHeaderContextMenu(event, row)}
@@ -718,11 +729,13 @@ export class TransposedGrid {
                             <tbody>
                               {
                                 groupedRow.rows.filter(_row => _row.visible).map(row => {
+                                  const isEditing = this.editingItemState?.row?.dataField === row.dataField;
 
                                   return (
                                     <tr class={`cell_${row.dataField}`}>
                                       <ItemHeader
                                         row={row}
+                                        isEditing={isEditing}
                                         group={groupedRow.group}
                                         onClick={() => this._handleHeaderClick(row)}
                                         onContextMenu={event => this._handleHeaderContextMenu(event, row)}
@@ -941,13 +954,13 @@ export class TransposedGrid {
     ];
 
     const idx = updatedGroups.findIndex(_group => _group.name === group.name)
-    const event: GroupCollapsedEvent = {
+    const event: GroupToggledEvent = {
       group : group,
       rows: this.rowsState?.filter(rows => rows.group === group.name) ?? [],
       collapsed: !group.collapsed,
     }
 
-    this.groupCollapsed.emit(event);
+    this.groupToggled.emit(event);
 
     updatedGroups[idx] = {
       ...group,
@@ -1023,6 +1036,16 @@ export class TransposedGrid {
 
     this.rowsState?.forEach(row => {
       const getRowHeight = () => {
+        if (this.editingItemState?.row?.dataField === row.dataField) {
+          if (this._lastFieldHeight[row.dataField] && !this._fieldHeightToRestoreAfterEditing[row.dataField]) {
+            this._fieldHeightToRestoreAfterEditing[row.dataField] = this._lastFieldHeight[row.dataField];
+          }
+        } else if (this._fieldHeightToRestoreAfterEditing[row.dataField]) {
+          const height = this._fieldHeightToRestoreAfterEditing[row.dataField];
+          this._fieldHeightToRestoreAfterEditing[row.dataField] = undefined;
+          return height;
+        }
+
         const headerElements = Array.from(this._rootElementRef!.getElementsByClassName(`cell_header_${row.dataField}`)) as HTMLDivElement[];
         const cellElements = Array.from(this._rootElementRef!.getElementsByClassName(`cell_${row.dataField}`)) as HTMLDivElement[];
   
@@ -1045,11 +1068,11 @@ export class TransposedGrid {
         return height;
       };
 
-      const height = row.fixedHeight ?? `${getRowHeight()}px`;
+      const height = `${getRowHeight()}px`;
       updatedCssState = `${updatedCssState}
         .cell_header_${row.dataField}, .cell_${row.dataField} {
-          min-height: ${height};
-          height: ${height};
+          min-height: ${height} !important;
+          height: ${height} !important;
         }
       `;
     });

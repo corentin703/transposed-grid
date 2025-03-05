@@ -6,7 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { Data } from "./models/data";
-import { Group, GroupCollapsedEvent } from "./models/group";
+import { Group, GroupToggledEvent } from "./models/group";
 import { Row } from "./models/row";
 import { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
 import { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/customTemplate";
@@ -14,7 +14,7 @@ import { EditingOptions, EditionResultEvent, EditionValidationEvent } from "./mo
 import { SelectionEvent, SelectionOptions } from "./models/selection";
 import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
 export { Data } from "./models/data";
-export { Group, GroupCollapsedEvent } from "./models/group";
+export { Group, GroupToggledEvent } from "./models/group";
 export { Row } from "./models/row";
 export { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
 export { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/customTemplate";
@@ -150,7 +150,7 @@ declare global {
         "save": EditionResultEvent;
         "cancel": EditionResultEvent;
         "itemSelectionChange": SelectionEvent;
-        "groupCollapsed": GroupCollapsedEvent;
+        "groupToggled": GroupToggledEvent;
         "contentRendered": void;
     }
     interface HTMLTransposedGridElement extends Components.TransposedGrid, HTMLStencilElement {
@@ -225,7 +225,7 @@ declare namespace LocalJSX {
         "onEditionEnded"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onEditionStarted"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onEditionValidation"?: (event: TransposedGridCustomEvent<EditionValidationEvent>) => void;
-        "onGroupCollapsed"?: (event: TransposedGridCustomEvent<GroupCollapsedEvent>) => void;
+        "onGroupToggled"?: (event: TransposedGridCustomEvent<GroupToggledEvent>) => void;
         "onHeaderClick"?: (event: TransposedGridCustomEvent<HeaderClickEvent>) => void;
         "onHeaderContextMenu"?: (event: TransposedGridCustomEvent<HeaderContextMenuEvent>) => void;
         "onItemClick"?: (event: TransposedGridCustomEvent<ItemClickEvent>) => void;
