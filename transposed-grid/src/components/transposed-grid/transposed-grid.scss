@@ -37,6 +37,8 @@
 
   --mdc-typography-body2-font-size: var(--transposed-table-font-size, 0.875rem);
   --mdc-typography-subtitle2-font-size: var(--transposed-table-header-font-size, 1.1em);
+
+  --mdc-checkbox-checked-color: var(--transposed-table-section-checkbox-color);
 }
 
 .mdc-data-table {
@@ -214,14 +216,6 @@ th {
 // Z-index
 .cell_toolbar_header {
   z-index: 1;
-}
-
-.selection-checkbox-border {
-  border-color: var(--transposed-table-section-checkbox-color) !important;
-}
-
-.selection-checkbox-bg {
-  background-color: var(--transposed-table-section-checkbox-color) !important;
 }
 
 // Scrollbar
