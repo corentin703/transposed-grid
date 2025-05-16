@@ -2,6 +2,7 @@ import { FunctionalComponent, h } from '@stencil/core';
 import { Data } from '../../models/data';
 import { Group } from '../../models/group';
 import { Row } from '../../models/row';
+import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
 
 export type ItemCellWrapperProps = {
   item: Data;
@@ -43,9 +44,7 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
   const classNames = [
     'mdc-data-table__cell',
     'cell',
-    'cell-data',
-    `cell_${props.row.dataField}`,
-    `cell_record_${props.item[props.primaryKey]}`,
+    'cell_record',
     props.group ? `cell-grouped` : 'cell-no_grouped',
   ];
 
@@ -98,6 +97,8 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
   return (
     <td
       class={classNames.join(' ')}
+      data-primary-key={escapeDataAttribute(props.item[props.primaryKey])}
+      data-data-field={escapeDataAttribute(props.row.dataField)}
       onKeyDown={handleKeyDown}
       onContextMenu={event => {
         props.onContextMenu(event);

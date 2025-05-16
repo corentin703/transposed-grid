@@ -2,6 +2,7 @@ import { FunctionalComponent, h } from '@stencil/core';
 import { Group } from '../../models/group';
 import { MdChevronRight } from '../../icons/md-chevron-right';
 import { MdChevronDown } from '../../icons/md-chevron-down';
+import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
 
 export type GroupHeaderType = {
   group: Group;
@@ -11,7 +12,8 @@ export type GroupHeaderType = {
 export const GroupHeader: FunctionalComponent<GroupHeaderType> = (props) => {
   return (
     <div
-      class={`mdc-data-table__header-cell group_header group_header_${props.group.name} group_header-sticky`}
+      class={`mdc-data-table__header-cell group_header group_header-sticky`}
+      data-group-name={escapeDataAttribute(props.group.name)}
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();

@@ -3,6 +3,7 @@ import { Data } from '../../models/data';
 import { SelectionMode } from '../../models/selection';
 import { MdDelete } from '../../icons/md-delete';
 import { MdCheckbox } from '../material/MdCheckbox';
+import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
 
 export type ItemToolbarCellProps = {
   item: Data;
@@ -23,9 +24,7 @@ export type ItemToolbarCellProps = {
 export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props) => {
   const classNames = [
     'mdc-data-table__cell',
-    'cell-data',
     'cell__toolbar',
-    `cell__toolbar_${props.item[props.primaryKey]}`,
   ];
 
   if (props.isSelected) {
@@ -39,6 +38,7 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
   return (
     <td
       class={classNames.join(' ')}
+      data-primary-key={escapeDataAttribute(props.item[props.primaryKey])}
       onClick={() => {
         props.onSelectionChange(!props.isSelected);
       }}
@@ -62,6 +62,7 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
           ? (
               <button
                 class={'cell__btn-trash'}
+                type='button'
                 onClick={(e) => {
                   e.stopPropagation()
                   props.onDelete()

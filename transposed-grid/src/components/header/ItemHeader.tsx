@@ -4,6 +4,7 @@ import { MdSortDescending } from '../../icons/md-sort-descending';
 import { MdSortAscending } from '../../icons/md-sort-ascending';
 import { Row } from '../../models/row';
 import { Group } from '../../models/group';
+import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
 
 export type ItemHeaderProps = {
   isSticky?: boolean;
@@ -31,7 +32,6 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
   const classNames = [
     'mdc-data-table__header-cell',
     'cell_header',
-    `cell_header_${props.row.dataField}`,
     props.group
       ? 'cell_header-grouped'
       : 'cell_header-no-grouped',
@@ -54,6 +54,7 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
   return (
     <th
       class={classNames.join(' ')}
+      data-data-field={escapeDataAttribute(props.row.dataField)}
       onClick={event => {
         event.preventDefault();
         event.stopPropagation();
