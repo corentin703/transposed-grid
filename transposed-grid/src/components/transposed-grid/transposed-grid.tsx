@@ -31,6 +31,7 @@ import { ItemCellWrapper } from '../items/ItemCellWrapper';
 import { ItemToolbarCell } from '../items/ItemToolbarCell';
 import { CustomTemplate, CustomTemplateFactoryReturnType } from '../../models/customTemplate';
 import { GroupHeader } from '../header/GroupHeader';
+import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
 
 const FALLBACK_ROW_HEIGHT = '1.5rem';
 const FALLBACK_GROUP_HEIGHT = '1.5rem';
@@ -601,7 +602,7 @@ export class TransposedGrid {
                         const isEditing = this.editingItemState?.row?.dataField === row.dataField;
                         
                         return (
-                          <tr class={`cell_${row.dataField}`}>
+                          <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                             <ItemHeader
                               isSticky={true}
                               isEditing={isEditing}
@@ -621,7 +622,7 @@ export class TransposedGrid {
                       {
                         this._nonGroupRow?.filter(_row => _row.visible).map(row => {
                           return (
-                            <tr class={`cell_${row.dataField}`}>
+                            <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                               {renderDataFieldRow(row)}
                             </tr>
                           )
@@ -661,7 +662,7 @@ export class TransposedGrid {
                                 const isEditing = this.editingItemState?.row?.dataField === row.dataField;
 
                                 return (
-                                  <tr class={`cell_${row.dataField}`}>
+                                  <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                                     <ItemHeader
                                       row={row}
                                       isEditing={isEditing}
@@ -682,7 +683,7 @@ export class TransposedGrid {
                                   groupedRow.rows.filter(_row => _row.visible).map(row => {
 
                                     return (
-                                      <tr class={`cell_${row.dataField}`}>
+                                      <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                                         {renderDataFieldRow(row, groupedRow.group)}
                                       </tr>
                                     )
@@ -732,7 +733,7 @@ export class TransposedGrid {
                                   const isEditing = this.editingItemState?.row?.dataField === row.dataField;
 
                                   return (
-                                    <tr class={`cell_${row.dataField}`}>
+                                    <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                                       <ItemHeader
                                         row={row}
                                         isEditing={isEditing}
@@ -753,7 +754,7 @@ export class TransposedGrid {
                                   groupedRow.rows.filter(_row => _row.visible).map(row => {
 
                                     return (
-                                      <tr class={`cell_${row.dataField}`}>
+                                      <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                                         {renderDataFieldRow(row, groupedRow.group)}
                                       </tr>
                                     )
@@ -1004,8 +1005,10 @@ export class TransposedGrid {
     `;
 
     this.dataState.forEach(record => {
+      const recordPrimaryKeyEscaped = CSS.escape(escapeDataAttribute(record[this._primaryKey]));
+
       const getRecordWidth = () => {
-        const elements = Array.from(this._rootElementRef!.getElementsByClassName(`cell_record_${record[this._primaryKey]}`)) as HTMLDivElement[];
+        const elements = Array.from(this._rootElementRef!.querySelectorAll(`.cell_record[data-primary-key="${recordPrimaryKeyEscaped}"]`)) as HTMLDivElement[];
         const width = Math.max(...elements.map(el => el.clientWidth));
 
         if (this.maxPixelColumnWidth && width > this.maxPixelColumnWidth) {
@@ -1026,7 +1029,7 @@ export class TransposedGrid {
 
       const width = this.fixedColumnWidth ?? `${getRecordWidth()}px`;
       updatedCssState = `${updatedCssState}
-        .cell__toolbar_${record[this._primaryKey]}, .cell_record_${record[this._primaryKey]} {
+        .cell__toolbar[data-primary-key="${recordPrimaryKeyEscaped}"], .cell_record[data-primary-key="${recordPrimaryKeyEscaped}"] {
           min-width: ${width};
           width: ${width};
           max-width: ${width};
@@ -1035,6 +1038,8 @@ export class TransposedGrid {
     });
 
     this.rowsState?.forEach(row => {
+      const rowDataFieldEscaped = CSS.escape(escapeDataAttribute(row.dataField));
+
       const getRowHeight = () => {
         if (this.editingItemState?.row?.dataField === row.dataField) {
           if (this._lastFieldHeight[row.dataField] && !this._fieldHeightToRestoreAfterEditing[row.dataField]) {
@@ -1046,8 +1051,8 @@ export class TransposedGrid {
           return height;
         }
 
-        const headerElements = Array.from(this._rootElementRef!.getElementsByClassName(`cell_header_${row.dataField}`)) as HTMLDivElement[];
-        const cellElements = Array.from(this._rootElementRef!.getElementsByClassName(`cell_${row.dataField}`)) as HTMLDivElement[];
+        const headerElements = Array.from(this._rootElementRef!.querySelectorAll(`.cell_header[data-data-field="${rowDataFieldEscaped}"]`)) as HTMLDivElement[];
+        const cellElements = Array.from(this._rootElementRef!.querySelectorAll(`.cell[data-data-field="${rowDataFieldEscaped}"]`)) as HTMLDivElement[];
   
         const height = Math.max(...headerElements.map(el => el.offsetHeight), ...cellElements.map(el => el.clientHeight));
 
@@ -1070,7 +1075,7 @@ export class TransposedGrid {
 
       const height = `${getRowHeight()}px`;
       updatedCssState = `${updatedCssState}
-        .cell_header_${row.dataField}, .cell_${row.dataField} {
+        .cell_header[data-data-field="${rowDataFieldEscaped}"], .cell[data-data-field="${rowDataFieldEscaped}"] {
           min-height: ${height} !important;
           height: ${height} !important;
         }
@@ -1078,8 +1083,10 @@ export class TransposedGrid {
     });
 
     this.groupsState?.forEach(group => {
+      const groupNameEscaped = CSS.escape(escapeDataAttribute(group.name));
+
       const getHeight = () => {
-        const groupHeadersElements = Array.from(this._rootElementRef!.getElementsByClassName(`group_header_${group.name}`)) as HTMLDivElement[];
+        const groupHeadersElements = Array.from(this._rootElementRef!.querySelectorAll(`.group_header[data-group-name="${groupNameEscaped}"]`)) as HTMLDivElement[];
         const height = Math.max(...groupHeadersElements.map(el => el.offsetHeight));
 
         if (Number.isNaN(height) || !Number.isFinite(height)) {
@@ -1097,7 +1104,7 @@ export class TransposedGrid {
 
       const maxHeight = getHeight();
       updatedCssState = `${updatedCssState}
-        .group_header_${group.name}, .group_${group.name} {
+        .group_header[data-group-name="${groupNameEscaped}"], .group[data-group-name="${groupNameEscaped}"] {
           min-height: ${maxHeight}px;
           height: ${maxHeight}px;
         }
