@@ -279,7 +279,6 @@ export class TransposedGrid {
   }
 
   @Watch('groupsState')
-  @Watch('fixedGroupsState')
   @Watch('rowsState')
   @Watch('dataState')
   public watchRedraw() {

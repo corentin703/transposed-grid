@@ -45,6 +45,10 @@
   display: block;
 }
 
+.table-content-container {
+  overflow: auto;
+}
+
 :host {
   display: block;
   margin: 0;
