@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { CheckBoxTemplate } from "./models/checkbox";
 import { CheckBoxChangeEvent } from "./components/base/check-box/check-box";
 import { Data } from "./models/data";
 import { Group, GroupToggledEvent } from "./models/group";
@@ -14,6 +15,7 @@ import { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/custom
 import { EditingOptions, EditionResultEvent, EditionValidationEvent } from "./models/edition";
 import { SelectionEvent, SelectionOptions } from "./models/selection";
 import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
+export { CheckBoxTemplate } from "./models/checkbox";
 export { CheckBoxChangeEvent } from "./components/base/check-box/check-box";
 export { Data } from "./models/data";
 export { Group, GroupToggledEvent } from "./models/group";
@@ -25,6 +27,7 @@ export { SelectionEvent, SelectionOptions } from "./models/selection";
 export { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
 export namespace Components {
     interface CheckBox {
+        "checkBoxTemplate"?: CheckBoxTemplate;
         "indeterminate"?: boolean;
         "isSelected": boolean;
     }
@@ -52,10 +55,6 @@ export namespace Components {
         "right"?: ToolbarButtonOptions[];
         "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
     }
-    interface IconChevronDown {
-        "color"?: string;
-        "size"?: string;
-    }
     interface ItemCell {
         "data": Data;
         "group"?: Group | undefined;
@@ -69,6 +68,7 @@ export namespace Components {
         "allowHeaderFiltering"?: boolean;
         "allowSorting"?: boolean;
         "cancelEdit": () => Promise<void>;
+        "checkboxTemplate"?: CheckBoxTemplate;
         "editing"?: EditingOptions;
         "fixedColumnWidth"?: string;
         "fixedGroups"?: Group[];
@@ -151,12 +151,6 @@ declare global {
         prototype: HTMLGridToolbarElement;
         new (): HTMLGridToolbarElement;
     };
-    interface HTMLIconChevronDownElement extends Components.IconChevronDown, HTMLStencilElement {
-    }
-    var HTMLIconChevronDownElement: {
-        prototype: HTMLIconChevronDownElement;
-        new (): HTMLIconChevronDownElement;
-    };
     interface HTMLItemCellElementEventMap {
         "valueChange": any;
     }
@@ -209,13 +203,13 @@ declare global {
         "default-cell-edit-template": HTMLDefaultCellEditTemplateElement;
         "default-cell-template": HTMLDefaultCellTemplateElement;
         "grid-toolbar": HTMLGridToolbarElement;
-        "icon-chevron-down": HTMLIconChevronDownElement;
         "item-cell": HTMLItemCellElement;
         "transposed-grid": HTMLTransposedGridElement;
     }
 }
 declare namespace LocalJSX {
     interface CheckBox {
+        "checkBoxTemplate"?: CheckBoxTemplate;
         "indeterminate"?: boolean;
         "isSelected"?: boolean;
         "onStateChange"?: (event: CheckBoxCustomEvent<CheckBoxChangeEvent>) => void;
@@ -243,10 +237,6 @@ declare namespace LocalJSX {
         "right"?: ToolbarButtonOptions[];
         "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
     }
-    interface IconChevronDown {
-        "color"?: string;
-        "size"?: string;
-    }
     interface ItemCell {
         "data": Data;
         "group"?: Group | undefined;
@@ -260,6 +250,7 @@ declare namespace LocalJSX {
     interface TransposedGrid {
         "allowHeaderFiltering"?: boolean;
         "allowSorting"?: boolean;
+        "checkboxTemplate"?: CheckBoxTemplate;
         "editing"?: EditingOptions;
         "fixedColumnWidth"?: string;
         "fixedGroups"?: Group[];
@@ -295,7 +286,6 @@ declare namespace LocalJSX {
         "default-cell-edit-template": DefaultCellEditTemplate;
         "default-cell-template": DefaultCellTemplate;
         "grid-toolbar": GridToolbar;
-        "icon-chevron-down": IconChevronDown;
         "item-cell": ItemCell;
         "transposed-grid": TransposedGrid;
     }
@@ -308,7 +298,6 @@ declare module "@stencil/core" {
             "default-cell-edit-template": LocalJSX.DefaultCellEditTemplate & JSXBase.HTMLAttributes<HTMLDefaultCellEditTemplateElement>;
             "default-cell-template": LocalJSX.DefaultCellTemplate & JSXBase.HTMLAttributes<HTMLDefaultCellTemplateElement>;
             "grid-toolbar": LocalJSX.GridToolbar & JSXBase.HTMLAttributes<HTMLGridToolbarElement>;
-            "icon-chevron-down": LocalJSX.IconChevronDown & JSXBase.HTMLAttributes<HTMLIconChevronDownElement>;
             "item-cell": LocalJSX.ItemCell & JSXBase.HTMLAttributes<HTMLItemCellElement>;
             "transposed-grid": LocalJSX.TransposedGrid & JSXBase.HTMLAttributes<HTMLTransposedGridElement>;
         }

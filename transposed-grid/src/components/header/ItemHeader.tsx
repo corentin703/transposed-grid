@@ -1,7 +1,7 @@
 import { FunctionalComponent, h } from '@stencil/core';
 import { SortOrder } from '../../models/sorting';
-import { MdSortDescending } from '../../icons/md-sort-descending';
-import { MdSortAscending } from '../../icons/md-sort-ascending';
+import { MdSortDescending } from '../../icons/sort-descending';
+import { MdSortAscendingIcon } from '../../icons/sort-ascending';
 import { Row } from '../../models/row';
 import { Group } from '../../models/group';
 import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
@@ -26,7 +26,7 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
       return <MdSortDescending size={'1.5rem'} />
     }
 
-    return <MdSortAscending size={'1.5rem'} />
+    return <MdSortAscendingIcon size={'1.5rem'} />
   };
 
   const classNames = [

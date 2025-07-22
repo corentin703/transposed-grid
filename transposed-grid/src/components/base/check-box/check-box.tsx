@@ -1,4 +1,5 @@
-import { h, Prop, Event, EventEmitter, Component, Host } from '@stencil/core';
+import { h, Prop, Event, EventEmitter, Component, Host, Watch, State } from '@stencil/core';
+import { CheckBoxTemplate } from '../../../models/checkbox';
 
 export type CheckBoxChangeEvent = {
   isSelected: boolean
@@ -12,12 +13,74 @@ export type CheckBoxChangeEvent = {
 export class Checkbox {
   @Prop() indeterminate?: boolean;
   @Prop() isSelected: boolean = false;
+
+  @Prop() checkBoxTemplate?: CheckBoxTemplate;
   
   @Event() stateChange!: EventEmitter<CheckBoxChangeEvent>;
 
+  @State() public renderDefaultTemplate: boolean = true;
+
+  private _customTemplateDestructor?: () => void;
+
+  public connectedCallback() {
+    this.watchToolbarTemplate();
+  }
+
+  @Watch('checkBoxTemplate')
+  public watchToolbarTemplate() {
+    this.renderDefaultTemplate = this.checkBoxTemplate === undefined;
+  }
+
   render() {
+
+    if (this._customTemplateDestructor) {
+      this._customTemplateDestructor();
+      this._customTemplateDestructor = undefined;
+    }
+
+    const renderCheckbox = () => {
+      if (this.checkBoxTemplate) {
+        const result = this.checkBoxTemplate({
+          isSelected: this.isSelected,
+          indeterminate: this.indeterminate,
+          onStateChange: isSelected => this.stateChange.emit({
+            isSelected: isSelected,
+          }),
+        });
+
+        if (result) {
+          if (result instanceof HTMLElement) {
+            return (
+              <div 
+                ref={ref => {
+                  if (!ref) {
+                    return;
+                  }
+  
+                  ref.innerHTML = '';
+                  ref.append(result);
+                }} 
+              />
+            );
+          }
+  
+          this._customTemplateDestructor = result.destructor;
+          return (
+            <div 
+              ref={ref => {
+                if (!ref) {
+                  return;
+                }
+
+                ref.innerHTML = '';
+                ref.append(result.element);
+              }} 
+            />
+          );
+        }
+      }
+
     return (
-      <Host>
         <div class={'checkbox'}>
           <input
             type={'checkbox'}
@@ -31,6 +94,12 @@ export class Checkbox {
             }}
           />
         </div>
+      )
+    }
+
+    return (
+      <Host>
+        {renderCheckbox()}
       </Host>
     )
   }
