@@ -6,6 +6,7 @@ import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
 import { CheckBoxTemplate } from '../../components';
 
 export type ItemToolbarCellProps = {
+  key: string | number;
   item: Data;
   primaryKey: string;
 
@@ -25,7 +26,6 @@ export type ItemToolbarCellProps = {
 
 export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props) => {
   const classNames = [
-    'mdc-data-table__cell',
     'cell__toolbar',
   ];
 
@@ -39,6 +39,7 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
 
   return (
     <td
+      key={props.key}
       class={classNames.join(' ')}
       data-primary-key={escapeDataAttribute(props.item[props.primaryKey])}
       onClick={() => {

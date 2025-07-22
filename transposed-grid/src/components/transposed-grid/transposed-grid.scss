@@ -93,7 +93,7 @@ th {
   width: 100%;
   color: var(--transposed-table-color, #222222);
   background-color: var(--transposed-table-bg, rgba(255, 255, 255, 0.95));
-  border-color: var(--transposed-table-border-color, rgba(224, 224, 224, 0.8));
+  border-color: var(--transposed-table-border-color, rgba(160, 160, 160, 0.7));
 }
 
 .cell-editing {
@@ -105,14 +105,14 @@ th {
   background-color: var(--transposed-table-hover-bg, rgba(238, 238, 238, 0.7));
 }
 
-.cell-selected {
-  color: var(--transposed-table-selected-color, var(--transposed-table-color, #222222));
-  background-color: var(--transposed-table-selected-bg, rgba(224, 224, 224, 0.7));
-}
-
 .cell-striped {
   color: var(--transposed-table-striped-color, var(--transposed-table-color, #222222));
   background-color: var(--transposed-table-striped-bg, rgba(245, 245, 245, 0.7));
+}
+
+.cell-selected {
+  color: var(--transposed-table-selected-color, var(--transposed-table-color, #222222));
+  background-color: var(--transposed-table-selected-bg, rgba(224, 224, 224, 0.7));
 }
 
 .cell-updated {

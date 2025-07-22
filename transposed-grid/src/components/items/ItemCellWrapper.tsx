@@ -5,6 +5,8 @@ import { Row } from '../../models/row';
 import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
 
 export type ItemCellWrapperProps = {
+  key: string | number;
+
   item: Data;
   primaryKey: string;
   value: any;
@@ -42,7 +44,6 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
   const hasBeenUpdated = props.value !== props.originalValue;
 
   const classNames = [
-    'mdc-data-table__cell',
     'cell',
     'cell_record',
     props.group ? `cell-grouped` : 'cell-no_grouped',
@@ -59,10 +60,10 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
   if (props.isEditing) {
     classNames.push('cell-editing');
     classNames.push(`cell__editing_${props.row.dataField}`);
-  } else if (hasBeenUpdated) {
-    classNames.push('cell-updated');
   } else if (props.isSelected) {
     classNames.push('cell-selected');
+  } else if (hasBeenUpdated) {
+    classNames.push('cell-updated');
   } else if (props.isActive) {
     classNames.push('cell-active');
   } else if (props.isStriped) {
@@ -96,6 +97,7 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
 
   return (
     <td
+      key={props.key}
       class={classNames.join(' ')}
       data-primary-key={escapeDataAttribute(props.item[props.primaryKey])}
       data-data-field={escapeDataAttribute(props.row.dataField)}

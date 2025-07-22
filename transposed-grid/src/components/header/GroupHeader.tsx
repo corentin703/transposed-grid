@@ -12,7 +12,7 @@ export type GroupHeaderType = {
 export const GroupHeader: FunctionalComponent<GroupHeaderType> = (props) => {
   return (
     <div
-      class={`mdc-data-table__header-cell group_header group_header-sticky`}
+      class={`group_header group_header-sticky`}
       data-group-name={escapeDataAttribute(props.group.name)}
       onClick={(event) => {
         event.preventDefault();

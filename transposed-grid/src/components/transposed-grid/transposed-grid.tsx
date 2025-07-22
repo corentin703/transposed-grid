@@ -182,12 +182,14 @@ export class TransposedGrid {
   
   @State() public cssState?: string
 
+  @State()
+  private itemsMetadata: Record<string, ItemMetadata> = { };
+
   private _primaryKey!: string;
   private _groupedRows?: GroupedRows[];
   private _nonGroupRow?: Row[];
 
   private _dataSnapshot?: Data[];
-  private _itemsMetadata: Map<string, ItemMetadata> = new Map();
 
   private _rootElementRef?: HTMLDivElement;
   private _isFirstRender: boolean = true;
@@ -281,7 +283,6 @@ export class TransposedGrid {
   }
 
   @Watch('groupsState')
-  @Watch('fixedGroupsState')
   @Watch('rowsState')
   @Watch('dataState')
   public watchRedraw() {
@@ -532,6 +533,7 @@ export class TransposedGrid {
 
         return (
           <ItemCellWrapper
+            key={item[this._primaryKey]}
             item={item}
             rowIndex={itemIdx}
             row={row}
@@ -590,11 +592,11 @@ export class TransposedGrid {
               <table class={'table-header'}>
                   <tbody>
                     {
-                      this._nonGroupRow?.filter(_row => _row.visible).map(row => {
+                      this._nonGroupRow?.filter(_row => _row.visible).map((row, rowKey) => {
                         const isEditing = this.editingItemState?.row?.dataField === row.dataField;
                         
                         return (
-                          <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
+                          <tr key={rowKey} class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                             <ItemHeader
                               isSticky={true}
                               isEditing={isEditing}
@@ -612,9 +614,9 @@ export class TransposedGrid {
                 <table class={'table-data'}>
                     <tbody>
                       {
-                        this._nonGroupRow?.filter(_row => _row.visible).map(row => {
+                        this._nonGroupRow?.filter(_row => _row.visible).map((row, rowKey) => {
                           return (
-                            <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
+                            <tr key={rowKey} class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                               {renderDataFieldRow(row)}
                             </tr>
                           )
@@ -626,7 +628,7 @@ export class TransposedGrid {
               </section>
               <section ref={ref => this._fixedGroupTableSectionRef = ref!}>
                 {
-                  this._groupedRows?.filter(state => state.group.isFixed)?.map(groupedRow => {
+                  this._groupedRows?.filter(state => state.group.isFixed)?.map((groupedRow, groupedRowKey) => {
 
                     const groupHeader = (
                       <GroupHeader
@@ -644,38 +646,38 @@ export class TransposedGrid {
                     }
 
                     return (
-                      <div>
+                      <div key={groupedRowKey}>
                         {groupHeader}
-                      <div class={'table_section_container'}>
-                        <table class={'table-header'}>
-                          <tbody>
-                            {
-                              groupedRow.rows.filter(_row => _row.visible).map(row => {
-                                const isEditing = this.editingItemState?.row?.dataField === row.dataField;
+                        <div class={'table_section_container'}>
+                          <table class={'table-header'}>
+                            <tbody>
+                              {
+                                groupedRow.rows.filter(_row => _row.visible).map((row, rowKey) => {
+                                  const isEditing = this.editingItemState?.row?.dataField === row.dataField;
 
-                                return (
-                                  <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
-                                    <ItemHeader
-                                      row={row}
-                                      isEditing={isEditing}
-                                      group={groupedRow.group}
-                                      onClick={() => this._handleHeaderClick(row)}
-                                      onContextMenu={event => this._handleHeaderContextMenu(event, row)}
-                                    />
-                                  </tr>
-                                )
-                              })
-                            }
-                          </tbody>
-                        </table>
-                        <div class={'table-data-container'} ref={ref => this._fixedGroupTableContainersRefs[groupedRow.group.name] = ref!}>
-                          <table class={'table-data'}>
+                                  return (
+                                    <tr key={rowKey} class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
+                                      <ItemHeader
+                                        row={row}
+                                        isEditing={isEditing}
+                                        group={groupedRow.group}
+                                        onClick={() => this._handleHeaderClick(row)}
+                                        onContextMenu={event => this._handleHeaderContextMenu(event, row)}
+                                      />
+                                    </tr>
+                                  )
+                                })
+                              }
+                            </tbody>
+                          </table>
+                          <div class={'table-data-container'} ref={ref => this._fixedGroupTableContainersRefs[groupedRow.group.name] = ref!}>
+                            <table class={'table-data'}>
                               <tbody>
                                 {
-                                  groupedRow.rows.filter(_row => _row.visible).map(row => {
+                                  groupedRow.rows.filter(_row => _row.visible).map((row, rowKey) => {
 
                                     return (
-                                      <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
+                                      <tr key={rowKey} class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                                         {renderDataFieldRow(row, groupedRow.group)}
                                       </tr>
                                     )
@@ -697,7 +699,7 @@ export class TransposedGrid {
                 style={{ maxHeight: this._scrollableGroupsSectionHeight, }}
               >
                 {
-                  this._groupedRows?.filter(state => !state.group.isFixed)?.map(groupedRow => {
+                  this._groupedRows?.filter(state => !state.group.isFixed)?.map((groupedRow, groupedRowKey) => {
 
                     const groupHeader = (
                       <GroupHeader
@@ -715,38 +717,38 @@ export class TransposedGrid {
                     }
 
                     return (
-                      <div>
+                      <div key={groupedRowKey}>
                         {groupHeader}
-                      <div class={'table_section_container'}>
-                        <table class={'table-header'}>
-                            <tbody>
-                              {
-                                groupedRow.rows.filter(_row => _row.visible).map(row => {
-                                  const isEditing = this.editingItemState?.row?.dataField === row.dataField;
-
-                                  return (
-                                    <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
-                                      <ItemHeader
-                                        row={row}
-                                        isEditing={isEditing}
-                                        group={groupedRow.group}
-                                        onClick={() => this._handleHeaderClick(row)}
-                                        onContextMenu={event => this._handleHeaderContextMenu(event, row)}
-                                      />
-                                    </tr>
-                                  )
-                                })
-                              }
-                            </tbody>
-                          </table>
-                        <div class={'table-data-container'} ref={ref => this._groupTableContainersRefs[groupedRow.group.name] = ref!}>
-                          <table class={'table-data'}>
+                        <div class={'table_section_container'}>
+                          <table class={'table-header'}>
                               <tbody>
                                 {
-                                  groupedRow.rows.filter(_row => _row.visible).map(row => {
+                                  groupedRow.rows.filter(_row => _row.visible).map((row, rowKey) => {
+                                    const isEditing = this.editingItemState?.row?.dataField === row.dataField;
 
                                     return (
-                                      <tr class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
+                                      <tr key={rowKey} class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
+                                        <ItemHeader
+                                          row={row}
+                                          isEditing={isEditing}
+                                          group={groupedRow.group}
+                                          onClick={() => this._handleHeaderClick(row)}
+                                          onContextMenu={event => this._handleHeaderContextMenu(event, row)}
+                                        />
+                                      </tr>
+                                    )
+                                  })
+                                }
+                              </tbody>
+                            </table>
+                          <div class={'table-data-container'} ref={ref => this._groupTableContainersRefs[groupedRow.group.name] = ref!}>
+                            <table class={'table-data'}>
+                              <tbody>
+                                {
+                                  groupedRow.rows.filter(_row => _row.visible).map((row, rowKey) => {
+
+                                    return (
+                                      <tr key={rowKey} class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                                         {renderDataFieldRow(row, groupedRow.group)}
                                       </tr>
                                     )
@@ -815,6 +817,7 @@ export class TransposedGrid {
 
                           return (
                             <ItemToolbarCell
+                              key={item[this._primaryKey]}
                               selectionMode={this.selectionOptionsState.mode!}
                               item={item}
                               primaryKey={this._primaryKey}
@@ -889,12 +892,22 @@ export class TransposedGrid {
   private _getItemMetadata(item: Data): ItemMetadata {
     const itemId = item[this._primaryKey];
 
-    if (!this._itemsMetadata.has(itemId)) {
-      this._itemsMetadata.set(itemId, {});
+    if (!this.itemsMetadata[itemId]) {
+      this.itemsMetadata[itemId]  = {};
     }
 
-    return this._itemsMetadata.get(itemId)!;
+    return this.itemsMetadata[itemId]!;
   }
+
+  private _setItemMetadata(item: Data, itemsMetadata: ItemMetadata) {
+    const itemId = item[this._primaryKey];
+
+    this.itemsMetadata = {
+      ...this.itemsMetadata,
+      [itemId]: itemsMetadata,
+    }
+  }
+
 
   private _sort(rowToSort: Row) {
     this.editingItemState = undefined;
@@ -1207,6 +1220,7 @@ export class TransposedGrid {
     this.dataState = updatedData;
     this.isEditingState = true;
 
+    this._setItemMetadata(item, metadata);
     this._handleValidation();
   }
 
@@ -1326,21 +1340,22 @@ export class TransposedGrid {
       return;
     }
 
+    const item = this.dataState[itemIdx];
+    const itemId = item[this._primaryKey];
+
+    let newItemsMetadata = { ...this.itemsMetadata };
+
     if (this.selectionOptionsState.mode === SelectionMode.Single) {
-      this.dataState.forEach(item => {
-        const metadata = this._getItemMetadata(item);
-        metadata.selected = false;
+      // Nouvelle référence pour chaque metadata
+      Object.keys(newItemsMetadata).forEach(id => {
+        newItemsMetadata[id] = { ...newItemsMetadata[id], selected: false };
       });
     }
 
-    const metadata = this._getItemMetadata(this.dataState[itemIdx]);
-    metadata.selected = isSelected;
+    newItemsMetadata[itemId] = { ...newItemsMetadata[itemId], selected: isSelected };
 
-    const dataState = this.dataState = [
-      ...this.dataState,
-    ];
-
-    this._updateSelection(dataState);
+    this.itemsMetadata = newItemsMetadata;
+    this._updateSelection(this.dataState);
   }
 
   private _selectAll(areSelected: boolean) {
@@ -1348,14 +1363,13 @@ export class TransposedGrid {
       return;
     }
 
-    const dataState = this.dataState.map((item: any) => {
-      const metadata = this._getItemMetadata(item);
-      metadata.selected = areSelected;
-
-      return item;
+    const newItemsMetadata = { ...this.itemsMetadata };
+    Object.keys(newItemsMetadata).forEach(id => {
+      newItemsMetadata[id] = { ...newItemsMetadata[id], selected: areSelected };
     });
 
-    this._updateSelection(dataState);
+    this.itemsMetadata = newItemsMetadata;
+    this._updateSelection(this.dataState);
   }
 
   private _updateSelection(dataState: Data[]) {
