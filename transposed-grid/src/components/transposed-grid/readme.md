@@ -11,6 +11,7 @@
 | --------------------------- | ------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `allowHeaderFiltering`      | `allow-header-filtering`        |             | `boolean \| undefined`                                                                                                                                                                                                                                                                | `undefined` |
 | `allowSorting`              | `allow-sorting`                 |             | `boolean \| undefined`                                                                                                                                                                                                                                                                | `undefined` |
+| `checkboxTemplate`          | --                              |             | `((props: CheckBoxOptions) => CustomTemplateFactoryReturnType) \| undefined`                                                                                                                                                                                                          | `undefined` |
 | `editing`                   | --                              |             | `RecordLevelOptions & { confirmDelete?: boolean \| undefined; startEditAction?: StartEditAction \| undefined; optionRowName?: string \| undefined; texts?: { cancel?: string \| undefined; editRow?: string \| undefined; save?: string \| undefined; } \| undefined; } \| undefined` | `undefined` |
 | `fixedColumnWidth`          | `fixed-column-width`            |             | `string \| undefined`                                                                                                                                                                                                                                                                 | `undefined` |
 | `fixedGroups`               | --                              |             | `Group[] \| undefined`                                                                                                                                                                                                                                                                | `undefined` |
@@ -43,7 +44,7 @@
 | `itemClick`           |             | `CustomEvent<{ item: Data; itemIdx: number; primaryKey?: string \| undefined; primaryKeyValue?: string \| undefined; row?: Row \| undefined; }>` |
 | `itemContextMenu`     |             | `CustomEvent<{ item: Data; itemIdx: number; primaryKey?: string \| undefined; primaryKeyValue?: string \| undefined; row?: Row \| undefined; }>` |
 | `itemDoubleClick`     |             | `CustomEvent<{ item: Data; itemIdx: number; primaryKey?: string \| undefined; primaryKeyValue?: string \| undefined; row?: Row \| undefined; }>` |
-| `itemHoovering`       |             | `CustomEvent<{ item: Data; itemIdx: number; primaryKey?: string \| undefined; primaryKeyValue?: string \| undefined; row?: Row \| undefined; }>` |
+| `itemHovering`        |             | `CustomEvent<{ item: Data; itemIdx: number; primaryKey?: string \| undefined; primaryKeyValue?: string \| undefined; row?: Row \| undefined; }>` |
 | `itemSelectionChange` |             | `CustomEvent<{ selectedItems: Data[]; mode: SelectionMode; areAllSelected: boolean; status: SelectionStatus; }>`                                 |
 | `save`                |             | `CustomEvent<EditionResult & { data: Data[]; original: Data[]; } & { cancelEdit: boolean; }>`                                                    |
 
@@ -86,12 +87,14 @@ Type: `Promise<void>`
 ### Depends on
 
 - [grid-toolbar](../toolbar/grid-toolbar)
+- [check-box](../base/check-box)
 - [item-cell](../items/item-cell)
 
 ### Graph
 ```mermaid
 graph TD;
   transposed-grid --> grid-toolbar
+  transposed-grid --> check-box
   transposed-grid --> item-cell
   item-cell --> default-cell-template
   item-cell --> default-cell-edit-template

@@ -10,7 +10,7 @@ export type ItemClickEvent = {
 }
 
 export type ItemDoubleClickEvent = ItemClickEvent
-export type ItemHooveringEvent = ItemClickEvent
+export type ItemHoveringEvent = ItemClickEvent
 export type ItemContextMenuEvent = ItemClickEvent
 
 export type HeaderClickEvent = {

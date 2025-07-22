@@ -31,7 +31,7 @@ export const ItemToolbarHeader: FunctionalComponent<ItemToolbarHeaderProps> = (p
               <check-box
                 indeterminate={props.selectionStatus === SelectionStatus.Some}
                 isSelected={props.selectionStatus === SelectionStatus.All}
-                onSelectionChange={event => props.onSelectionChange(event.detail.isSelected)}
+                onCheckChange={event => props.onSelectionChange(event.detail.isSelected)}
                 checkBoxTemplate={props.checkBoxTemplate}
               />
             )

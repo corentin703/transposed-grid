@@ -212,8 +212,8 @@ export default {
     onItemDoubleClick: {
       action: 'itemDoubleClick',
     },
-    onItemHoovering: {
-      action: 'itemHoovering',
+    onItemHovering: {
+      action: 'itemHovering',
     },
     onEditionValidation: {
       action: 'editionValidation',
