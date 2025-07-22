@@ -1,74 +1,31 @@
-@use "@material/checkbox"; // Required only for data table with row selection.
-@use "@material/data-table/data-table";
-//@use "@material/icon-button/styles"; // Required only for data table with column sorting.
-
-@use "@material/button/styles";
-//@import "@material/icon-button"; // Required only for data table with column sorting.
-
-@use "@material/theme";
-@use "@material/theme/custom-properties";
-
-// @use "overlayscrollbars/styles/overlayscrollbars";
-
-@include checkbox.core-styles;
-@include data-table.core-styles;
-@include data-table.theme-baseline;
-
-//:host {
-//  --transposed-table-color: var(--transposed-table-color, #{theme.$on-surface});
-//  --transposed-table-bg: var(--transposed-table-bg, #{theme.$surface});
-//
-//  --transposed-table-group-color: var(--transposed-table-group-color, #{theme.$on-secondary});
-//  --transposed-table-group-bg: var(--transposed-table-group-bg, #{theme.$secondary});
-//
-//  --transposed-table-striped-color: var(--transposed-table-striped-color, #{theme.$on-surface});
-//  --transposed-table-striped-bg: var(--transposed-table-striped-bg, #{theme.$green-100});
-//
-//  --transposed-table-hoover-color: var(--transposed-table-hoover-color, #{theme.$on-surface});
-//  --transposed-table-hoover-bg: var(--transposed-table-hoover-bg, #{theme.$grey-200});
-//
-//  --transposed-table-cell-updated-color: var(--transposed-table-cell-updated-color, #{theme.$on-surface});
-//  --transposed-table-cell-updated-bg: var(--transposed-table-cell-updated-bg, #{theme.$green-200});
-//}
+/* =========================
+   VARIABLES CSS
+   ========================= */
 
 :host {
-  --mdc-typography-font-family: var(--transposed-table-font-family);
-  --mdc-typography-subtitle2-font-family: var(--transposed-table-header-font-family, var(--transposed-table-font-family));
-
-  --mdc-typography-body2-font-size: var(--transposed-table-font-size, 0.875rem);
-  --mdc-typography-subtitle2-font-size: var(--transposed-table-header-font-size, 1.1em);
-
-  --mdc-checkbox-checked-color: var(--transposed-table-section-checkbox-color);
-}
-
-.mdc-data-table {
-  display: block;
-}
-
-:host {
+  font-family: var(--transposed-table-font-family, 'Roboto', Arial, sans-serif);
   display: block;
   margin: 0;
   padding: 0;
 }
 
-.cell-hidden {
-  display: none;
-}
+/* =========================
+   TABLE & CONTAINERS
+   ========================= */
 
 table {
   border-spacing: 0;
 }
 
 .table_container {
+  height: 100%;
+
   .table_section_container {
     display: flex;
   }
-
   .table-header {
     flex-shrink: 1;
   }
-
-  height: 100%;
 }
 
 .table-content-container {
@@ -88,17 +45,6 @@ table {
   overflow-y: overlay;
 }
 
-
-// Head column & scroll
-th {
-  position: sticky;
-  left: 0;
-  top: auto;
-
-  background-color: white;
-  white-space: nowrap;
-}
-
 .table__container {
   overflow-x: overlay;
   overflow-y: scroll;
@@ -112,20 +58,42 @@ th {
 }
 
 .table_groups_scroll_container {
-
-
   .cell_header {
     position: static;
   }
 }
 
+/* =========================
+   HEADERS & COLONNES
+   ========================= */
+
+th {
+  position: sticky;
+  left: 0;
+  top: auto;
+  background-color: white;
+  white-space: nowrap;
+}
+
+/* =========================
+   CELLULES
+   ========================= */
+
+.cell,
+.cell_header,
+.cell__toolbar,
+.group_header {
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 0 16px;
+}
+
 .cell {
   height: 100%;
   width: 100%;
-
-  color: var(--transposed-table-color);
-  background-color: var(--transposed-table-bg);
-  border-color: var(--transposed-table-border-color);
+  color: var(--transposed-table-color, #222222);
+  background-color: var(--transposed-table-bg, rgba(255, 255, 255, 0.95));
+  border-color: var(--transposed-table-border-color, rgba(224, 224, 224, 0.8));
 }
 
 .cell-editing {
@@ -133,35 +101,89 @@ th {
 }
 
 .cell-active {
-  color: var(--transposed-table-hoover-color);
-  background-color: var(--transposed-table-hoover-bg);
+  color: var(--transposed-table-hoover-color, var(--transposed-table-color, #222222));
+  background-color: var(--transposed-table-hoover-bg, rgba(238, 238, 238, 0.7));
 }
 
 .cell-selected {
-  color: var(--transposed-table-selected-color);
-  background-color: var(--transposed-table-selected-bg);
+  color: var(--transposed-table-selected-color, var(--transposed-table-color, #222222));
+  background-color: var(--transposed-table-selected-bg, rgba(224, 224, 224, 0.7));
 }
 
 .cell-striped {
-  color: var(--transposed-table-striped-color);
-  background-color: var(--transposed-table-striped-bg);
+  color: var(--transposed-table-striped-color, var(--transposed-table-color, #222222));
+  background-color: var(--transposed-table-striped-bg, rgba(245, 245, 245, 0.7));
 }
 
 .cell-updated {
-  color: var(--transposed-table-cell-updated-color);
-  background-color: var(--transposed-table-cell-updated-bg);
+  color: var(--transposed-table-cell-updated-color, var(--transposed-table-color, #222222));
+  background-color: var(--transposed-table-cell-updated-bg, rgba(178, 223, 219, 0.7));
 }
 
+.cell-hidden {
+  display: none;
+}
+
+/* =========================
+   HEADER DE CELLULES
+   ========================= */
+
+.cell_header {
+  font-family: var(--transposed-table-header-font-family, var(--transposed-table-font-family, 'Roboto', Arial, sans-serif));
+  font-size: var(--transposed-table-header-font-size, 1.1em);
+  line-height: var(--transposed-table-header-line-height, 1.375rem);
+  font-weight: var(--transposed-table-header-font-weight, 500);
+  letter-spacing: var(--transposed-table-header-letter-spacing, 0.0071428571em);
+  text-decoration: var(--transposed-table-header-text-decoration, inherit);
+  text-transform: var(--transposed-table-header-text-transform, inherit);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  outline: none;
+  text-align: left;
+  z-index: 1;
+  background-color: var(--transposed-table-header-bg, rgba(245, 245, 245, 0.92));
+  border-right: 1px solid var(--transposed-table-header-border-color, rgba(245, 245, 245, 0.92));
+
+  .cell_header_label {
+    padding: 1px;
+    font-weight: bold;
+    font-family: var(--transposed-table-header-font-family, var(--transposed-table-font-family, 'Roboto', Arial, sans-serif));
+    font-size: var(--transposed-table-header-font-size, 1.1em);
+  }
+  .cell_header_content {
+    min-width: 150px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* =========================
+   TOOLBAR
+   ========================= */
+
+.cell__toolbar {
+  border-top: 1px solid var(--transposed-table-header-border-color, rgba(224, 224, 224, 0.8));
+}
+
+.cell_toolbar_header {
+  z-index: 1;
+}
+
+/* =========================
+   GROUPES
+   ========================= */
+
 .group {
-  color: var(--transposed-table-group-color);
-  background-color: var(--transposed-table-group-bg);
+  color: var(--transposed-table-group-color, #FFFFFF);
+  background-color: var(--transposed-table-group-bg, rgba(96, 125, 139, 0.85));
   padding: 0;
 }
 
 .group_header {
-  background-color: var(--transposed-table-group-bg);
-  color: var(--transposed-table-group-color);
-
+  background-color: var(--transposed-table-group-bg, rgba(96, 125, 139, 0.85));
+  color: var(--transposed-table-group-color, #FFFFFF);
   overflow: initial;
 
   svg {
@@ -172,11 +194,11 @@ th {
     display: flex;
     gap: 1rem;
     white-space: nowrap;
-
     align-items: center;
     max-width: 100px;
 
-    .group_header_label, .group_header_toolbar {
+    .group_header_label,
+    .group_header_toolbar {
       padding: var(--transposed-table-group-header-padding, 6px);
       font-weight: bold;
       font-size: var(--transposed-table-group-header-font-size, 1.1em);
@@ -190,48 +212,14 @@ th {
   z-index: 2;
 }
 
-.cell_header {
-  z-index: 1;
-  background-color: var(--transposed-table-header-bg);
-  border-right: 1px solid var(--transposed-table-header-border-color);
-
-  .cell_header_label {
-    padding: 1px;
-    font-weight: bold;
-    font-family: var(--transposed-table-header-font-family);
-    font-size: var(--transposed-table-header-font-size, 1.1em);
-  }
-
-  .cell_header_content {
-    min-width: 150px;
-
-    display: flex;
-
-    align-items: center;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-}
-
-.cell__toolbar {
-  border-top: 1px solid var(--transposed-table-header-border-color);
-}
-
-// Z-index
-.cell_toolbar_header {
-  z-index: 1;
-}
-
-// Scrollbar
-::-webkit-scrollbar-track {
-  //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  //background-color: #F5F5F5;
-}
+/* =========================
+   SCROLLBARS
+   ========================= */
 
 ::-webkit-scrollbar {
   height: 8px;
   width: 8px;
-  background-color: #FFFFFF;
+  background-color: #fff;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -244,3 +232,8 @@ th {
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
   background-color: rgba(85, 85, 85, 0.8);
 }
+
+/* ::-webkit-scrollbar-track {
+  //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  //background-color: #F5F5F5;
+} */

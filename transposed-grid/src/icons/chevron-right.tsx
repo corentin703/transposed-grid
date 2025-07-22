@@ -7,7 +7,7 @@ export const ChevronRightIcon: FunctionalComponent<IconProps> = (props) => {
       style={{
         height: props.size,
         width: props.size,
-        fill: props.color,
+        color: props.color,
       }}
     >
       <slot name="icon-chevron-right">

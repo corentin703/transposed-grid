@@ -54,7 +54,7 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
           ? (
               <check-box
                 isSelected={props.isSelected}
-                onStateChange={event => props.onSelectionChange(event.detail.isSelected)}
+                onSelectionChange={event => props.onSelectionChange(event.detail.isSelected)}
                 checkBoxTemplate={props.checkBoxTemplate}
               />
             )

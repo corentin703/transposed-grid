@@ -106,7 +106,7 @@ export interface TransposedGridCustomEvent<T> extends CustomEvent<T> {
 }
 declare global {
     interface HTMLCheckBoxElementEventMap {
-        "stateChange": CheckBoxChangeEvent;
+        "selectionChange": CheckBoxChangeEvent;
     }
     interface HTMLCheckBoxElement extends Components.CheckBox, HTMLStencilElement {
         addEventListener<K extends keyof HTMLCheckBoxElementEventMap>(type: K, listener: (this: HTMLCheckBoxElement, ev: CheckBoxCustomEvent<HTMLCheckBoxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -212,7 +212,7 @@ declare namespace LocalJSX {
         "checkBoxTemplate"?: CheckBoxTemplate;
         "indeterminate"?: boolean;
         "isSelected"?: boolean;
-        "onStateChange"?: (event: CheckBoxCustomEvent<CheckBoxChangeEvent>) => void;
+        "onSelectionChange"?: (event: CheckBoxCustomEvent<CheckBoxChangeEvent>) => void;
     }
     interface DefaultCellEditTemplate {
         "data": Data;

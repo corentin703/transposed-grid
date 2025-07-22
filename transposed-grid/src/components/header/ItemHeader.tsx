@@ -30,7 +30,6 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
   };
 
   const classNames = [
-    'mdc-data-table__header-cell',
     'cell_header',
     props.group
       ? 'cell_header-grouped'
