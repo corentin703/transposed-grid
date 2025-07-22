@@ -32,6 +32,7 @@ import { ItemToolbarCell } from '../items/ItemToolbarCell';
 import { CustomTemplate, CustomTemplateFactoryReturnType } from '../../models/customTemplate';
 import { GroupHeader } from '../header/GroupHeader';
 import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
+import { CheckBoxOptions, CheckBoxTemplate } from '../../models/checkbox';
 
 const FALLBACK_ROW_HEIGHT = '1.5rem';
 const FALLBACK_GROUP_HEIGHT = '1.5rem';
@@ -106,6 +107,7 @@ export class TransposedGrid {
 
   @Prop() public toolbar?: ToolbarOptions;
   @Prop() toolbarTemplate?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
+  @Prop() checkboxTemplate?: CheckBoxTemplate;
 
   @Prop() public allowSorting?: boolean;
   @Prop() public allowHeaderFiltering?: boolean;
@@ -781,6 +783,7 @@ export class TransposedGrid {
                       selectionStatus={this.selectionState.status}
                       onSelectionChange={areSelected => this._selectAll(areSelected)}
                       onContextMenu={event => this._handleHeaderContextMenu(event)}
+                      checkBoxTemplate={this.checkboxTemplate}
                     />
                   </tr>
                 </tbody>
@@ -835,6 +838,7 @@ export class TransposedGrid {
                               canDelete={this._can(item, EditActionType.Delete)}
                               onDelete={() => alert('delete !')}
                               onContextMenu={event => this._handleCellContextMenu(event, item, itemIdx)}
+                              checkBoxTemplate={this.checkboxTemplate}
                             />
                           );
                         })

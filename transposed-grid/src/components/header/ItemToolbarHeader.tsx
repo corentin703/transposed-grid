@@ -1,12 +1,13 @@
 import { FunctionalComponent, h } from '@stencil/core';
 import { SelectionMode, SelectionStatus } from '../../models/selection';
-import { MdCheckbox } from '../material/MdCheckbox';
+import { CheckBoxTemplate } from '../../models/checkbox';
 
 export type ItemToolbarHeaderProps = {
   selectionMode: SelectionMode;
   selectionStatus: SelectionStatus;
   onSelectionChange: (areSelected: boolean) => void;
   onContextMenu: (event: MouseEvent) => void;
+  checkBoxTemplate?: CheckBoxTemplate,
 }
 
 export const ItemToolbarHeader: FunctionalComponent<ItemToolbarHeaderProps> = (props) => {
@@ -27,10 +28,11 @@ export const ItemToolbarHeader: FunctionalComponent<ItemToolbarHeaderProps> = (p
       {
         props.selectionMode === SelectionMode.Multiple
           ? (
-              <MdCheckbox
+              <check-box
                 indeterminate={props.selectionStatus === SelectionStatus.Some}
                 isSelected={props.selectionStatus === SelectionStatus.All}
-                onChange={isSelected => props.onSelectionChange(isSelected)}
+                onStateChange={event => props.onSelectionChange(event.detail.isSelected)}
+                checkBoxTemplate={props.checkBoxTemplate}
               />
             )
             : <span />

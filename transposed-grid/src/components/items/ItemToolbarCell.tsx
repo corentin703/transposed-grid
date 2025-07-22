@@ -1,9 +1,9 @@
 import { FunctionalComponent, h } from '@stencil/core';
 import { Data } from '../../models/data';
 import { SelectionMode } from '../../models/selection';
-import { MdDelete } from '../../icons/md-delete';
-import { MdCheckbox } from '../material/MdCheckbox';
+import { DeleteIcon } from '../../icons/delete';
 import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
+import { CheckBoxTemplate } from '../../components';
 
 export type ItemToolbarCellProps = {
   item: Data;
@@ -19,6 +19,8 @@ export type ItemToolbarCellProps = {
   onContextMenu: (event: MouseEvent) => void;
   onSelectionChange: (isSelected: boolean) => void;
   onDelete: () => void;
+
+  checkBoxTemplate?: CheckBoxTemplate,
 }
 
 export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props) => {
@@ -50,9 +52,10 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
       {
         props.selectionMode !== SelectionMode.None
           ? (
-              <MdCheckbox
+              <check-box
                 isSelected={props.isSelected}
-                onChange={isSelected => props.onSelectionChange(isSelected)}
+                onStateChange={event => props.onSelectionChange(event.detail.isSelected)}
+                checkBoxTemplate={props.checkBoxTemplate}
               />
             )
           : <span />
@@ -61,6 +64,7 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
         props.canDelete
           ? (
               <button
+                title="delete"
                 class={'cell__btn-trash'}
                 type='button'
                 onClick={(e) => {
@@ -68,7 +72,7 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
                   props.onDelete()
                 }}
               >
-                <MdDelete />
+                <DeleteIcon />
               </button>
             )
           : <span />
