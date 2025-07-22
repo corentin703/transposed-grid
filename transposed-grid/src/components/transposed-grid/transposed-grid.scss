@@ -71,6 +71,10 @@ table {
   height: 100%;
 }
 
+.table-content-container {
+  overflow: auto;
+}
+
 .table-data-container {
   overflow-x: hidden;
   height: 100%;

@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { CheckBoxChangeEvent } from "./components/base/check-box/check-box";
 import { Data } from "./models/data";
 import { Group, GroupToggledEvent } from "./models/group";
 import { Row } from "./models/row";
@@ -13,6 +14,7 @@ import { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/custom
 import { EditingOptions, EditionResultEvent, EditionValidationEvent } from "./models/edition";
 import { SelectionEvent, SelectionOptions } from "./models/selection";
 import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
+export { CheckBoxChangeEvent } from "./components/base/check-box/check-box";
 export { Data } from "./models/data";
 export { Group, GroupToggledEvent } from "./models/group";
 export { Row } from "./models/row";
@@ -22,6 +24,10 @@ export { EditingOptions, EditionResultEvent, EditionValidationEvent } from "./mo
 export { SelectionEvent, SelectionOptions } from "./models/selection";
 export { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
 export namespace Components {
+    interface CheckBox {
+        "indeterminate"?: boolean;
+        "isSelected": boolean;
+    }
     interface DefaultCellEditTemplate {
         "data": Data;
         "focusInput": (options?: FocusOptions) => Promise<void>;
@@ -45,6 +51,10 @@ export namespace Components {
         "left"?: ToolbarButtonOptions[];
         "right"?: ToolbarButtonOptions[];
         "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
+    }
+    interface IconChevronDown {
+        "color"?: string;
+        "size"?: string;
     }
     interface ItemCell {
         "data": Data;
@@ -78,6 +88,10 @@ export namespace Components {
         "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
     }
 }
+export interface CheckBoxCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLCheckBoxElement;
+}
 export interface DefaultCellEditTemplateCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDefaultCellEditTemplateElement;
@@ -91,6 +105,23 @@ export interface TransposedGridCustomEvent<T> extends CustomEvent<T> {
     target: HTMLTransposedGridElement;
 }
 declare global {
+    interface HTMLCheckBoxElementEventMap {
+        "stateChange": CheckBoxChangeEvent;
+    }
+    interface HTMLCheckBoxElement extends Components.CheckBox, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLCheckBoxElementEventMap>(type: K, listener: (this: HTMLCheckBoxElement, ev: CheckBoxCustomEvent<HTMLCheckBoxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLCheckBoxElementEventMap>(type: K, listener: (this: HTMLCheckBoxElement, ev: CheckBoxCustomEvent<HTMLCheckBoxElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLCheckBoxElement: {
+        prototype: HTMLCheckBoxElement;
+        new (): HTMLCheckBoxElement;
+    };
     interface HTMLDefaultCellEditTemplateElementEventMap {
         "valueChange": any;
     }
@@ -119,6 +150,12 @@ declare global {
     var HTMLGridToolbarElement: {
         prototype: HTMLGridToolbarElement;
         new (): HTMLGridToolbarElement;
+    };
+    interface HTMLIconChevronDownElement extends Components.IconChevronDown, HTMLStencilElement {
+    }
+    var HTMLIconChevronDownElement: {
+        prototype: HTMLIconChevronDownElement;
+        new (): HTMLIconChevronDownElement;
     };
     interface HTMLItemCellElementEventMap {
         "valueChange": any;
@@ -168,14 +205,21 @@ declare global {
         new (): HTMLTransposedGridElement;
     };
     interface HTMLElementTagNameMap {
+        "check-box": HTMLCheckBoxElement;
         "default-cell-edit-template": HTMLDefaultCellEditTemplateElement;
         "default-cell-template": HTMLDefaultCellTemplateElement;
         "grid-toolbar": HTMLGridToolbarElement;
+        "icon-chevron-down": HTMLIconChevronDownElement;
         "item-cell": HTMLItemCellElement;
         "transposed-grid": HTMLTransposedGridElement;
     }
 }
 declare namespace LocalJSX {
+    interface CheckBox {
+        "indeterminate"?: boolean;
+        "isSelected"?: boolean;
+        "onStateChange"?: (event: CheckBoxCustomEvent<CheckBoxChangeEvent>) => void;
+    }
     interface DefaultCellEditTemplate {
         "data": Data;
         "group"?: Group | undefined;
@@ -198,6 +242,10 @@ declare namespace LocalJSX {
         "left"?: ToolbarButtonOptions[];
         "right"?: ToolbarButtonOptions[];
         "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
+    }
+    interface IconChevronDown {
+        "color"?: string;
+        "size"?: string;
     }
     interface ItemCell {
         "data": Data;
@@ -243,9 +291,11 @@ declare namespace LocalJSX {
         "toolbarTemplate"?: (props: CustomTemplate<ToolbarOptions>) => CustomTemplateFactoryReturnType;
     }
     interface IntrinsicElements {
+        "check-box": CheckBox;
         "default-cell-edit-template": DefaultCellEditTemplate;
         "default-cell-template": DefaultCellTemplate;
         "grid-toolbar": GridToolbar;
+        "icon-chevron-down": IconChevronDown;
         "item-cell": ItemCell;
         "transposed-grid": TransposedGrid;
     }
@@ -254,9 +304,11 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "check-box": LocalJSX.CheckBox & JSXBase.HTMLAttributes<HTMLCheckBoxElement>;
             "default-cell-edit-template": LocalJSX.DefaultCellEditTemplate & JSXBase.HTMLAttributes<HTMLDefaultCellEditTemplateElement>;
             "default-cell-template": LocalJSX.DefaultCellTemplate & JSXBase.HTMLAttributes<HTMLDefaultCellTemplateElement>;
             "grid-toolbar": LocalJSX.GridToolbar & JSXBase.HTMLAttributes<HTMLGridToolbarElement>;
+            "icon-chevron-down": LocalJSX.IconChevronDown & JSXBase.HTMLAttributes<HTMLIconChevronDownElement>;
             "item-cell": LocalJSX.ItemCell & JSXBase.HTMLAttributes<HTMLItemCellElement>;
             "transposed-grid": LocalJSX.TransposedGrid & JSXBase.HTMLAttributes<HTMLTransposedGridElement>;
         }
