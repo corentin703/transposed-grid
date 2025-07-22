@@ -28,11 +28,6 @@
     "deploy-storybook": "gh-pages -d storybook-static"
   },
   "dependencies": {
-    "@material/button": "^14.0.0",
-    "@material/checkbox": "^14.0.0",
-    "@material/data-table": "^14.0.0",
-    "@material/icon-button": "^14.0.0",
-    "@material/textfield": "^14.0.0",
     "@stencil/core": "^4.24.0"
   },
   "devDependencies": {

@@ -47,19 +47,15 @@ export class DefaultCellEditTemplate implements InternalEditCellTemplate, EditCe
     return (
       <Host>
         <div class={'cell__edit'}>
-          <label class={'mdc-text-field mdc-text-field--filled mdc-text-field--no-label'}>
-            <span class={'mdc-text-field__ripple'} />
-            <input
-              ref={el => this.inputElement = el as HTMLInputElement}
-              class={'mdc-text-field__input'}
-              type={'text'}
-              value={this.value}
-              onChange={event => {
-                this._onInputChanged(event)
-              }}
-            />
-            <span class={'mdc-line-ripple'}></span>
-          </label>
+          <input
+            ref={el => this.inputElement = el as HTMLInputElement}
+            class={'cell__edit-input'}
+            type={'text'}
+            value={this.value}
+            onChange={event => {
+              this._onInputChanged(event)
+            }}
+          />
         </div>
       </Host>
     );

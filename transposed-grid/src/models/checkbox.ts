@@ -3,7 +3,7 @@ import { CustomTemplate, CustomTemplateFactoryReturnType } from "./customTemplat
 export type CheckBoxOptions = {
   indeterminate?: boolean;
   isSelected?: boolean;
-  onStateChange?: (isSelected: boolean) => void;
+  onSelectionChange?: (isSelected: boolean) => void;
 }
 
 export type CheckBoxTemplate = (props: CustomTemplate<CheckBoxOptions>) => CustomTemplateFactoryReturnType;

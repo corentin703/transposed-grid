@@ -32,7 +32,7 @@ import { ItemToolbarCell } from '../items/ItemToolbarCell';
 import { CustomTemplate, CustomTemplateFactoryReturnType } from '../../models/customTemplate';
 import { GroupHeader } from '../header/GroupHeader';
 import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
-import { CheckBoxOptions, CheckBoxTemplate } from '../../models/checkbox';
+import { CheckBoxTemplate } from '../../models/checkbox';
 
 const FALLBACK_ROW_HEIGHT = '1.5rem';
 const FALLBACK_GROUP_HEIGHT = '1.5rem';
@@ -513,16 +513,6 @@ export class TransposedGrid {
   }
 
   public render() {
-    const tableClassNames = [
-      'mdc-data-table__table',
-      'mdc-data-table-sticky-header',
-      `${this.striped ? 'transposed_table-striped' : ''}`,
-    ];
-
-    if (this.tableClass) {
-      tableClassNames.push(this.tableClass)
-    }
-
     const renderDataFieldRow = (row: Row, group?: Group) => {
       return this.dataState.map((item, itemIdx) => {
         const isEditing =

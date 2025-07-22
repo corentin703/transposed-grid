@@ -1,14 +1,8 @@
-@use "@material/floating-label/mdc-floating-label";
-@use "@material/line-ripple/mdc-line-ripple";
-@use "@material/notched-outline/mdc-notched-outline";
-@use "@material/textfield";
-
-@include textfield.core-styles;
-
-.mdc-text-field {
-  width: 100%;
+:host {
+  box-sizing: border-box;
 }
 
-.mdc-text-field--filled {
-  height: 30px;
+.cell__edit-input {
+  box-sizing: border-box;
+  width: 100%;
 }

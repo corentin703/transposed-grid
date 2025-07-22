@@ -1,70 +1,85 @@
-@use "@material/theme";
-@use "@material/theme/custom-properties";
-
 :root {
-  --transposed-table-color: #{theme.$on-surface};
-  --transposed-table-bg: #{theme.$surface};
-  --transposed-table-border-color: #{theme.$grey-300};
+  /* Couleur du texte principal des cellules */
+  --transposed-table-color: #222222;
 
-  --transposed-table-header-bg: #{theme.$grey-100};
-  --transposed-table-header-border-color: #{theme.$grey-300};
+  /* Couleur de fond principale du tableau (légère transparence possible si superposé) */
+  --transposed-table-bg: rgba(255, 255, 255, 0.95);
 
-  --transposed-table-group-color: #{theme.$on-secondary};
-  --transposed-table-group-bg: #{theme.$secondary};
+  /* Couleur des bordures du tableau et des cellules (légère transparence) */
+  --transposed-table-border-color: rgba(224, 224, 224, 0.8);
 
-  --transposed-table-selected-color: #{theme.$on-surface};
-  --transposed-table-selected-bg: #{theme.$grey-300};
+  /* Couleur de fond de l’en-tête du tableau (transparence pour effet flottant) */
+  --transposed-table-header-bg: rgba(245, 245, 245, 0.92);
 
-  --transposed-table-striped-color: #{theme.$on-surface};
-  --transposed-table-striped-bg: #{theme.$grey-100};
+  /* Couleur de la bordure de l’en-tête (légère transparence) */
+  --transposed-table-header-border-color: rgba(224, 224, 224, 0.8);
 
-  --transposed-table-hoover-color: #{theme.$on-surface};
-  --transposed-table-hoover-bg: #{theme.$grey-200};
+  /* Couleur du texte pour les groupes (garde opaque pour la lisibilité) */
+  --transposed-table-group-color: #ffffff;
 
-  --transposed-table-cell-updated-color: #{theme.$on-surface};
-  --transposed-table-cell-updated-bg: #{theme.$green-200};
+  /* Couleur de fond pour les groupes (transparence pour effet d’intégration) */
+  --transposed-table-group-bg: rgba(96, 125, 139, 0.85);
 
-  --transposed-table-section-checkbox-color: #{theme.$secondary};
-  --transposed-table-font-family: 'Roboto', sans-serif;
+  /* Couleur du texte pour une cellule sélectionnée */
+  --transposed-table-selected-color: #222222;
 
+  /* Couleur de fond pour une cellule sélectionnée (transparence) */
+  --transposed-table-selected-bg: rgba(224, 224, 224, 0.7);
+
+  /* Couleur du texte pour les lignes alternées (zébrées) */
+  --transposed-table-striped-color: #222222;
+
+  /* Couleur de fond pour les lignes alternées (zébrées, transparence) */
+  --transposed-table-striped-bg: rgba(245, 245, 245, 0.7);
+
+  /* Couleur du texte lors du survol d’une cellule */
+  --transposed-table-hoover-color: #222222;
+
+  /* Couleur de fond lors du survol d’une cellule (transparence) */
+  --transposed-table-hoover-bg: rgba(238, 238, 238, 0.7);
+
+  /* Couleur du texte pour une cellule récemment modifiée */
+  --transposed-table-cell-updated-color: #222222;
+
+  /* Couleur de fond pour une cellule récemment modifiée (transparence) */
+  --transposed-table-cell-updated-bg: rgba(178, 223, 219, 0.7);
+
+  /* Couleur de la case à cocher dans les sections/groupes */
+  --transposed-table-section-checkbox-color: rgba(96, 125, 139, 0.85);
+
+  /* Police principale du tableau */
+  --transposed-table-font-family: 'Roboto', Arial, sans-serif;
+
+  /* Taille de police par défaut des cellules */
   --transposed-table-font-size: 0.875rem;
 
+  /* Taille de police de l’en-tête */
   --transposed-table-header-font-size: 1.1em;
-  --transposed-table-header-font-family: var(--transposed-table-font-family, "'Roboto', sans-serif");
 
+  /* Police de l’en-tête */
+  --transposed-table-header-font-family: 'Roboto', Arial, sans-serif;
+
+  /* Hauteur de ligne de l’en-tête */
+  --transposed-table-header-line-height: 1.375rem;
+
+  /* Graisse de police de l’en-tête */
+  --transposed-table-header-font-weight: 500;
+
+  /* Espacement des lettres de l’en-tête */
+  --transposed-table-header-letter-spacing: 0.0071428571em;
+
+  /* Décoration du texte de l’en-tête (souligné, barré, etc.) */
+  --transposed-table-header-text-decoration: inherit;
+
+  /* Transformation du texte de l’en-tête (uppercase, lowercase, etc.) */
+  --transposed-table-header-text-transform: inherit;
+
+  /* Padding des en-têtes de groupe */
   --transposed-table-group-header-padding: 6px;
-  --transposed-table-group-header-font-size: var(--transposed-table-header-font-size, 1.1em);
-  --transposed-table-group-header-font-family: var(--transposed-table-font-family, "'Roboto', sans-serif");
-}
 
-//:root {
-//  --transposed-table-cell-padding-y:              0.25rem;
-//  --transposed-table-cell-padding-x:              0.25rem;
-//
-//  --transposed-table-cell-updated-color:          black;
-//  --transposed-table-cell-updated-bg:             lightgreen;
-//
-//  --transposed-table-color:                       black;
-//  --transposed-table-bg:                          white;
-//
-//  --transposed-table-header-color:                black;
-//  --transposed-table-header-bg:                   white;
-//
-//  --transposed-table-group-color:                 black;
-//  --transposed-table-group-bg:                    rgb(235, 235, 235);
-//
-//  --transposed-table-th-font-weight:              null;
-//
-//  --transposed-table-striped-color:               var(--transposed-table-color);
-//  --transposed-table-striped-bg:                  rgb(245, 245, 245); /* var(--transposed-table-bg); rgba($black, var(--transposed-table-striped-bg-factor)); */
-//
-//  --transposed-table-active-color:                var(--transposed-table-color);
-//  --transposed-table-active-bg:                   rgb(220, 220, 220); /* rgba($black, var(--transposed-table-active-bg-factor)); */
-//
-//  --transposed-table-hover-color:                 var(--transposed-table-color);
-//  --transposed-table-hover-bg:                    rgb(230, 230, 230); /* rgba($black, var(--transposed-table-hover-bg-factor)); */
-//
-//  --transposed-table-border-width:                1px;
-//  --transposed-table-border-color:                rgb(199, 199, 199);
-//  --transposed-table-caption-color:               black;
-//}
+  /* Taille de police des en-têtes de groupe */
+  --transposed-table-group-header-font-size: 1.1em;
+
+  /* Police des en-têtes de groupe */
+  --transposed-table-group-header-font-family: 'Roboto', Arial, sans-serif;
+}
