@@ -16,7 +16,7 @@ export class Checkbox {
 
   @Prop() checkBoxTemplate?: CheckBoxTemplate;
   
-  @Event() selectionChange!: EventEmitter<CheckBoxChangeEvent>;
+  @Event() checkChange!: EventEmitter<CheckBoxChangeEvent>;
 
   @State() public renderDefaultTemplate: boolean = true;
 
@@ -43,7 +43,7 @@ export class Checkbox {
         const result = this.checkBoxTemplate({
           isSelected: this.isSelected,
           indeterminate: this.indeterminate,
-          onSelectionChange: isSelected => this.selectionChange.emit({
+          onCheckChange: isSelected => this.checkChange.emit({
             isSelected: isSelected,
           }),
         });
@@ -88,7 +88,7 @@ export class Checkbox {
             indeterminate={this.indeterminate}
             onChange={event => {
               const checkBox = event.currentTarget as HTMLInputElement;
-              this.selectionChange.emit({
+              this.checkChange.emit({
                 isSelected: checkBox.checked,
               });
             }}

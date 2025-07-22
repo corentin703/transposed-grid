@@ -21,7 +21,7 @@ import {
   SelectionStatus,
 } from '../../models/selection';
 import { Row } from '../../models/row';
-import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from '../../models/click';
+import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHoveringEvent } from '../../models/click';
 import { SortOrder } from '../../models/sorting';
 import { sortByDataField } from '../../utils/sortByDataField';
 import { ToolbarOptions } from '../../models/toolbar';
@@ -122,7 +122,7 @@ export class TransposedGrid {
   // Mouse events
   @Event() public itemClick!: EventEmitter<ItemClickEvent>;
   @Event() public itemDoubleClick!: EventEmitter<ItemDoubleClickEvent>;
-  @Event() public itemHoovering!: EventEmitter<ItemHooveringEvent>;
+  @Event() public itemHovering!: EventEmitter<ItemHoveringEvent>;
 
   @Event() public itemContextMenu!: EventEmitter<ItemContextMenuEvent>;
   
@@ -1433,14 +1433,14 @@ export class TransposedGrid {
 
     const primaryKeyValue = item[this._primaryKey]
 
-    const itemHooveringEventResult = this.itemHoovering.emit({
+    const itemHoveringEventResult = this.itemHovering.emit({
       item: item,
       itemIdx: itemIdx,
       primaryKey: this.primaryKey,
       primaryKeyValue: primaryKeyValue
     });
 
-    if (itemHooveringEventResult.defaultPrevented) {
+    if (itemHoveringEventResult.defaultPrevented) {
       return;
     }
 

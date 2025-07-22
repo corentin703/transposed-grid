@@ -14,7 +14,7 @@ import { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
 import { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/customTemplate";
 import { EditingOptions, EditionResultEvent, EditionValidationEvent } from "./models/edition";
 import { SelectionEvent, SelectionOptions } from "./models/selection";
-import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
+import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHoveringEvent } from "./models/click";
 export { CheckBoxTemplate } from "./models/checkbox";
 export { CheckBoxChangeEvent } from "./components/base/check-box/check-box";
 export { Data } from "./models/data";
@@ -24,7 +24,7 @@ export { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
 export { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/customTemplate";
 export { EditingOptions, EditionResultEvent, EditionValidationEvent } from "./models/edition";
 export { SelectionEvent, SelectionOptions } from "./models/selection";
-export { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHooveringEvent } from "./models/click";
+export { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHoveringEvent } from "./models/click";
 export namespace Components {
     interface CheckBox {
         "checkBoxTemplate"?: CheckBoxTemplate;
@@ -106,7 +106,7 @@ export interface TransposedGridCustomEvent<T> extends CustomEvent<T> {
 }
 declare global {
     interface HTMLCheckBoxElementEventMap {
-        "selectionChange": CheckBoxChangeEvent;
+        "checkChange": CheckBoxChangeEvent;
     }
     interface HTMLCheckBoxElement extends Components.CheckBox, HTMLStencilElement {
         addEventListener<K extends keyof HTMLCheckBoxElementEventMap>(type: K, listener: (this: HTMLCheckBoxElement, ev: CheckBoxCustomEvent<HTMLCheckBoxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -171,7 +171,7 @@ declare global {
     interface HTMLTransposedGridElementEventMap {
         "itemClick": ItemClickEvent;
         "itemDoubleClick": ItemDoubleClickEvent;
-        "itemHoovering": ItemHooveringEvent;
+        "itemHovering": ItemHoveringEvent;
         "itemContextMenu": ItemContextMenuEvent;
         "headerClick": HeaderClickEvent;
         "headerContextMenu": HeaderContextMenuEvent;
@@ -212,7 +212,7 @@ declare namespace LocalJSX {
         "checkBoxTemplate"?: CheckBoxTemplate;
         "indeterminate"?: boolean;
         "isSelected"?: boolean;
-        "onSelectionChange"?: (event: CheckBoxCustomEvent<CheckBoxChangeEvent>) => void;
+        "onCheckChange"?: (event: CheckBoxCustomEvent<CheckBoxChangeEvent>) => void;
     }
     interface DefaultCellEditTemplate {
         "data": Data;
@@ -270,7 +270,7 @@ declare namespace LocalJSX {
         "onItemClick"?: (event: TransposedGridCustomEvent<ItemClickEvent>) => void;
         "onItemContextMenu"?: (event: TransposedGridCustomEvent<ItemContextMenuEvent>) => void;
         "onItemDoubleClick"?: (event: TransposedGridCustomEvent<ItemDoubleClickEvent>) => void;
-        "onItemHoovering"?: (event: TransposedGridCustomEvent<ItemHooveringEvent>) => void;
+        "onItemHovering"?: (event: TransposedGridCustomEvent<ItemHoveringEvent>) => void;
         "onItemSelectionChange"?: (event: TransposedGridCustomEvent<SelectionEvent>) => void;
         "onSave"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "primaryKey"?: string;

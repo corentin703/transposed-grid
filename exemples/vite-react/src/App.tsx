@@ -30,7 +30,7 @@ function App() {
         }}
         onItemClick={(data) => console.log('onItemClick', data)}
         onItemDoubleClick={(data) => console.log('onItemDblClick', data)}
-        // onItemHoovering={(data) => console.log('onItemHoovering', data)}
+        // onItemHovering={(data) => console.log('onItemHovering', data)}
         // onItemInserting={async () => console.log('onItemInserting')}
         // onItemInserted={async () => console.log('onItemInserted')}
         // onItemUpdating={async () => console.log('onItemUpdating')}
