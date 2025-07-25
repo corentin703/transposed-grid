@@ -767,7 +767,7 @@ export class TransposedGrid {
 
             </div>
             <section class={'table_section_container'}>
-              <table class={'table-header'}>
+              <table class={'table-header table-toolbar'}>
                 <tbody>
                   <tr>
                     <ItemToolbarHeader
@@ -807,7 +807,7 @@ export class TransposedGrid {
                   }
                 }}
               >
-                <table class={'table-data'}>
+                <table class={'table-data table-toolbar'}>
                   <tbody>
                     <tr>
                       {

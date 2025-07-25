@@ -163,6 +163,11 @@ th {
    TOOLBAR
    ========================= */
 
+.table-toolbar {
+  overflow-x: auto;
+  scrollbar-gutter: stable;
+}
+
 .cell__toolbar {
   border-top: 1px solid var(--transposed-table-header-border-color, rgba(224, 224, 224, 0.8));
 }

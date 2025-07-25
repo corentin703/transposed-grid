@@ -29,6 +29,9 @@ export namespace Components {
     interface CheckBox {
         "checkBoxTemplate"?: CheckBoxTemplate;
         "indeterminate"?: boolean;
+        /**
+          * @default false
+         */
         "isSelected": boolean;
     }
     interface DefaultCellEditTemplate {
@@ -58,6 +61,9 @@ export namespace Components {
     interface ItemCell {
         "data": Data;
         "group"?: Group | undefined;
+        /**
+          * @default false
+         */
         "isEditing": boolean;
         "originalValue": any;
         "primaryKey": string;
@@ -75,6 +81,9 @@ export namespace Components {
         "focusedRowPrimaryKeyValue"?: string;
         "groups"?: Group[];
         "height"?: string;
+        /**
+          * @default []
+         */
         "items": Data[];
         "maxPixelColumnWidth"?: number;
         "primaryKey"?: string;
@@ -82,6 +91,9 @@ export namespace Components {
         "rows"?: Row[];
         "saveEdit": () => Promise<void>;
         "selection"?: SelectionOptions;
+        /**
+          * @default true
+         */
         "striped": boolean;
         "tableClass"?: string;
         "toolbar"?: ToolbarOptions;
@@ -211,6 +223,9 @@ declare namespace LocalJSX {
     interface CheckBox {
         "checkBoxTemplate"?: CheckBoxTemplate;
         "indeterminate"?: boolean;
+        /**
+          * @default false
+         */
         "isSelected"?: boolean;
         "onCheckChange"?: (event: CheckBoxCustomEvent<CheckBoxChangeEvent>) => void;
     }
@@ -240,6 +255,9 @@ declare namespace LocalJSX {
     interface ItemCell {
         "data": Data;
         "group"?: Group | undefined;
+        /**
+          * @default false
+         */
         "isEditing"?: boolean;
         "onValueChange"?: (event: ItemCellCustomEvent<any>) => void;
         "originalValue"?: any;
@@ -257,6 +275,9 @@ declare namespace LocalJSX {
         "focusedRowPrimaryKeyValue"?: string;
         "groups"?: Group[];
         "height"?: string;
+        /**
+          * @default []
+         */
         "items"?: Data[];
         "maxPixelColumnWidth"?: number;
         "onCancel"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
@@ -276,6 +297,9 @@ declare namespace LocalJSX {
         "primaryKey"?: string;
         "rows"?: Row[];
         "selection"?: SelectionOptions;
+        /**
+          * @default true
+         */
         "striped"?: boolean;
         "tableClass"?: string;
         "toolbar"?: ToolbarOptions;
