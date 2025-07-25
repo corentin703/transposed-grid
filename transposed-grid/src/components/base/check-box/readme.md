@@ -7,11 +7,11 @@
 
 ## Properties
 
-| Property           | Attribute       | Description | Type                                                                         | Default     |
-| ------------------ | --------------- | ----------- | ---------------------------------------------------------------------------- | ----------- |
-| `checkBoxTemplate` | --              |             | `((props: CheckBoxOptions) => CustomTemplateFactoryReturnType) \| undefined` | `undefined` |
-| `indeterminate`    | `indeterminate` |             | `boolean \| undefined`                                                       | `undefined` |
-| `isSelected`       | `is-selected`   |             | `boolean`                                                                    | `false`     |
+| Property           | Attribute            | Description | Type                                                                         | Default     |
+| ------------------ | -------------------- | ----------- | ---------------------------------------------------------------------------- | ----------- |
+| `checkBoxTemplate` | `check-box-template` |             | `((props: CheckBoxOptions) => CustomTemplateFactoryReturnType) \| undefined` | `undefined` |
+| `indeterminate`    | `indeterminate`      |             | `boolean \| undefined`                                                       | `undefined` |
+| `isSelected`       | `is-selected`        |             | `boolean`                                                                    | `false`     |
 
 
 ## Events

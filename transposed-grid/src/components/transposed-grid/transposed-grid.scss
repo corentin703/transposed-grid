@@ -190,6 +190,7 @@ th {
   background-color: var(--transposed-table-group-bg, rgba(96, 125, 139, 0.85));
   color: var(--transposed-table-group-color, #FFFFFF);
   overflow: initial;
+  position: sticky;
 
   svg {
     filter: invert(100%);
