@@ -18,7 +18,6 @@ export const GroupHeader: FunctionalComponent<GroupHeaderType> = (props) => {
         event.preventDefault();
         event.stopPropagation();
         props.onToggle();
-        console.log(event)
       }}
     >
       <div class={'group_header_container'}>
