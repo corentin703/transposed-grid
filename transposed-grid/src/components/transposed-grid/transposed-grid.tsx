@@ -694,7 +694,7 @@ export class TransposedGrid {
                 }
               </section>
               <section 
-              class={'table_vscroll'} 
+                class={'table_vscroll'} 
                 ref={ref => this._groupTableSectionRef = ref!}
                 style={{ maxHeight: this._scrollableGroupsSectionHeight, }}
               >
@@ -787,6 +787,8 @@ export class TransposedGrid {
                   if (!this._toolbarTableContainerRef) {
                     return;
                   }
+
+                  this._exitEdit();
 
                   if (this._nonGroupTableContainerRef) {
                     this._nonGroupTableContainerRef.scrollLeft = this._toolbarTableContainerRef.scrollLeft;
@@ -1249,6 +1251,12 @@ export class TransposedGrid {
     return {
       updated: updated ?? [],
     };
+  }
+
+  private _exitEdit() {
+    if (this.editingItemState) {
+      this.editingItemState = undefined;
+    }
   }
 
   private _resetEdit(editingCancelled: boolean) {
