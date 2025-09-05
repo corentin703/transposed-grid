@@ -77,8 +77,9 @@ th {
 
 td {
   position: relative;
+}
 
-  .column-resizer {
+.column-resizer {
     position: absolute;
     right: 0;
     top: 0;
@@ -92,7 +93,6 @@ td {
   .column-resizer:hover {
     background-color: var(--transposed-table-border-color, rgba(160, 160, 160, 0.7));
   }
-}
 
 /* =========================
    CELLULES
@@ -162,6 +162,8 @@ td {
   z-index: 1;
   background-color: var(--transposed-table-header-bg, rgba(245, 245, 245, 0.92));
   border-right: 1px solid var(--transposed-table-header-border-color, rgba(245, 245, 245, 0.92));
+
+  display: flex;
 
   .cell_header_label {
     padding: 1px;

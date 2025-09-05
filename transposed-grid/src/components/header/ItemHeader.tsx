@@ -5,6 +5,8 @@ import { MdSortAscendingIcon } from '../../icons/sort-ascending';
 import { Row } from '../../models/row';
 import { Group } from '../../models/group';
 import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
+import { ResizeHandler } from '../items/ResizeHandler';
+import { ColumnResizeEvent, Ref } from '../../models';
 
 export type ItemHeaderProps = {
   isSticky?: boolean;
@@ -14,6 +16,7 @@ export type ItemHeaderProps = {
   group?: Group;
   onClick: () => void;
   onContextMenu: (event: MouseEvent) => void;
+  onResize: (event: ColumnResizeEvent) => void;
 }
 
 export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
@@ -50,9 +53,14 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
 
   const caption = props.row.caption ?? props.row.dataField;
 
+  const tdRef: Ref<HTMLTableCellElement | undefined> = {
+    current: undefined,
+  };
+
   return (
     <th
       class={classNames.join(' ')}
+      ref={ref => tdRef.current = ref}
       data-data-field={escapeDataAttribute(props.row.dataField)}
       onClick={event => {
         event.preventDefault();
@@ -74,6 +82,11 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
           {getOrderByIndicator()}
         </div>
       </div>
+      <ResizeHandler
+        key={'header'}
+        tdRef={tdRef}
+        onResize={props.onResize}
+      />
     </th>
   );
 }

@@ -3,6 +3,8 @@ import { Data } from '../../models/data';
 import { Group } from '../../models/group';
 import { Row } from '../../models/row';
 import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
+import { ResizeHandler } from './ResizeHandler';
+import { ColumnResizeEvent, Ref } from '../../models';
 
 export type ItemCellWrapperProps = {
   key: string | number;
@@ -31,10 +33,10 @@ export type ItemCellWrapperProps = {
   onTabKeyDown: () => void;
   onMouseEnter: () => void;
   onValueChange: (updatedValue: any) => void;
+  onResize: (event: ColumnResizeEvent) => void;
 }
 
 export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props) => {
-
   if (!props.row.visible) {
     return (
       <td></td>
@@ -95,9 +97,14 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
     }
   };
 
+  const tdRef: Ref<HTMLTableCellElement | undefined> = {
+    current: undefined,
+  };
+
   return (
     <td
       key={props.key}
+      ref={ref => tdRef.current = ref}
       class={classNames.join(' ')}
       data-primary-key={escapeDataAttribute(props.item[props.primaryKey])}
       data-data-field={escapeDataAttribute(props.row.dataField)}
@@ -126,6 +133,11 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
         originalValue={props.originalValue}
         value={props.value}
         onValueChange={event => props.onValueChange(event.detail)}
+      />
+      <ResizeHandler
+        key={props.item[props.primaryKey]}
+        tdRef={tdRef}
+        onResize={props.onResize}
       />
     </td>
   );

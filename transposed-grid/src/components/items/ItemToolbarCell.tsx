@@ -41,7 +41,7 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
     classNames.push('cell-striped');
   }
 
-  let tdRef: Ref<HTMLTableCellElement | undefined> = {
+  const tdRef: Ref<HTMLTableCellElement | undefined> = {
     current: undefined,
   };
   
