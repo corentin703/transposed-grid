@@ -4,6 +4,9 @@ import { SelectionMode } from '../../models/selection';
 import { DeleteIcon } from '../../icons/delete';
 import { escapeDataAttribute } from '../../utils/escapeDataAttribute';
 import { CheckBoxTemplate } from '../../components';
+import { ColumnResizeEvent } from '../../models/toolbar';
+import { ResizeHandler } from './ResizeHandler';
+import { Ref } from '../../models';
 
 export type ItemToolbarCellProps = {
   key: string | number;
@@ -20,6 +23,7 @@ export type ItemToolbarCellProps = {
   onContextMenu: (event: MouseEvent) => void;
   onSelectionChange: (isSelected: boolean) => void;
   onDelete: () => void;
+  onResize: (event: ColumnResizeEvent) => void;
 
   checkBoxTemplate?: CheckBoxTemplate,
 }
@@ -37,13 +41,18 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
     classNames.push('cell-striped');
   }
 
+  let tdRef: Ref<HTMLTableCellElement | undefined> = {
+    current: undefined,
+  };
+  
   return (
     <td
       key={props.key}
+      ref={ref => tdRef.current = ref}
       class={classNames.join(' ')}
       data-primary-key={escapeDataAttribute(props.item[props.primaryKey])}
       onClick={() => {
-        props.onSelectionChange(!props.isSelected);
+        // props.onSelectionChange(!props.isSelected);
       }}
       onContextMenu={event => {
         props.onContextMenu(event);
@@ -78,6 +87,12 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
             )
           : <span />
       }
+
+      <ResizeHandler
+        key={props.item[props.primaryKey]}
+        tdRef={tdRef}
+        onResize={props.onResize}
+      />
     </td>
   );
 }

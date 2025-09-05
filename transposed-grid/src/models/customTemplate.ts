@@ -29,3 +29,7 @@ export interface EditCellTemplate extends CellTemplate {
   onValueChange: (updatedValue: any) => void;
 }
 
+export type Ref<T> = {
+  current: T;
+}
+

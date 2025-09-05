@@ -75,6 +75,25 @@ th {
   white-space: nowrap;
 }
 
+td {
+  position: relative;
+
+  .column-resizer {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 5px;
+    cursor: col-resize;
+
+    transition: ease-in-out 0.2s all;
+  }
+  
+  .column-resizer:hover {
+    background-color: var(--transposed-table-border-color, rgba(160, 160, 160, 0.7));
+  }
+}
+
 /* =========================
    CELLULES
    ========================= */

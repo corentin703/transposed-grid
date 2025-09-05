@@ -9,3 +9,7 @@ export type ToolbarOptions = {
   center?: ToolbarButtonOptions[]
   right?: ToolbarButtonOptions[]
 }
+
+export type ColumnResizeEvent = {
+  pixelWidth: number;
+}

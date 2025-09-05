@@ -24,7 +24,7 @@ import { Row } from '../../models/row';
 import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHoveringEvent } from '../../models/click';
 import { SortOrder } from '../../models/sorting';
 import { sortByDataField } from '../../utils/sortByDataField';
-import { ToolbarOptions } from '../../models/toolbar';
+import { ColumnResizeEvent, ToolbarOptions } from '../../models/toolbar';
 import { ItemHeader } from '../header/ItemHeader';
 import { ItemToolbarHeader } from '../header/ItemToolbarHeader';
 import { ItemCellWrapper } from '../items/ItemCellWrapper';
@@ -834,6 +834,7 @@ export class TransposedGrid {
                               onDelete={() => alert('delete !')}
                               onContextMenu={event => this._handleCellContextMenu(event, item, itemIdx)}
                               checkBoxTemplate={this.checkboxTemplate}
+                              onResize={event => this._handleColumnResize(event, item)}
                             />
                           );
                         })
@@ -981,6 +982,63 @@ export class TransposedGrid {
     this._redraw();
   }
 
+  private _resizedColumnsSizes: Record<string, number> = {};
+
+  private _handleColumnResize(resizeEvent: ColumnResizeEvent, item: Data) {
+    this._resizedColumnsSizes[item[this._primaryKey]] = resizeEvent.pixelWidth;
+
+    const updatedCssState = this._updateCellsWidth({
+      primaryKeyValue: item[this._primaryKey],
+    });
+
+    this.cssState = `${this.cssState} ${updatedCssState}`;
+  }
+
+  private _updateCellsWidth({ primaryKeyValue }: { primaryKeyValue?: string } = {}): string {
+    let updatedCssState = ''
+
+    this.dataState
+      .filter(record => !primaryKeyValue || record[this._primaryKey] === primaryKeyValue)
+      .forEach(record => {
+        const recordPrimaryKeyEscaped = CSS.escape(escapeDataAttribute(record[this._primaryKey]));
+
+        const getRecordWidth = () => {
+          if (this._resizedColumnsSizes[record[this._primaryKey]]) {
+            return this._resizedColumnsSizes[record[this._primaryKey]];
+          }
+
+          const elements = Array.from(this._rootElementRef!.querySelectorAll(`.cell_record[data-primary-key="${recordPrimaryKeyEscaped}"]`)) as HTMLDivElement[];
+          const width = Math.max(...elements.map(el => el.clientWidth));
+
+          if (this.maxPixelColumnWidth && width > this.maxPixelColumnWidth) {
+            return this.maxPixelColumnWidth;
+          }
+
+          if (Number.isNaN(width) || !Number.isFinite(width)) {
+            return FALLBACK_CELL_WIDTH;
+          }
+
+          if (this._lastRecordWidth[record[this._primaryKey]] && Math.abs(this._lastRecordWidth[record[this._primaryKey]] - width) < UPDATE_CELL_DELTA) {
+            return this._lastRecordWidth[record[this._primaryKey]];
+          }
+          
+          this._lastRecordWidth[record[this._primaryKey]] = width;
+          return width;
+        };
+
+        const width = this.fixedColumnWidth ?? `${getRecordWidth()}px`;
+        updatedCssState = `${updatedCssState}
+          .cell__toolbar[data-primary-key="${recordPrimaryKeyEscaped}"], .cell_record[data-primary-key="${recordPrimaryKeyEscaped}"] {
+            min-width: ${width};
+            width: ${width};
+            max-width: ${width};
+          }
+        `;
+      });
+
+    return updatedCssState;
+  }
+
   // Rendering
   private _updateCellDimensions() {
     if (!this._rootElementRef) {
@@ -1013,38 +1071,7 @@ export class TransposedGrid {
       }
     `;
 
-    this.dataState.forEach(record => {
-      const recordPrimaryKeyEscaped = CSS.escape(escapeDataAttribute(record[this._primaryKey]));
-
-      const getRecordWidth = () => {
-        const elements = Array.from(this._rootElementRef!.querySelectorAll(`.cell_record[data-primary-key="${recordPrimaryKeyEscaped}"]`)) as HTMLDivElement[];
-        const width = Math.max(...elements.map(el => el.clientWidth));
-
-        if (this.maxPixelColumnWidth && width > this.maxPixelColumnWidth) {
-          return this.maxPixelColumnWidth;
-        }
-
-        if (Number.isNaN(width) || !Number.isFinite(width)) {
-          return FALLBACK_CELL_WIDTH;
-        }
-
-        if (this._lastRecordWidth[record[this._primaryKey]] && Math.abs(this._lastRecordWidth[record[this._primaryKey]] - width) < UPDATE_CELL_DELTA) {
-          return this._lastRecordWidth[record[this._primaryKey]];
-        }
-        
-        this._lastRecordWidth[record[this._primaryKey]] = width;
-        return width;
-      };
-
-      const width = this.fixedColumnWidth ?? `${getRecordWidth()}px`;
-      updatedCssState = `${updatedCssState}
-        .cell__toolbar[data-primary-key="${recordPrimaryKeyEscaped}"], .cell_record[data-primary-key="${recordPrimaryKeyEscaped}"] {
-          min-width: ${width};
-          width: ${width};
-          max-width: ${width};
-        }
-      `;
-    });
+    updatedCssState = updatedCssState + this._updateCellsWidth();
 
     this.rowsState?.forEach(row => {
       const rowDataFieldEscaped = CSS.escape(escapeDataAttribute(row.dataField));
