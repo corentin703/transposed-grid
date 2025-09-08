@@ -9,7 +9,7 @@ import { CheckBoxTemplate } from "./models/checkbox";
 import { CheckBoxChangeEvent } from "./components/base/check-box/check-box";
 import { Data } from "./models/data";
 import { Group, GroupToggledEvent } from "./models/group";
-import { Row } from "./models/row";
+import { DimensionSettings, Row } from "./models/row";
 import { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
 import { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/customTemplate";
 import { EditingOptions, EditionResultEvent, EditionValidationEvent } from "./models/edition";
@@ -19,7 +19,7 @@ export { CheckBoxTemplate } from "./models/checkbox";
 export { CheckBoxChangeEvent } from "./components/base/check-box/check-box";
 export { Data } from "./models/data";
 export { Group, GroupToggledEvent } from "./models/group";
-export { Row } from "./models/row";
+export { DimensionSettings, Row } from "./models/row";
 export { ToolbarButtonOptions, ToolbarOptions } from "./models/toolbar";
 export { CustomTemplate, CustomTemplateFactoryReturnType } from "./models/customTemplate";
 export { EditingOptions, EditionResultEvent, EditionValidationEvent } from "./models/edition";
@@ -75,17 +75,20 @@ export namespace Components {
         "allowSorting"?: boolean;
         "cancelEdit": () => Promise<void>;
         "checkboxTemplate"?: CheckBoxTemplate;
+        /**
+          * @default {     allowResize: false,     minPixelWidth: 50,   }
+         */
+        "defaultDimensions": DimensionSettings;
         "editing"?: EditingOptions;
-        "fixedColumnWidth"?: string;
         "fixedGroups"?: Group[];
         "focusedRowPrimaryKeyValue"?: string;
         "groups"?: Group[];
+        "headerDimensions"?: DimensionSettings;
         "height"?: string;
         /**
           * @default []
          */
         "items": Data[];
-        "maxPixelColumnWidth"?: number;
         "primaryKey"?: string;
         "redraw": () => Promise<void>;
         "rows"?: Row[];
@@ -269,17 +272,20 @@ declare namespace LocalJSX {
         "allowHeaderFiltering"?: boolean;
         "allowSorting"?: boolean;
         "checkboxTemplate"?: CheckBoxTemplate;
+        /**
+          * @default {     allowResize: false,     minPixelWidth: 50,   }
+         */
+        "defaultDimensions"?: DimensionSettings;
         "editing"?: EditingOptions;
-        "fixedColumnWidth"?: string;
         "fixedGroups"?: Group[];
         "focusedRowPrimaryKeyValue"?: string;
         "groups"?: Group[];
+        "headerDimensions"?: DimensionSettings;
         "height"?: string;
         /**
           * @default []
          */
         "items"?: Data[];
-        "maxPixelColumnWidth"?: number;
         "onCancel"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;
         "onContentRendered"?: (event: TransposedGridCustomEvent<void>) => void;
         "onEditionEnded"?: (event: TransposedGridCustomEvent<EditionResultEvent>) => void;

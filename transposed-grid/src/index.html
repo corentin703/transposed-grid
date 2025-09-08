@@ -86,7 +86,6 @@
         height="80vh"
         primary-key="id"
       >
-
       </transposed-grid>
     </div>
 
@@ -526,6 +525,12 @@
         },
       ];
 
+      const defaultDimensionsSettings = {
+        allowResize: true,
+        minPixelWidth: 5,
+        maxPixelWidth: 500,
+      };
+
       const transposedGrid = document.getElementById('transposed-grid')
       transposedGrid.groups = groups;
       transposedGrid.fixedGroups = fixedGroups;
@@ -533,6 +538,8 @@
 
       transposedGrid.editing = editing;
       transposedGrid.selection = selection;
+
+      transposedGrid.defaultDimensions = defaultDimensionsSettings;
 
       // transposedGrid.addEventListener('itemClick', (e) => onItemClick(e));
       // transposedGrid.addEventListener('itemDoubleClick', (e) => onItemDblClick(e));

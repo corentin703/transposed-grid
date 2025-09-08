@@ -23,7 +23,7 @@ export type ItemToolbarCellProps = {
   onContextMenu: (event: MouseEvent) => void;
   onSelectionChange: (isSelected: boolean) => void;
   onDelete: () => void;
-  onResize: (event: ColumnResizeEvent) => void;
+  onResize?: (event: ColumnResizeEvent) => void;
 
   checkBoxTemplate?: CheckBoxTemplate,
 }
@@ -52,7 +52,7 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
       class={classNames.join(' ')}
       data-primary-key={escapeDataAttribute(props.item[props.primaryKey])}
       onClick={() => {
-        // props.onSelectionChange(!props.isSelected);
+        props.onSelectionChange(!props.isSelected);
       }}
       onContextMenu={event => {
         props.onContextMenu(event);
@@ -87,12 +87,13 @@ export const ItemToolbarCell: FunctionalComponent<ItemToolbarCellProps> = (props
             )
           : <span />
       }
-
-      <ResizeHandler
-        key={props.item[props.primaryKey]}
-        tdRef={tdRef}
-        onResize={props.onResize}
-      />
+      {props.onResize && 
+        <ResizeHandler
+          key={props.item[props.primaryKey]}
+          tdRef={tdRef}
+          onResize={props.onResize}
+        />
+      }
     </td>
   );
 }

@@ -16,7 +16,7 @@ export type ItemHeaderProps = {
   group?: Group;
   onClick: () => void;
   onContextMenu: (event: MouseEvent) => void;
-  onResize: (event: ColumnResizeEvent) => void;
+  onResize?: (event: ColumnResizeEvent) => void;
 }
 
 export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
@@ -57,6 +57,9 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
     current: undefined,
   };
 
+  const minHeight = props.row.dimensions?.minPixelHeight ? `${props.row.dimensions?.minPixelHeight}px` : undefined;
+  const maxHeight = props.row.dimensions?.maxPixelHeight ? `${props.row.dimensions?.maxPixelHeight}px` : undefined;
+
   return (
     <th
       class={classNames.join(' ')}
@@ -74,7 +77,7 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
         props.onContextMenu(event);
       }}
     >
-      <div class={'cell_header_content'} style={{ minHeight: props.row.fixedHeight, height: props.row.fixedHeight, maxHeight: props.row.fixedHeight, }}>
+      <div class={'cell_header_content'} style={{ minHeight: minHeight, maxHeight: maxHeight, }}>
         <div class={'cell_header_label'}>
           {caption}
         </div>
@@ -82,11 +85,13 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
           {getOrderByIndicator()}
         </div>
       </div>
-      <ResizeHandler
-        key={'header'}
-        tdRef={tdRef}
-        onResize={props.onResize}
-      />
+      {props.onResize && 
+        <ResizeHandler
+          key={'header'}
+          tdRef={tdRef}
+          onResize={props.onResize}
+        />
+      }
     </th>
   );
 }

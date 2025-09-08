@@ -33,7 +33,7 @@ export type ItemCellWrapperProps = {
   onTabKeyDown: () => void;
   onMouseEnter: () => void;
   onValueChange: (updatedValue: any) => void;
-  onResize: (event: ColumnResizeEvent) => void;
+  onResize?: (event: ColumnResizeEvent) => void;
 }
 
 export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props) => {
@@ -134,11 +134,13 @@ export const ItemCellWrapper: FunctionalComponent<ItemCellWrapperProps> = (props
         value={props.value}
         onValueChange={event => props.onValueChange(event.detail)}
       />
-      <ResizeHandler
-        key={props.item[props.primaryKey]}
-        tdRef={tdRef}
-        onResize={props.onResize}
-      />
+      {props.onResize && 
+        <ResizeHandler
+          key={props.item[props.primaryKey]}
+          tdRef={tdRef}
+          onResize={props.onResize}
+        />  
+      }
     </td>
   );
 }

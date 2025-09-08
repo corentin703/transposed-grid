@@ -45,26 +45,30 @@ export const ResizeHandler: FunctionalComponent<ResizeHandlerProps> = (props) =>
 
   return (
     <div 
-      class={'column-resizer'}
+      class={'column-resizer-container'}
       onClick={event => {
         event.stopPropagation();
       }}
-      onMouseDown={event => {
-        event.stopPropagation();
+    >
+      <div 
+        class={'column-resizer'}
+        onMouseDown={event => {
+          event.stopPropagation();
 
-        if (!props.tdRef.current) {
-          return;
-        }
+          if (!props.tdRef.current) {
+            return;
+          }
 
-        state.isResizing = true;
+          state.isResizing = true;
 
-        state.startX = event.clientX;
-        state.startWidth = parseInt(window.getComputedStyle(props.tdRef.current).width, 10);
+          state.startX = event.clientX;
+          state.startWidth = parseInt(window.getComputedStyle(props.tdRef.current).width, 10);
 
-        document.addEventListener('mousemove', onMouseMoveCallback);
-        document.addEventListener('mouseup', onMouseUpCallback);
-        resizeStates.set(props.key, state);
-      }}
-    />
+          document.addEventListener('mousemove', onMouseMoveCallback);
+          document.addEventListener('mouseup', onMouseUpCallback);
+          resizeStates.set(props.key, state);
+        }}
+      />
+    </div>
   )
 }

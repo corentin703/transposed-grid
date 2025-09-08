@@ -10,7 +10,7 @@ export type ItemToolbarHeaderProps = {
   onSelectionChange: (areSelected: boolean) => void;
   onContextMenu: (event: MouseEvent) => void;
   checkBoxTemplate?: CheckBoxTemplate,
-  onResize: (event: ColumnResizeEvent) => void;
+  onResize?: (event: ColumnResizeEvent) => void;
 }
 
 export const ItemToolbarHeader: FunctionalComponent<ItemToolbarHeaderProps> = (props) => {
@@ -45,11 +45,13 @@ export const ItemToolbarHeader: FunctionalComponent<ItemToolbarHeaderProps> = (p
             )
             : <span />
       }
-      <ResizeHandler
-        key={'header'}
-        tdRef={tdRef}
-        onResize={props.onResize}
-      />
+      {props.onResize && 
+        <ResizeHandler
+          key={'header'}
+          tdRef={tdRef}
+          onResize={props.onResize}
+        />
+      }
     </th>
   );
 }

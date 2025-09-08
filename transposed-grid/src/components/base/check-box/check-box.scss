@@ -1,3 +1,7 @@
+.checkbox-container {
+  z-index: 10;
+}
+
 .checkbox {
   padding: var(--transposed-grid-checkbox-padding, 0.25rem);
 }

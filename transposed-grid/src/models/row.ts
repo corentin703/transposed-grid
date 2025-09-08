@@ -3,11 +3,22 @@ import { SortOrder } from './sorting';
 import { CellTemplate, CustomTemplateFactoryReturnType, EditCellTemplate } from './customTemplate';
 import { CustomTemplate } from './customTemplate';
 
+export type ColumnDimensionSettings = {
+  allowResize?: boolean;
+  minPixelWidth?: number;
+  maxPixelWidth?: number;
+  initialPixelWidth?: number;
+}
+
+export type RowDimensionSettings = {
+  minPixelHeight?: number;
+  maxPixelHeight?: number;
+}
+
+export type DimensionSettings = ColumnDimensionSettings & RowDimensionSettings
 
 export type Row = {
-  fixedHeight?: string;
-  fixedEditingHeight?: string;
-  maxPixelHeight?: number;
+  dimensions?: RowDimensionSettings;
   
   dataField: string;
   caption?: string;

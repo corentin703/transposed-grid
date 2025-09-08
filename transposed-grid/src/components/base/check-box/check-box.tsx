@@ -99,7 +99,9 @@ export class Checkbox {
 
     return (
       <Host>
-        {renderCheckbox()}
+        <div class={'checkbox-container'}>
+          {renderCheckbox()}
+        </div>
       </Host>
     )
   }

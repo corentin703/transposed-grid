@@ -145,11 +145,12 @@ export class ItemCell {
       );
     };
 
-    const fixedHeight = this.isEditing ? this.row.fixedEditingHeight : this.row.fixedHeight;
+    const minHeight = this.row.dimensions?.minPixelHeight ? `${this.row.dimensions?.minPixelHeight}px` : undefined;
+    const maxHeight = this.row.dimensions?.maxPixelHeight ? `${this.row.dimensions?.maxPixelHeight}px` : undefined;
 
     return (
       <Host>
-        <div style={{ minHeight: fixedHeight, height: fixedHeight, maxHeight: fixedHeight, }}>
+        <div style={{ minHeight: minHeight, maxHeight: maxHeight, }}>
           {this.isEditing ? renderEditing() : renderViewer()}
         </div>
       </Host>

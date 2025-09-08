@@ -20,7 +20,7 @@ import {
   SelectionState,
   SelectionStatus,
 } from '../../models/selection';
-import { Row } from '../../models/row';
+import { Row, DimensionSettings } from '../../models/row';
 import { HeaderClickEvent, HeaderContextMenuEvent, ItemClickEvent, ItemContextMenuEvent, ItemDoubleClickEvent, ItemHoveringEvent } from '../../models/click';
 import { SortOrder } from '../../models/sorting';
 import { sortByDataField } from '../../utils/sortByDataField';
@@ -36,7 +36,7 @@ import { CheckBoxTemplate } from '../../models/checkbox';
 
 const FALLBACK_ROW_HEIGHT = '1.5rem';
 const FALLBACK_GROUP_HEIGHT = '1.5rem';
-const FALLBACK_CELL_WIDTH = '50px';
+const FALLBACK_CELL_PIXEL_WIDTH = 50;
 
 const UPDATE_CELL_DELTA = 5;
 
@@ -114,8 +114,12 @@ export class TransposedGrid {
 
   @Prop() public striped: boolean = true;
 
-  @Prop() public maxPixelColumnWidth?: number;
-  @Prop() public fixedColumnWidth?: string;
+  @Prop() public defaultDimensions: DimensionSettings = {
+    allowResize: false,
+    minPixelWidth: 50,
+  };
+
+  @Prop() public headerDimensions?: DimensionSettings;
 
   @Prop() public focusedRowPrimaryKeyValue?: string;
 
@@ -559,7 +563,7 @@ export class TransposedGrid {
             onTabKeyDown={() => this._handleTabKeyDown()}
             onEnterKeyDown={() => this._handleEnterKeyDown()}
             onEscapeKeyDown={() => this._handleEscapeKeyDown()}
-            onResize={event => this._handleColumnResize(event, item)}
+            onResize={this.defaultDimensions.allowResize ? event => this._handleColumnResize(event, item) : undefined}
           />
         )
       })
@@ -604,7 +608,7 @@ export class TransposedGrid {
                               row={row}
                               onClick={() => this._handleHeaderClick(row)}
                               onContextMenu={event => this._handleHeaderContextMenu(event, row)}
-                              onResize={event => this._handleHeaderResize(event)}
+                              onResize={this.defaultDimensions.allowResize ? event => this._handleHeaderResize(event) : undefined}
                             />
                           </tr>
                         )
@@ -665,7 +669,7 @@ export class TransposedGrid {
                                         group={groupedRow.group}
                                         onClick={() => this._handleHeaderClick(row)}
                                         onContextMenu={event => this._handleHeaderContextMenu(event, row)}
-                                        onResize={event => this._handleHeaderResize(event)}
+                                        onResize={this.defaultDimensions.allowResize ? event => this._handleHeaderResize(event) : undefined}
                                       />
                                     </tr>
                                   )
@@ -737,7 +741,7 @@ export class TransposedGrid {
                                           group={groupedRow.group}
                                           onClick={() => this._handleHeaderClick(row)}
                                           onContextMenu={event => this._handleHeaderContextMenu(event, row)}
-                                          onResize={event => this._handleHeaderResize(event)}
+                                          onResize={this.defaultDimensions.allowResize ? event => this._handleHeaderResize(event) : undefined}
                                         />
                                       </tr>
                                     )
@@ -780,7 +784,7 @@ export class TransposedGrid {
                       onSelectionChange={areSelected => this._selectAll(areSelected)}
                       onContextMenu={event => this._handleHeaderContextMenu(event)}
                       checkBoxTemplate={this.checkboxTemplate}
-                      onResize={event => this._handleHeaderResize(event)}
+                      onResize={this.defaultDimensions.allowResize ? event => this._handleHeaderResize(event) : undefined}
                     />
                   </tr>
                 </tbody>
@@ -839,7 +843,7 @@ export class TransposedGrid {
                               onDelete={() => alert('delete !')}
                               onContextMenu={event => this._handleCellContextMenu(event, item, itemIdx)}
                               checkBoxTemplate={this.checkboxTemplate}
-                              onResize={event => this._handleColumnResize(event, item)}
+                              onResize={this.defaultDimensions.allowResize ? event => this._handleColumnResize(event, item) : undefined}
                             />
                           );
                         })
@@ -1016,19 +1020,33 @@ export class TransposedGrid {
         const recordPrimaryKeyEscaped = CSS.escape(escapeDataAttribute(record[this._primaryKey]));
 
         const getRecordWidth = () => {
-          if (this._resizedColumnsSizes[record[this._primaryKey]]) {
-            return this._resizedColumnsSizes[record[this._primaryKey]];
+          const computeWidth = () => {
+            if (this._resizedColumnsSizes[record[this._primaryKey]]) {
+              return this._resizedColumnsSizes[record[this._primaryKey]];
+            }
+
+            if (this.defaultDimensions.initialPixelWidth) {
+              return this.defaultDimensions.initialPixelWidth;
+            }
+
+            const elements = Array.from(this._rootElementRef!.querySelectorAll(`.cell_record[data-primary-key="${recordPrimaryKeyEscaped}"]`)) as HTMLDivElement[];
+            const width = Math.max(...elements.map(el => el.clientWidth));
+
+            if (Number.isNaN(width) || !Number.isFinite(width)) {
+              return FALLBACK_CELL_PIXEL_WIDTH;
+            }
+
+            return width;
           }
 
-          const elements = Array.from(this._rootElementRef!.querySelectorAll(`.cell_record[data-primary-key="${recordPrimaryKeyEscaped}"]`)) as HTMLDivElement[];
-          const width = Math.max(...elements.map(el => el.clientWidth));
+          const width = computeWidth();
 
-          if (this.maxPixelColumnWidth && width > this.maxPixelColumnWidth) {
-            return this.maxPixelColumnWidth;
+          if (this.defaultDimensions.minPixelWidth && width < this.defaultDimensions.minPixelWidth) {
+            return this.defaultDimensions.minPixelWidth;
           }
 
-          if (Number.isNaN(width) || !Number.isFinite(width)) {
-            return FALLBACK_CELL_WIDTH;
+          if (this.defaultDimensions.maxPixelWidth && width > this.defaultDimensions.maxPixelWidth) {
+            return this.defaultDimensions.maxPixelWidth;
           }
 
           if (this._lastRecordWidth[record[this._primaryKey]] && Math.abs(this._lastRecordWidth[record[this._primaryKey]] - width) < UPDATE_CELL_DELTA) {
@@ -1039,7 +1057,7 @@ export class TransposedGrid {
           return width;
         };
 
-        const width = this.fixedColumnWidth ?? `${getRecordWidth()}px`;
+        const width = `${getRecordWidth()}px`;
         updatedCssState = `${updatedCssState}
           .cell__toolbar[data-primary-key="${recordPrimaryKeyEscaped}"], .cell_record[data-primary-key="${recordPrimaryKeyEscaped}"] {
             min-width: ${width};
@@ -1054,23 +1072,45 @@ export class TransposedGrid {
 
   private _updateHeaderCellsWidth(): string {
     const getHeadersWidth = () => {
-      if (this._resizedColumnsSizes['headers']) {
-        return this._resizedColumnsSizes['headers'];
+      const computeWidth = () => {
+        if (this._resizedColumnsSizes['headers']) {
+          return this._resizedColumnsSizes['headers'];
+        }
+
+        const headerElements = Array.from(this._rootElementRef!.getElementsByClassName('cell_header')) as HTMLDivElement[];
+        let maxHeaderWidth = Math.max(...headerElements.map(el => el.offsetWidth));
+      
+        if (this._isFirstRender) {
+          maxHeaderWidth = maxHeaderWidth + 50;
+        }
+
+        return maxHeaderWidth;
       }
 
-      const headerElements = Array.from(this._rootElementRef!.getElementsByClassName('cell_header')) as HTMLDivElement[];
-      let maxHeaderWidth = Math.max(...headerElements.map(el => el.offsetWidth));
+      const width = computeWidth();
+
+      if (this.headerDimensions?.minPixelWidth && width < this.headerDimensions.minPixelWidth) {
+        return this.headerDimensions.minPixelWidth;
+      }
+
+      if (this.headerDimensions?.maxPixelWidth && width > this.headerDimensions.maxPixelWidth) {
+        return this.headerDimensions.maxPixelWidth;
+      }
+
+      if (this.defaultDimensions.minPixelWidth && width < this.defaultDimensions.minPixelWidth) {
+        return this.defaultDimensions.minPixelWidth;
+      }
+
+      if (this.defaultDimensions.maxPixelWidth && width > this.defaultDimensions.maxPixelWidth) {
+        return this.defaultDimensions.maxPixelWidth;
+      }
   
-      if (this._lastMaxHeaderWidth && Math.abs(this._lastMaxHeaderWidth - maxHeaderWidth) < UPDATE_CELL_DELTA) {
+      if (this._lastMaxHeaderWidth && Math.abs(this._lastMaxHeaderWidth - width) < UPDATE_CELL_DELTA) {
         return this._lastMaxHeaderWidth;
       }
-      
-      if (this._isFirstRender) {
-        maxHeaderWidth += 50;
-      }
 
-      this._lastMaxHeaderWidth = maxHeaderWidth;
-      return maxHeaderWidth;
+      this._lastMaxHeaderWidth = width;
+      return width;
     }
 
     const headersWidth = getHeadersWidth();
@@ -1109,8 +1149,8 @@ export class TransposedGrid {
   
         const height = Math.max(...headerElements.map(el => el.offsetHeight), ...cellElements.map(el => el.clientHeight));
 
-        if (row.maxPixelHeight && height > row.maxPixelHeight) {
-          return row.maxPixelHeight;
+        if (row.dimensions?.maxPixelHeight && height > row.dimensions?.maxPixelHeight) {
+          return row.dimensions?.maxPixelHeight;
         }
         
         if (Number.isNaN(height) || !Number.isFinite(height)) {

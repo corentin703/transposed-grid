@@ -79,13 +79,20 @@ td {
   position: relative;
 }
 
+.column-resizer-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 10px;
+  display: flex;
+  justify-content: end;
+}
+
 .column-resizer {
-    position: absolute;
-    right: 0;
-    top: 0;
     height: 100%;
-    width: 5px;
     cursor: col-resize;
+    width: 5px;
 
     transition: ease-in-out 0.2s all;
   }
