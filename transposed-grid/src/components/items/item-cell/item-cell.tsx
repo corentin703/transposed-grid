@@ -70,6 +70,12 @@ export class ItemCell {
 
                 ref.innerHTML = '';
                 ref.append(result.element);
+
+                if (result.constructor) {
+                  requestAnimationFrame(() => {
+                    result.constructor && result.constructor(ref);
+                  });
+                }
               }} 
             />
           );
@@ -119,9 +125,15 @@ export class ItemCell {
 
                 ref.innerHTML = '';
                 ref.append(result.element);
-
+                
                 if (this._customTemplateFocus && typeof(this._customTemplateFocus) === 'function') {
                   this._customTemplateFocus();
+
+                  if (result.constructor) {
+                    requestAnimationFrame(() => {
+                      result.constructor && result.constructor(ref);
+                    });
+                  }
                 }
               }} 
             />
