@@ -59,6 +59,11 @@ type ItemMetadata = {
   selected?: boolean;
 }
 
+type LargestDescendantResult = {
+  element: HTMLElement | null;
+  size: number;
+}
+
 const mergeEditOptions = (editingOptions: EditingOptions, rowEditingOptions?: RecordLevelOptions, item?: any) => {
   if (!rowEditingOptions) {
     return editingOptions
@@ -214,7 +219,6 @@ export class TransposedGrid {
   private _lastRecordWidth: Record<string, number> = {};
 
   private _scrollableGroupsSectionHeight: string | undefined;
-  private _cellHeights: Record<string, number> = {};
 
   public connectedCallback() {
     this._dataSnapshot = undefined;
@@ -541,13 +545,7 @@ export class TransposedGrid {
             key={item[this._primaryKey]}
             item={item}
             rowIndex={itemIdx}
-            row={{
-              ...row,
-              dimensions: {
-                ...row.dimensions,
-                pixelHeight: this._cellHeights[row.dataField],
-              }
-            }}
+            row={row}
             group={group}
 
             isSticky={group === undefined}
@@ -612,13 +610,7 @@ export class TransposedGrid {
                             <ItemHeader
                               isSticky={true}
                               isEditing={isEditing}
-                              row={{
-                                ...row,
-                                dimensions: {
-                                  ...row.dimensions,
-                                  pixelHeight: this._cellHeights[row.dataField],
-                                }
-                              }}
+                              row={row}
                               onClick={() => this._handleHeaderClick(row)}
                               onContextMenu={event => this._handleHeaderContextMenu(event, row)}
                               onResize={this.defaultDimensions.allowResize ? event => this._handleHeaderResize(event) : undefined}
@@ -677,13 +669,7 @@ export class TransposedGrid {
                                   return (
                                     <tr key={rowKey} class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                                       <ItemHeader
-                                        row={{
-                                          ...row,
-                                          dimensions: {
-                                            ...row.dimensions,
-                                            pixelHeight: this._cellHeights[row.dataField],
-                                          }
-                                        }}
+                                        row={row}
                                         isEditing={isEditing}
                                         group={groupedRow.group}
                                         onClick={() => this._handleHeaderClick(row)}
@@ -755,13 +741,7 @@ export class TransposedGrid {
                                     return (
                                       <tr key={rowKey} class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                                         <ItemHeader
-                                          row={{
-                                            ...row,
-                                            dimensions: {
-                                              ...row.dimensions,
-                                              pixelHeight: this._cellHeights[row.dataField],
-                                            }
-                                          }}
+                                          row={row}
                                           isEditing={isEditing}
                                           group={groupedRow.group}
                                           onClick={() => this._handleHeaderClick(row)}
@@ -1095,6 +1075,40 @@ export class TransposedGrid {
     return updatedCssState;
   }
 
+  private _getLargestDescendantSize(
+    parentElement: HTMLElement,
+    dimension: 'width' | 'height' = 'width'
+  ): LargestDescendantResult {
+    let maxSize = 0;
+    let largestDescendant: HTMLElement | null = null;
+
+    const descendants = Array.from(parentElement.querySelectorAll<HTMLElement>("*"));
+
+    for (const descendant of descendants) {
+      const size = dimension === 'width' ? descendant.offsetWidth : descendant.offsetHeight;
+      
+      if (size > maxSize) {
+        maxSize = size;
+        largestDescendant = descendant;
+      }
+    }
+
+    return {
+      element: largestDescendant,
+      size: maxSize
+    };
+  }
+
+  private _getIndividualPadding(element: HTMLElement): { left: number; right: number; top: number; bottom: number } {
+    const style = window.getComputedStyle(element);
+    return {
+      left: parseFloat(style.paddingLeft),
+      right: parseFloat(style.paddingRight),
+      top: parseFloat(style.paddingTop),
+      bottom: parseFloat(style.paddingBottom),
+    };
+  }
+
   private _updateHeaderCellsWidth(): string {
     const getHeadersWidth = () => {
       const computeWidth = () => {
@@ -1103,7 +1117,12 @@ export class TransposedGrid {
         }
 
         const headerElements = Array.from(this._rootElementRef!.getElementsByClassName('cell_header')) as HTMLDivElement[];
-        let maxHeaderWidth = Math.max(...headerElements.map(el => el.offsetWidth));
+        let maxHeaderWidth = Math.max(...headerElements.map(el => {
+          const maxChildWidth = this._getLargestDescendantSize(el, 'width').size;
+          const padding = this._getIndividualPadding(el);
+
+          return maxChildWidth + padding.left + padding.right;
+        }));
       
         if (this._isFirstRender) {
           maxHeaderWidth = maxHeaderWidth + 50;
@@ -1115,35 +1134,35 @@ export class TransposedGrid {
       const width = computeWidth();
 
       if (this.headerDimensions?.minPixelWidth && width < this.headerDimensions.minPixelWidth) {
-        return this.headerDimensions.minPixelWidth;
+        return `${this.headerDimensions.minPixelWidth}px`;
       }
 
       if (this.headerDimensions?.maxPixelWidth && width > this.headerDimensions.maxPixelWidth) {
-        return this.headerDimensions.maxPixelWidth;
+        return `${this.headerDimensions.maxPixelWidth}px`;
       }
 
-      if (this.defaultDimensions.minPixelWidth && width < this.defaultDimensions.minPixelWidth) {
-        return this.defaultDimensions.minPixelWidth;
+      if (!this.headerDimensions && this.defaultDimensions.minPixelWidth && width < this.defaultDimensions.minPixelWidth) {
+        return `${this.defaultDimensions.minPixelWidth}px`;
       }
 
-      if (this.defaultDimensions.maxPixelWidth && width > this.defaultDimensions.maxPixelWidth) {
-        return this.defaultDimensions.maxPixelWidth;
+      if (!this.headerDimensions && this.defaultDimensions.maxPixelWidth && width > this.defaultDimensions.maxPixelWidth) {
+        return `${this.defaultDimensions.maxPixelWidth}px`;
       }
   
       if (this._lastMaxHeaderWidth && Math.abs(this._lastMaxHeaderWidth - width) < UPDATE_CELL_DELTA) {
-        return this._lastMaxHeaderWidth;
+        return `${this._lastMaxHeaderWidth}px`;
       }
 
       this._lastMaxHeaderWidth = width;
-      return width;
+      return `${width}px`;
     }
 
     const headersWidth = getHeadersWidth();
 
     return `
       .cell_header, .cell_toolbar_header {
-        min-width: ${headersWidth}px;
-        width: ${headersWidth}px;
+        min-width: ${headersWidth};
+        width: ${headersWidth};
       }
     `;
   }
@@ -1155,7 +1174,6 @@ export class TransposedGrid {
     }
 
     let updatedCssState = this._updateHeaderCellsWidth() + this._updateCellsWidth();
-    const cellHeights: Record<string, number> = {};
 
     this.rowsState?.forEach(row => {
       const rowDataFieldEscaped = CSS.escape(escapeDataAttribute(row.dataField));
@@ -1168,7 +1186,7 @@ export class TransposedGrid {
         } else if (this._fieldHeightToRestoreAfterEditing[row.dataField]) {
           const height = this._fieldHeightToRestoreAfterEditing[row.dataField];
           this._fieldHeightToRestoreAfterEditing[row.dataField] = undefined;
-          return height;
+          return height ? `$${height}px` : undefined;
         }
 
         const headerElements = Array.from(this._rootElementRef!.querySelectorAll(`.cell_header[data-data-field="${rowDataFieldEscaped}"]`)) as HTMLDivElement[];
@@ -1177,7 +1195,7 @@ export class TransposedGrid {
         const height = Math.max(...headerElements.map(el => el.offsetHeight), ...cellElements.map(el => el.clientHeight));
 
         if (row.dimensions?.maxPixelHeight && height > row.dimensions?.maxPixelHeight) {
-          return row.dimensions?.maxPixelHeight;
+          return `${row.dimensions?.maxPixelHeight}px`;
         }
         
         if (Number.isNaN(height) || !Number.isFinite(height)) {
@@ -1185,21 +1203,15 @@ export class TransposedGrid {
         }
         
         if (this._lastFieldHeight[row.dataField] && Math.abs(this._lastFieldHeight[row.dataField] - height) < UPDATE_CELL_DELTA) {
-          return this._lastFieldHeight[row.dataField];
+          return `${this._lastFieldHeight[row.dataField]}px`;
         }
         
         this._lastFieldHeight[row.dataField] = height;
 
-        return height;
+        return `${height}px`;
       };
 
-      const rawHeight = getRowHeight();
-      let height = rawHeight;
-      if (typeof(rawHeight) === 'number') {
-        height = `${rawHeight}px`;
-        cellHeights[row.dataField] = rawHeight;
-      }
-
+      const height = getRowHeight();
       updatedCssState = `${updatedCssState}
         .cell_header[data-data-field="${rowDataFieldEscaped}"], .cell[data-data-field="${rowDataFieldEscaped}"] {
           min-height: ${height} !important;
@@ -1207,8 +1219,6 @@ export class TransposedGrid {
         }
       `;
     });
-
-    this._cellHeights = cellHeights;
 
     this.groupsState?.forEach(group => {
       const groupNameEscaped = CSS.escape(escapeDataAttribute(group.name));
@@ -1222,19 +1232,19 @@ export class TransposedGrid {
         }
 
         if (this._lastGroupHeaderHeight[group.name] && Math.abs(this._lastGroupHeaderHeight[group.name] - height) < UPDATE_CELL_DELTA) {
-          return this._lastGroupHeaderHeight[group.name];
+          return `${this._lastGroupHeaderHeight[group.name]}px`;
         }
         
         this._lastGroupHeaderHeight[group.name] = height;
 
-        return height;
+        return `${height}px`;
       }
 
       const maxHeight = getHeight();
       updatedCssState = `${updatedCssState}
         .group_header[data-group-name="${groupNameEscaped}"], .group[data-group-name="${groupNameEscaped}"] {
-          min-height: ${maxHeight}px;
-          height: ${maxHeight}px;
+          min-height: ${maxHeight};
+          height: ${maxHeight};
         }
       `;
     });

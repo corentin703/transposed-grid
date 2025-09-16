@@ -78,7 +78,7 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
         props.onContextMenu(event);
       }}
     >
-      <div class={'cell_header_content'} style={{ minHeight: minHeight, maxHeight: maxHeight, height: height, boxSizing: 'border-box', }}>
+      <div class={'cell_header_content'} style={{ minHeight: minHeight, maxHeight: maxHeight, height: height ?? '100%', }}>
         <div class={'cell_header_label'}>
           {caption}
         </div>

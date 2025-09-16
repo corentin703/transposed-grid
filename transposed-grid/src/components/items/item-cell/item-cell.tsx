@@ -175,7 +175,7 @@ export class ItemCell {
 
     return (
       <Host>
-        <div style={{ minHeight: minHeight, maxHeight: maxHeight, height: height, boxSizing: 'border-box' }}>
+        <div style={{ minHeight: minHeight, maxHeight: maxHeight, height: height ?? '100%' }}>
           {this.isEditing ? renderEditing() : renderViewer()}
         </div>
       </Host>

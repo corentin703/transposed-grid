@@ -197,11 +197,14 @@ td {
 }
 
 .cell__toolbar {
-  border-top: 1px solid var(--transposed-table-header-border-color, rgba(224, 224, 224, 0.8));
+  box-shadow: 
+    inset 0 1px 0 var(--transposed-table-header-border-color, rgba(245, 245, 245, 0.92)),   /* top */
+    inset 0 -1px 0 var(--transposed-table-header-border-color, rgba(245, 245, 245, 0.92)); /* bottom */
 }
 
 .cell_toolbar_header {
   z-index: 1;
+  
 }
 
 /* =========================
