@@ -13,6 +13,7 @@ export type ColumnDimensionSettings = {
 export type RowDimensionSettings = {
   minPixelHeight?: number;
   maxPixelHeight?: number;
+  pixelHeight?: number;
 }
 
 export type DimensionSettings = ColumnDimensionSettings & RowDimensionSettings

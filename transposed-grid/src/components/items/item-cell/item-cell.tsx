@@ -47,6 +47,9 @@ export class ItemCell {
         if (result instanceof HTMLElement) {
           return (
             <div 
+              style={{
+                height: '100%',
+              }}
               ref={ref => {
                 if (!ref) {
                   return;
@@ -63,6 +66,9 @@ export class ItemCell {
           this._customTemplateDestructor = result.destructor;
           return (
             <div 
+              style={{
+                height: '100%',
+              }}
               ref={ref => {
                 if (!ref) {
                   return;
@@ -101,6 +107,9 @@ export class ItemCell {
         if (result instanceof HTMLElement) {
           return (
             <div 
+              style={{
+                height: '100%',
+              }}
               ref={ref => {
                 if (!ref) {
                   return;
@@ -118,6 +127,9 @@ export class ItemCell {
           this._customTemplateFocus = result.focus;
           return (
             <div 
+              style={{
+                height: '100%',
+              }}
               ref={ref => {
                 if (!ref) {
                   return;
@@ -159,10 +171,11 @@ export class ItemCell {
 
     const minHeight = this.row.dimensions?.minPixelHeight ? `${this.row.dimensions?.minPixelHeight}px` : undefined;
     const maxHeight = this.row.dimensions?.maxPixelHeight ? `${this.row.dimensions?.maxPixelHeight}px` : undefined;
+    const height = this.row.dimensions?.pixelHeight ? `${this.row.dimensions?.pixelHeight}px` : undefined;
 
     return (
       <Host>
-        <div style={{ minHeight: minHeight, maxHeight: maxHeight, }}>
+        <div style={{ minHeight: minHeight, maxHeight: maxHeight, height: height, boxSizing: 'border-box' }}>
           {this.isEditing ? renderEditing() : renderViewer()}
         </div>
       </Host>

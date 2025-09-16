@@ -214,6 +214,7 @@ export class TransposedGrid {
   private _lastRecordWidth: Record<string, number> = {};
 
   private _scrollableGroupsSectionHeight: string | undefined;
+  private _cellHeights: Record<string, number> = {};
 
   public connectedCallback() {
     this._dataSnapshot = undefined;
@@ -540,7 +541,13 @@ export class TransposedGrid {
             key={item[this._primaryKey]}
             item={item}
             rowIndex={itemIdx}
-            row={row}
+            row={{
+              ...row,
+              dimensions: {
+                ...row.dimensions,
+                pixelHeight: this._cellHeights[row.dataField],
+              }
+            }}
             group={group}
 
             isSticky={group === undefined}
@@ -605,7 +612,13 @@ export class TransposedGrid {
                             <ItemHeader
                               isSticky={true}
                               isEditing={isEditing}
-                              row={row}
+                              row={{
+                                ...row,
+                                dimensions: {
+                                  ...row.dimensions,
+                                  pixelHeight: this._cellHeights[row.dataField],
+                                }
+                              }}
                               onClick={() => this._handleHeaderClick(row)}
                               onContextMenu={event => this._handleHeaderContextMenu(event, row)}
                               onResize={this.defaultDimensions.allowResize ? event => this._handleHeaderResize(event) : undefined}
@@ -664,7 +677,13 @@ export class TransposedGrid {
                                   return (
                                     <tr key={rowKey} class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                                       <ItemHeader
-                                        row={row}
+                                        row={{
+                                          ...row,
+                                          dimensions: {
+                                            ...row.dimensions,
+                                            pixelHeight: this._cellHeights[row.dataField],
+                                          }
+                                        }}
                                         isEditing={isEditing}
                                         group={groupedRow.group}
                                         onClick={() => this._handleHeaderClick(row)}
@@ -736,7 +755,13 @@ export class TransposedGrid {
                                     return (
                                       <tr key={rowKey} class={'cell'} data-data-field={escapeDataAttribute(row.dataField)}>
                                         <ItemHeader
-                                          row={row}
+                                          row={{
+                                            ...row,
+                                            dimensions: {
+                                              ...row.dimensions,
+                                              pixelHeight: this._cellHeights[row.dataField],
+                                            }
+                                          }}
                                           isEditing={isEditing}
                                           group={groupedRow.group}
                                           onClick={() => this._handleHeaderClick(row)}
@@ -1114,6 +1139,7 @@ export class TransposedGrid {
     }
 
     const headersWidth = getHeadersWidth();
+
     return `
       .cell_header, .cell_toolbar_header {
         min-width: ${headersWidth}px;
@@ -1129,6 +1155,7 @@ export class TransposedGrid {
     }
 
     let updatedCssState = this._updateHeaderCellsWidth() + this._updateCellsWidth();
+    const cellHeights: Record<string, number> = {};
 
     this.rowsState?.forEach(row => {
       const rowDataFieldEscaped = CSS.escape(escapeDataAttribute(row.dataField));
@@ -1166,7 +1193,13 @@ export class TransposedGrid {
         return height;
       };
 
-      const height = `${getRowHeight()}px`;
+      const rawHeight = getRowHeight();
+      let height = rawHeight;
+      if (typeof(rawHeight) === 'number') {
+        height = `${rawHeight}px`;
+        cellHeights[row.dataField] = rawHeight;
+      }
+
       updatedCssState = `${updatedCssState}
         .cell_header[data-data-field="${rowDataFieldEscaped}"], .cell[data-data-field="${rowDataFieldEscaped}"] {
           min-height: ${height} !important;
@@ -1174,6 +1207,8 @@ export class TransposedGrid {
         }
       `;
     });
+
+    this._cellHeights = cellHeights;
 
     this.groupsState?.forEach(group => {
       const groupNameEscaped = CSS.escape(escapeDataAttribute(group.name));

@@ -59,6 +59,7 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
 
   const minHeight = props.row.dimensions?.minPixelHeight ? `${props.row.dimensions?.minPixelHeight}px` : undefined;
   const maxHeight = props.row.dimensions?.maxPixelHeight ? `${props.row.dimensions?.maxPixelHeight}px` : undefined;
+  const height = props.row.dimensions?.pixelHeight ? `${props.row.dimensions?.pixelHeight}px` : undefined;
 
   return (
     <th
@@ -77,7 +78,7 @@ export const ItemHeader: FunctionalComponent<ItemHeaderProps> = (props) => {
         props.onContextMenu(event);
       }}
     >
-      <div class={'cell_header_content'} style={{ minHeight: minHeight, maxHeight: maxHeight, }}>
+      <div class={'cell_header_content'} style={{ minHeight: minHeight, maxHeight: maxHeight, height: height, boxSizing: 'border-box', }}>
         <div class={'cell_header_label'}>
           {caption}
         </div>
